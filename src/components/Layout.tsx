@@ -32,6 +32,7 @@ function Header() {
       <div className="flex flex-grow items-center justify-between px-7">
         <Input placeholder="search" type="text" className="w-[15rem]" />
         <User />
+        <div>Tue, 20 Apr</div>
       </div>
     </header>
   );

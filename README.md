@@ -1,29 +1,103 @@
-# Create T3 App
+## TIdy up build process
+in the next confit
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+```js
+const config = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+};
+```
+updating the database to run our current schema using `pnpm run db:push`
 
-## What's next? How do I make an app with this?
+## destructive push: pnpm run db:push
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+ordering in descending order
+const images = await db.query.images.findMany({
+  orderBy: (model, {desc}) => desc(model.id)
+})
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## defining api endpoints inside of your next project
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+defined in app/api/[approutename]/route.ts
+export function GET() {
+  return new Response("Helo World")
+}
 
-## Learn More
+## to query the response, we can do
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+`curl localhost:300/api/[apiroutename]
+//output: hello world
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## defining images to be added for only a specific user
+He used varchar as a consequence of there being a good relationship between clerk and the images table
+userId: varchar("userId", {length: 256}).notNull();
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## placing all database base fetching logic in a single folder
+He uses a queries file located in the server folder and defined and data fetching function there
 
-## How do I deploy this?
+## Implementing Sentry for error management in our applicaton
+sentry.io
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## LEarning more from examples of concepts that you want to lear
+check : nexgram.vercel.app for examples on parallel routing
+
+![alt text](image.png)
+
+flex-shrink-0 : don't shrink the div, flex-shrink: shrink the div to take up the available space
+
+uaing grid-rows-[auto,1fr] for a fixed top nav
+
+const data = new Date();
+
+heroIcons
+
+loading spinner svg (svg spinner github repo)
+
+## debugging issues
+
+setting window.propertyName = function
+
+then going on to the terminal and calling window.propertyName(); this invokes the function
+
+difference between toLocalStrng() and toLocalDateString()
+
+using posthug for analytics, plausible is another alternative but not as detailed as posthug
+
+using posthug to identify user interaction with application
+
+using the nextjs rewrites to enable data collection even if the user has add blockers on.
+
+ratelimiting with upstash
+
+
+## React Server Components
+
+The key thing to understand is this: Server Components never re-render. They run once on the server to generate the UI.
+The rendered value is sent to the client and locked in place. As far as React is concerned, this output is immutable, and will never change.*
+
+This new paradigm introduces a new type of component, Server Components. These new components render exclusively on the server. Their code isn't included in the JS bundle, and so they never hydrate or re-render.
+
+We still rely on Server Side Rendering to generate the initial HTML. React Server Components builds on top of that, allowing us to omit certain components from the client-side JavaScript bundle, ensuring they only run on the server.
+
+In fact, it's even possible to use React Server Components without Server Side Rendering, though in practice, you'll get better results if you use them together. The React team has built a minimal RSC demo(opens in new tab) without SSR, if you'd like to see an example.
+
+That standalone string at the top, 'use client', is how we signal to React that the component(s) in this file are Client Components, that they should be included in our JS bundles so that they can re-render on the client.
+
+he React team added a rule: Client Components can only import other Client Components. That 'use client' directive means that these instances of HitCounter and Discussion(which were rendered as children of the article component and were server components) will need to become Client Components.
+
+Client Boundaries
+
+![alt text](image-1.png)
+
+
+To be more precise, the 'use client' directive works at the file / module level. Any modules imported in a Client Component file must be Client Components as well. When the bundler bundles up our code, it'll follow these imports, after all!
+
+I should also note that the HTML file is broken into chunks and streamed, so the browser can still paint the UI quickly, without having to wait for all the cruft in the <script> tag.
+
+If you follow semantic HTML principles, most of your app should work even before React has hydrated. Links can be followed, forms can be submitted, accordions can be expanded and collapsed (using <details> and <summary>). For most projects, it's fine if it takes a few seconds for React to hydrate.
+
+**additional: This is the big idea behind Bright(opens in new tab), a modern syntax-highlighting package designed to work with React Server Components.

@@ -2,7 +2,6 @@ import {
   formatGroupsAccDay,
   getWeekGroupTasks,
 } from "@/server/db/queries/select";
-import { InsertTaskGroup } from "@/server/db/schema";
 import Link from "next/link";
 import React from "react";
 type Params = {

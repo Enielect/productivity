@@ -18,7 +18,7 @@ function getWeekNumber(date: Date) {
 
 
 
-async function formatGroupsAccWeekNum() {
+export async function formatGroupsAccWeekNum() {
   const taskGroups = await db.query.taskGroups.findMany();
   const dict: Record<string, SelectTaskGroup[]> = taskGroups.reduce(
     (acc: Record<string, SelectTaskGroup[]>, curr) => {
@@ -35,7 +35,7 @@ async function formatGroupsAccWeekNum() {
 
 //sort weeks tasks according to day(24/04/20) created
 
-async function formatGroupsAccDay(weekTask: SelectTaskGroup[]) {
+export async function formatGroupsAccDay(weekTask: SelectTaskGroup[]) {
   const dict: Record<string, SelectTaskGroup[]> = weekTask.reduce(
     (acc: Record<string, SelectTaskGroup[]>, curr) => {
       const dayFormat = new Date(curr.createdAt).toLocaleDateString();
@@ -48,12 +48,12 @@ async function formatGroupsAccDay(weekTask: SelectTaskGroup[]) {
   return dict;
 }
 
-async function getWeekGroupTasks(week: string) {
+export async function getWeekGroupTasks(week: string) {
   const dict = await formatGroupsAccWeekNum();
   return dict[week];
 }
 
-async function getDayGroupTasks(weekTask: SelectTaskGroup[], day: string) {
+export async function getDayGroupTasks(weekTask: SelectTaskGroup[], day: string) {
   const dict = await formatGroupsAccDay(weekTask);
   return dict[day];
 }
@@ -70,3 +70,11 @@ async function getDayGroupTasks(weekTask: SelectTaskGroup[], day: string) {
 //fetching taskGroups based on date created
 
 //filtering tasks on a daily basis
+
+//get tasks based on taskGroupsId
+
+export async function getGroupTasks(groupId: number) {
+  return await db.query.tasks.findMany({
+    where: (tasks, { eq }) => eq(tasks.taskGroupId, groupId),
+  });
+}

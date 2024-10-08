@@ -36,6 +36,7 @@ export const taskGroupRelation = relations(taskGroups, ({ many }) => ({
   tasks: many(tasks),
 }));
 
+
 export const tasks = createTable(
   "tasks",
   {
@@ -46,8 +47,8 @@ export const tasks = createTable(
       .notNull(),
     summary: varchar("summary", { length: 65535 }),
     isChecked: boolean("is_checked").default(false),
-    resource: varchar("resource", { length: 65535 }),
-    reasonForResource: varchar("reason_for_resource", { length: 65535 }),
+    resource: varchar("resource", { length: 65535 }).notNull(),
+    reasonForResource: varchar("reason_for_resource", { length: 65535 }).notNull(),
     taskGroupId: serial("task_group_id")
       .notNull()
       .references(() => taskGroups.id, { onDelete: "cascade" }),

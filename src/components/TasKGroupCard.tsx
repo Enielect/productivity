@@ -1,4 +1,4 @@
-import { type SelectTaskGroup } from "@/server/db/schema";
+import { SelectTask, type SelectTaskGroup } from "@/server/db/schema";
 import { Folder } from "lucide-react";
 import React from "react";
 
@@ -17,9 +17,25 @@ const colorMix = [
   },
 ];
 
-type Props = { title: string, currentGroup: SelectTaskGroup, setCurrentTaskGroup: React.Dispatch<React.SetStateAction<SelectTaskGroup>> };
+export type GroupType = SelectTaskGroup & { tasks: SelectTask[] };
 
-export const TasKGroupCard = ({ title, currentGroup, setCurrentTaskGroup }: Props) => {
+type Props = {
+  title: string;
+  currentGroup: GroupType;
+  setCurrentTaskGroup: React.Dispatch<React.SetStateAction<GroupType>>;
+};
+
+export const TasKGroupCard = ({
+  title,
+  currentGroup,
+  setCurrentTaskGroup,
+}: Props) => {
+  const completedTasks = currentGroup.tasks.filter(
+    (task) => task.isChecked,
+  ).length;
+  const totalTasks = currentGroup.tasks.length;
+  const progress = (completedTasks / totalTasks) * 100;
+  console.log(currentGroup, "current group");
   const randomColor = colorMix[Math.floor(Math.random() * colorMix.length)]!;
   const style = {
     "--light-color": randomColor.light,
@@ -28,17 +44,28 @@ export const TasKGroupCard = ({ title, currentGroup, setCurrentTaskGroup }: Prop
   return (
     <div
       style={style}
-      className="w-1/3 flex flex-col justify-between space-y-3 rounded-md bg-[var(--light-color)] p-4"
+      className="flex w-1/3 flex-col justify-between space-y-3 rounded-md bg-[var(--light-color)] p-4"
     >
-      <div className="flex items-center gap-3">
-        <Folder style={style} className="fill-[var(--dark-color)] stroke-transparent" />
-        <span> {title}</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Folder
+            style={style}
+            className="fill-[var(--dark-color)] stroke-transparent"
+          />
+          <span> {title}</span>
+        </div>
+        <span>{progress}%</span>
       </div>
       <div className="flex items-center justify-between">
         <span style={style} className="text-[var(--dark-color)]">
-          3 tasks
+          {currentGroup.tasks.length} tasks
         </span>
-        <button onClick={() => setCurrentTaskGroup(currentGroup)} className="text-sm underline text-[#444444] text-opacity-65">Details</button>
+        <button
+          onClick={() => setCurrentTaskGroup(currentGroup)}
+          className="text-sm text-[#444444] text-opacity-65 underline"
+        >
+          Details
+        </button>
       </div>
     </div>
   );

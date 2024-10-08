@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
+import React, { startTransition, useState, useTransition } from "react";
 import useSWR from "swr";
 import { Input } from "./ui/input";
 import {
@@ -12,18 +12,18 @@ import {
   X,
 } from "lucide-react";
 import type { SelectTask, SelectTaskGroup } from "@/server/db/schema";
-import TasKGroupCard from "./TasKGroupCard";
-import { addTaskGroup, getTasksFromGroup } from "@/action/task";
+import TasKGroupCard, { type GroupType } from "./TasKGroupCard";
+import { addTaskGroup, getTasksFromGroup, setChecked } from "@/action/task";
 import TaskDialogWrapper from "./TaskDialogWrapper";
 import Markdown from "react-markdown";
 import EditTaskDialogWrapper from "./EditTaskDialogWrapper";
 
 interface PostGroups {
-  postGroups: SelectTaskGroup[];
+  postGroups: GroupType[];
 }
 
 const Goals = ({ postGroups }: PostGroups) => {
-  const [currentTaskGroup, setCurrentTaskGroup] = useState<SelectTaskGroup>(
+  const [currentTaskGroup, setCurrentTaskGroup] = useState<GroupType>(
     postGroups[0]!,
   );
   return (
@@ -81,7 +81,7 @@ function TaskGroupDetails({ taskGroup }: { taskGroup: SelectTaskGroup }) {
         <div className="flex w-full gap-3">
           <div
             data-open={String(currentTask.length > 0)}
-            className="mt-5 w-full space-y-3 transition-all data-[open=true]:w-1/2"
+            className="mt-5 h-[16rem] w-full space-y-3 overflow-auto pr-3 transition-all data-[open=true]:w-1/2"
           >
             {tasks.map((task) => (
               <TaskCard
@@ -94,7 +94,7 @@ function TaskGroupDetails({ taskGroup }: { taskGroup: SelectTaskGroup }) {
             ))}
           </div>
           {currentTask.length > 0 && (
-            <div className="h-full space-y-3 border-2 border-blue-600 p-2">
+            <div className="h-full w-1/2 space-y-3 border-2 border-blue-600 p-2">
               <div className="rounded-md border px-2 py-2">
                 <header className="py-3 text-lg font-semibold">
                   Learning resources
@@ -130,11 +130,21 @@ type TaskProp = {
 };
 
 function TaskCard({ task, setCurrentTask, current, groupId }: TaskProp) {
+  const [isChecked, setIsChecked] = useState(task.isChecked!);
+  function handleChecked(e: React.ChangeEvent<HTMLInputElement>) {
+    startTransition(async () => {
+      setIsChecked(e.target.checked);
+      await setChecked(e.target.checked, task.id);
+      console.log("checked");
+    });
+  }
   return (
     <div className="flex items-center justify-between gap-4 rounded-md bg-gray-200 px-4 py-3">
       <div className="flex items-center gap-3">
         <input
           id={task.name}
+          checked={isChecked}
+          onChange={handleChecked}
           className="h-5 w-5 accent-blue-600"
           type="checkbox"
         />

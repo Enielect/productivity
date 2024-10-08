@@ -4,11 +4,11 @@ import { db } from "@/server/db";
 import {
   createTask,
   createTaskGroup,
+  editCheckedTask,
   updateTask,
 } from "@/server/db/queries/insert";
 import { type InsertTaskGroup } from "@/server/db/schema";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export async function addTaskGroup(data: InsertTaskGroup) {
   await createTaskGroup(data);
@@ -63,4 +63,13 @@ export async function getTask(id: number) {
     where: (tasks, { eq }) => eq(tasks.id, id),
   });
   return task;
+}
+
+export async function setChecked(isChecked: boolean, id: number) {
+  try {
+    await editCheckedTask(isChecked, id);
+    revalidatePath("/");
+  } catch (error) {
+    console.error(error);
+  }
 }

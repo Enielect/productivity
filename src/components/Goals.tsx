@@ -1,13 +1,22 @@
 "use client";
 
 import React, { useEffect, useState, useTransition } from "react";
+import useSWR from "swr";
 import { Input } from "./ui/input";
-import { Columns2, NotepadText, PlusIcon, X } from "lucide-react";
+import {
+  Columns2,
+  Loader2,
+  NotepadText,
+  Pencil,
+  PlusIcon,
+  X,
+} from "lucide-react";
 import type { SelectTask, SelectTaskGroup } from "@/server/db/schema";
 import TasKGroupCard from "./TasKGroupCard";
 import { addTaskGroup, getTasksFromGroup } from "@/action/task";
 import TaskDialogWrapper from "./TaskDialogWrapper";
 import Markdown from "react-markdown";
+import EditTaskDialogWrapper from "./EditTaskDialogWrapper";
 
 interface PostGroups {
   postGroups: SelectTaskGroup[];
@@ -42,16 +51,15 @@ const Goals = ({ postGroups }: PostGroups) => {
 };
 
 function TaskGroupDetails({ taskGroup }: { taskGroup: SelectTaskGroup }) {
-  const [tasks, setTasks] = useState<SelectTask[]>([]);
+  // const [tasks, setTasks] = useState<SelectTask[]>([]);
   const [currentTask, setCurrentTask] = useState("");
-  useEffect(() => {
-    async function getTasks() {
-      const tasksFromGroup = await getTasksFromGroup(taskGroup.id);
-      setTasks(tasksFromGroup!.tasks);
-    }
-    void getTasks();
-  }, [taskGroup.id]);
-  const currentSelectedTask = tasks.find((task) => task.name === currentTask);
+  const { data: tasks, isLoading } = useSWR(`/group/task`, getTasks);
+  async function getTasks() {
+    const tasksFromGroup = await getTasksFromGroup(taskGroup.id);
+    // setTasks(tasksFromGroup!.tasks);
+    return tasksFromGroup!.tasks;
+  }
+  const currentSelectedTask = tasks?.find((task) => task.name === currentTask);
   return (
     <div className="px-4">
       <div className="flex items-center gap-4 py-5">
@@ -69,39 +77,47 @@ function TaskGroupDetails({ taskGroup }: { taskGroup: SelectTaskGroup }) {
           </button>
         </TaskDialogWrapper>
       </div>
-      <div className="flex w-full gap-3">
-        <div
-          data-open={String(currentTask.length > 0)}
-          className="mt-5 w-full space-y-3 transition-all data-[open=true]:w-1/2"
-        >
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              setCurrentTask={setCurrentTask}
-              task={task}
-              current={currentTask}
-            />
-          ))}
-        </div>
-        {currentTask.length > 0 && (
-          <div className="h-full space-y-3 border-2 border-blue-600 p-2">
-            <div className="rounded-md border px-2 py-2">
-              <header className="py-3 text-lg font-semibold">
-                Learning resources
-              </header>
-              <div className="markdown">
-                <Markdown>{currentSelectedTask!.resource}</Markdown>
+      {tasks && !isLoading && (
+        <div className="flex w-full gap-3">
+          <div
+            data-open={String(currentTask.length > 0)}
+            className="mt-5 w-full space-y-3 transition-all data-[open=true]:w-1/2"
+          >
+            {tasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                setCurrentTask={setCurrentTask}
+                task={task}
+                groupId={taskGroup.id}
+                current={currentTask}
+              />
+            ))}
+          </div>
+          {currentTask.length > 0 && (
+            <div className="h-full space-y-3 border-2 border-blue-600 p-2">
+              <div className="rounded-md border px-2 py-2">
+                <header className="py-3 text-lg font-semibold">
+                  Learning resources
+                </header>
+                <div className="markdown">
+                  <Markdown>{currentSelectedTask!.resource}</Markdown>
+                </div>
+              </div>
+              <div className="rounded-md border px-2 py-2">
+                <header className="py-3 text-lg font-semibold">
+                  Reason For Learning Resource
+                </header>
+                {currentSelectedTask!.reasonForResource}
               </div>
             </div>
-            <div className="rounded-md border px-2 py-2">
-              <header className="py-3 text-lg font-semibold">
-                Reason For Learning Resource
-              </header>
-              {currentSelectedTask!.reasonForResource}
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
+      {isLoading && (
+        <div className="flex h-full w-full items-center justify-center">
+          <Loader2 className="animate-spin" />
+        </div>
+      )}
     </div>
   );
 }
@@ -109,32 +125,40 @@ function TaskGroupDetails({ taskGroup }: { taskGroup: SelectTaskGroup }) {
 type TaskProp = {
   task: SelectTask;
   current: string;
+  groupId: number;
   setCurrentTask: React.Dispatch<React.SetStateAction<string>>;
 };
 
-function TaskCard({ task, setCurrentTask, current }: TaskProp) {
+function TaskCard({ task, setCurrentTask, current, groupId }: TaskProp) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-md bg-gray-200 px-4 py-3">
       <div className="flex items-center gap-3">
         <input
           id={task.name}
-          className="h-4 w-4 accent-blue-600"
+          className="h-5 w-5 accent-blue-600"
           type="checkbox"
         />
         <label htmlFor={task.name} className="font-semibold">
           {task.name}
         </label>
       </div>
-      <button
-        onClick={() => {
-          setCurrentTask((c: string) => {
-            if (c === task.name) return "";
-            return task.name;
-          });
-        }}
-      >
-        {current === task.name ? <X /> : <Columns2 />}
-      </button>
+      <div className="space-x-4">
+        <EditTaskDialogWrapper groupId={groupId} task={task}>
+          <button>
+            <Pencil className="h-6 w-6" />
+          </button>
+        </EditTaskDialogWrapper>
+        <button
+          onClick={() => {
+            setCurrentTask((c: string) => {
+              if (c === task.name) return "";
+              return task.name;
+            });
+          }}
+        >
+          {current === task.name ? <X /> : <Columns2 />}
+        </button>
+      </div>
     </div>
   );
 }

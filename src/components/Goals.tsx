@@ -26,10 +26,22 @@ const Goals = ({ postGroups }: PostGroups) => {
   const [currentTaskGroup, setCurrentTaskGroup] = useState<GroupType>(
     postGroups[0]!,
   );
+  const groupPercentages = postGroups.map(
+    (currentGroup) =>
+      (currentGroup.tasks.filter((task) => task.isChecked).length /
+        currentTaskGroup.tasks.length) *
+      100,
+  );
+  const combinedPercentages = groupPercentages.reduce(
+    (acc, current) => acc + current,
+    0,
+  );
+
+  const progress = combinedPercentages / postGroups.length;
   return (
     <div>
       <div className="border-b px-3 py-6">
-        <Progress />
+        <Progress progress={progress} />
         <h1>Add the tasks you want to cover this week</h1>
         <AddGoalInput />
         <div className="flex gap-5">
@@ -201,12 +213,12 @@ function AddGoalInput() {
   );
 }
 
-function Progress() {
+function Progress({ progress }: { progress: number }) {
   return (
     <div className="flex items-center gap-[80px] py-5">
       {/* <span className="w-fit mr-4">Today</span> */}
       <div className="">
-        <ProgressBar />
+        <ProgressBar progress={progress} />
       </div>
       <span>You have completed 3 of the 8 tasks planned today</span>
       {/* <span className="w-[4rem] flex justify-end">50%</span> */}
@@ -214,16 +226,16 @@ function Progress() {
   );
 }
 
-function ProgressBar() {
+function ProgressBar({ progress }: { progress: number }) {
   return (
     <div className="progress-bar relative h-[2rem] min-w-[300px] rounded-md bg-blue-200">
       <div
         className="progress h-full rounded-bl-md rounded-tl-md bg-blue-600"
-        style={{ width: "20%" }}
+        style={{ width: `${progress}%` }}
       ></div>
       <span className="absolute right-[4px] top-[4px] font-semibold text-blue-600">
         {" "}
-        20%
+        {progress}%
       </span>
     </div>
   );

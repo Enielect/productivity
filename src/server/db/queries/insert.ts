@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { db } from "..";
 import {
   type InsertTask,
@@ -12,4 +13,8 @@ export async function createTaskGroup(data: InsertTaskGroup) {
 
 export async function createTask(data: InsertTask) {
   await db.insert(tasks).values(data);
+}
+
+export async function updateTask(data: InsertTask) {
+  await db.update(tasks).set(data).where(eq(tasks.id, data.id!));
 }

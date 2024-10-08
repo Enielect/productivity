@@ -74,3 +74,8 @@
     transform: rotate(360deg);
   }
 }
+
+.markdown a{
+  color: rgb(140, 28, 219);
+  text-decoration: underline;
+}

@@ -1,9 +1,14 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { DashboardIcon } from "@radix-ui/react-icons";
-import { ChartNoAxesCombined, NotepadText } from "lucide-react";
+import {
+  ChartNoAxesCombined,
+  LayoutDashboardIcon,
+  NotepadText,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { type ReactNode } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -14,7 +19,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <div className="h-full">
           <LeftNav />
         </div>
-        <div className="border-l border-r border-[#444444]/20 px-3 pt-4">
+        <div className="border-l border-r border-[#444444]/20 pt-4">
           {children}
         </div>
         <div className="pl-3 pt-3">right na=</div>
@@ -27,7 +32,9 @@ function Header() {
   return (
     <header className="flex h-[50px] w-full border-b border-[#444444]/20">
       <h1 className="h-full basis-[200px] border-r border-[#444444]/20">
-        <div className="flex h-full items-center pl-4">Productivity App</div>
+        <Link href="/" className="flex h-full items-center pl-4">
+          Productivity App
+        </Link>
       </h1>
       <div className="flex flex-grow items-center justify-between px-7">
         <Input placeholder="search" type="text" className="w-[15rem]" />
@@ -62,23 +69,24 @@ function LeftNav() {
 
 function ListItem({ icon, text }: NavListProps) {
   const [hover, setHover] = React.useState(false);
-  const [clicked, setClicked] = React.useState(false);
+  const pathName = usePathname();
 
   const clonedIcon = React.cloneElement(icon as React.ReactElement, {
-    className: `${clicked && "text-blue-700"}`,
+    className: `${pathName === `/${text.toLowerCase()}` && "text-blue-700"}`,
   });
 
   return (
     <li
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={() => setClicked((c) => !c)}
-      className={`flex cursor-pointer items-center py-4 pl-4 ${
-        hover && "bg-blue-700/30"
-      } gap-3`}
+      className={` ${hover && "bg-blue-700/30"} `}
     >
-      {clonedIcon}{" "}
-      <span className={`block ${clicked && "text-blue-700"}`}>{text}</span>{" "}
+      <Link
+        href={`/${text.toLowerCase()}`}
+        className={`flex w-full cursor-pointer items-center gap-3 py-4 pl-4 text-lg ${pathName === `/${text.toLowerCase()}` && "text-blue-700"}`}
+      >
+        {clonedIcon} {text}
+      </Link>{" "}
     </li>
   );
 }
@@ -89,7 +97,7 @@ interface NavListProps {
 }
 
 const navList: NavListProps[] = [
-  { icon: <DashboardIcon />, text: "Dashboard" },
-  { icon: <NotepadText />, text: "Notes" },
+  { icon: <LayoutDashboardIcon className="h-14 w-14" />, text: "Dashboard" },
+  { icon: <NotepadText />, text: "Reports" },
   { icon: <ChartNoAxesCombined />, text: "Performance" },
 ];

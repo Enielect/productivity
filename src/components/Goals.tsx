@@ -17,6 +17,7 @@ import { addTaskGroup, getTasksFromGroup, setChecked } from "@/action/task";
 import TaskDialogWrapper from "./TaskDialogWrapper";
 import Markdown from "react-markdown";
 import EditTaskDialogWrapper from "./EditTaskDialogWrapper";
+import SummaryDialogWrapper from "./SummaryDialogWrapper";
 
 interface PostGroups {
   postGroups: GroupType[];
@@ -62,7 +63,7 @@ const Goals = ({ postGroups }: PostGroups) => {
   );
 };
 
-function TaskGroupDetails({ taskGroup }: { taskGroup: SelectTaskGroup }) {
+function TaskGroupDetails({ taskGroup }: { taskGroup: GroupType }) {
   // const [tasks, setTasks] = useState<SelectTask[]>([]);
   const [currentTask, setCurrentTask] = useState("");
   const { data: tasks, isLoading } = useSWR(`/group/task`, getTasks);
@@ -77,6 +78,10 @@ function TaskGroupDetails({ taskGroup }: { taskGroup: SelectTaskGroup }) {
       <div className="flex items-center gap-4 py-5">
         <NotepadText className="h-7 w-7 stroke-blue-600" />
         <span className="text-2xl font-semibold">{taskGroup.name}</span>
+        <em>
+          (Note that checkboxes are disabled by default. Click on the + icon to
+          provide a summary of the task before you can check the task done)
+        </em>
       </div>
       <div className="flex space-x-5">
         <div className="w-[4rem] rounded-bl-md rounded-tl-md border border-blue-800 px-3 py-2 text-blue-600">
@@ -106,7 +111,7 @@ function TaskGroupDetails({ taskGroup }: { taskGroup: SelectTaskGroup }) {
             ))}
           </div>
           {currentTask.length > 0 && (
-            <div className="h-full w-1/2 space-y-3 border-2 border-blue-600 p-2">
+            <div className="h-[16rem] w-1/2 space-y-3 overflow-auto border-2 border-blue-600 p-2">
               <div className="rounded-md border px-2 py-2">
                 <header className="py-3 text-lg font-semibold">
                   Learning resources
@@ -120,6 +125,13 @@ function TaskGroupDetails({ taskGroup }: { taskGroup: SelectTaskGroup }) {
                   Reason For Learning Resource
                 </header>
                 {currentSelectedTask!.reasonForResource}
+              </div>
+              <div className="rounded-md border px-2 py-2">
+                <header className="py-3 text-lg font-semibold">
+                  Educate me.{" "}
+                  <small>(In as few amount of words as possible)</small>
+                </header>
+                {currentSelectedTask!.summary ?? <em>not specified yet</em>}
               </div>
             </div>
           )}
@@ -141,7 +153,7 @@ type TaskProp = {
   setCurrentTask: React.Dispatch<React.SetStateAction<string>>;
 };
 
-function TaskCard({ task, setCurrentTask, current, groupId }: TaskProp) {
+function TaskCard({ task, setCurrentTask, current }: TaskProp) {
   const [isChecked, setIsChecked] = useState(task.isChecked!);
   function handleChecked(e: React.ChangeEvent<HTMLInputElement>) {
     startTransition(async () => {
@@ -156,6 +168,7 @@ function TaskCard({ task, setCurrentTask, current, groupId }: TaskProp) {
         <input
           id={task.name}
           checked={isChecked}
+          disabled={!task.summary || isChecked}
           onChange={handleChecked}
           className="h-5 w-5 accent-blue-600"
           type="checkbox"
@@ -165,7 +178,12 @@ function TaskCard({ task, setCurrentTask, current, groupId }: TaskProp) {
         </label>
       </div>
       <div className="space-x-4">
-        <EditTaskDialogWrapper groupId={groupId} task={task}>
+        <SummaryDialogWrapper taskId={task.id}>
+          <button>
+            <PlusIcon />
+          </button>
+        </SummaryDialogWrapper>
+        <EditTaskDialogWrapper task={task}>
           <button>
             <Pencil className="h-6 w-6" />
           </button>
@@ -177,7 +195,7 @@ function TaskCard({ task, setCurrentTask, current, groupId }: TaskProp) {
               return task.name;
             });
           }}
-        >
+        >Work on animation from other sites, to improve
           {current === task.name ? <X /> : <Columns2 />}
         </button>
       </div>
@@ -230,10 +248,12 @@ function ProgressBar({ progress }: { progress: number }) {
   return (
     <div className="progress-bar relative h-[2rem] min-w-[300px] rounded-md bg-blue-200">
       <div
-        className="progress h-full rounded-bl-md rounded-tl-md bg-blue-600"
+        className="progress h-full rounded-bl-md rounded-tl-md bg-blue-600 transition-all"
         style={{ width: `${progress}%` }}
       ></div>
-      <span className="absolute right-[4px] top-[4px] font-semibold text-blue-600">
+      <span
+        className={`absolute right-[4px] top-[4px] font-semibold ${progress > 90 ? "z-20 text-white" : "text-blue-600"}`}
+      >
         {" "}
         {progress}%
       </span>

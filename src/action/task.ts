@@ -1,18 +1,21 @@
 "use server";
 
+import { auth } from "@/auth";
 import { db } from "@/server/db";
 import {
+  createSummary,
   createTask,
   createTaskGroup,
   editCheckedTask,
   updateTask,
 } from "@/server/db/queries/insert";
-import { type InsertTaskGroup } from "@/server/db/schema";
 import { revalidatePath } from "next/cache";
 
-export async function addTaskGroup(data: InsertTaskGroup) {
+const session = await auth();
+
+export async function addTaskGroup(data: {name: string}) {
   await createTaskGroup(data);
-  revalidatePath("/");
+  revalidatePath("/dashboard");
 }
 
 export async function addTask(
@@ -25,7 +28,7 @@ export async function addTask(
   const reasonForResource = formData.get("reasonForResource") as string;
   try {
     await createTask({ taskGroupId: id, name, resource, reasonForResource });
-
+    revalidatePath("/dashboard");
     return { message: "Task added successfully" };
   } catch (error) {
     console.error(error);
@@ -40,17 +43,39 @@ export async function editTask(
   const name = formData.get("name") as string;
   const resource = formData.get("resource") as string;
   const reasonForResource = formData.get("reasonForResource") as string;
+  const summary = formData.get("summary") as string;
   try {
-    await updateTask({ id, name, resource, reasonForResource });
+    if (!!summary)
+      await updateTask({ id, name, resource, reasonForResource, summary });
+    else await updateTask({ id, name, resource, reasonForResource });
+
+    revalidatePath("/dashboard");
     return { message: "Task updated successfully" };
   } catch (error) {
     console.error(error);
   }
 }
 
+export async function addSummary(
+  taskId: number,
+  prevState: unknown,
+  formData: FormData,
+) {
+  const summary = formData.get("summary") as string;
+  try {
+    await createSummary(taskId, summary);
+    revalidatePath("/dashboard");
+    return { message: "Summary added successfully" };
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export const getTasksFromGroup = async (id: number) => {
+  if (!session?.user) return;
   const tasks = await db.query.taskGroups.findFirst({
-    where: (taskGroups, { eq }) => eq(taskGroups.id, id),
+    where: (taskGroups, { eq }) =>
+      eq(taskGroups.id, id) && eq(taskGroups.userId, session.user.id),
     with: {
       tasks: true,
     },
@@ -68,7 +93,7 @@ export async function getTask(id: number) {
 export async function setChecked(isChecked: boolean, id: number) {
   try {
     await editCheckedTask(isChecked, id);
-    revalidatePath("/");
+    revalidatePath("/dashboard");
   } catch (error) {
     console.error(error);
   }

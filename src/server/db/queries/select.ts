@@ -1,9 +1,15 @@
 "use server";
+import { type GroupType } from "@/components/TasKGroupCard";
 import { db } from "..";
-import { type SelectTaskGroup } from "../schema";
+import { auth } from "@/auth";
+import type { SelectNotes } from "../schema";
 
 export async function getGeneralGroupTasks() {
-  await db.query.taskGroups.findMany();
+  const session = await auth();
+  if (!session?.user) return;
+  await db.query.taskGroups.findMany({
+    where: (taskGroups, { eq }) => eq(taskGroups.userId, session.user.id),
+  });
 }
 
 //filter groups tasks by day created
@@ -16,12 +22,16 @@ function getWeekNumber(date: Date) {
   return result;
 }
 
-
-
 export async function formatGroupsAccWeekNum() {
-  const taskGroups = await db.query.taskGroups.findMany();
-  const dict: Record<string, SelectTaskGroup[]> = taskGroups.reduce(
-    (acc: Record<string, SelectTaskGroup[]>, curr) => {
+  const session = await auth();
+
+  if (!session?.user) return;
+  const taskGroups = await db.query.taskGroups.findMany({
+    where: (taskGroups, { eq }) => eq(taskGroups.userId, session.user.id),
+    with: { tasks: true },
+  });
+  const dict: Record<string, GroupType[]> = taskGroups.reduce(
+    (acc: Record<string, GroupType[]>, curr) => {
       const weekFormat = `${getWeekNumber(curr.createdAt)}-${curr.createdAt.getFullYear()}`;
       if (!acc[weekFormat]) acc[weekFormat] = [];
       acc[weekFormat].push(curr);
@@ -32,12 +42,11 @@ export async function formatGroupsAccWeekNum() {
   return dict;
 }
 
-
 //sort weeks tasks according to day(24/04/20) created
 
-export async function formatGroupsAccDay(weekTask: SelectTaskGroup[]) {
-  const dict: Record<string, SelectTaskGroup[]> = weekTask.reduce(
-    (acc: Record<string, SelectTaskGroup[]>, curr) => {
+export async function formatGroupsAccDay(weekTask: GroupType[]) {
+  const dict: Record<string, GroupType[]> = weekTask.reduce(
+    (acc: Record<string, GroupType[]>, curr) => {
       const dayFormat = new Date(curr.createdAt).toLocaleDateString();
       if (!acc[dayFormat]) acc[dayFormat] = [];
       acc[dayFormat].push(curr);
@@ -50,10 +59,11 @@ export async function formatGroupsAccDay(weekTask: SelectTaskGroup[]) {
 
 export async function getWeekGroupTasks(week: string) {
   const dict = await formatGroupsAccWeekNum();
+  if (!dict) return [];
   return dict[week];
 }
 
-export async function getDayGroupTasks(weekTask: SelectTaskGroup[], day: string) {
+export async function getDayGroupTasks(weekTask: GroupType[], day: string) {
   const dict = await formatGroupsAccDay(weekTask);
   return dict[day];
 }
@@ -77,4 +87,27 @@ export async function getGroupTasks(groupId: number) {
   return await db.query.tasks.findMany({
     where: (tasks, { eq }) => eq(tasks.taskGroupId, groupId),
   });
+}
+
+
+//get notes associated with a particular day for a particular user
+export async function getNotes() {
+  const session = await auth();
+  if (!session?.user) return [];
+  return await db.query.notes.findMany({
+    where: (notes, { eq }) => eq(notes.userId, session.user.id),
+  });
+}
+
+export async function formatNotesAccDay(notes: SelectNotes[]) {
+  const dict: Record<string, SelectNotes[]> = notes.reduce(
+    (acc: Record<string, SelectNotes[]>, curr) => {
+      const dayFormat = new Date(curr.createdAt).toDateString();
+      if (!acc[dayFormat]) acc[dayFormat] = [];
+      acc[dayFormat].push(curr);
+      return acc;
+    },
+    {},
+  );
+  return dict;
 }

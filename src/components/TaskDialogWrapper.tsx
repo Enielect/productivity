@@ -4,7 +4,6 @@ import React, { useState, type ReactNode } from "react";
 import Markdown from "react-markdown";
 import { useSWRConfig } from "swr";
 
-// import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -29,7 +28,6 @@ const TaskDialogWrapper = ({ children, groupId }: DialogProp) => {
   const [taskGroup, setTaskGroup] = useState("");
   const [markdown, setMarkdown] = useState("");
   const [resourceReason, setResourceReason] = useState("");
-  //   const [pending, startTransition] = useTransition();
   const [format, setFormat] = useState(false);
   const { mutate } = useSWRConfig();
 
@@ -118,8 +116,8 @@ const TaskDialogWrapper = ({ children, groupId }: DialogProp) => {
             <SubmitButton />
           </DialogFooter>
         </form>
+        {state?.message && <p className="text-green-600">{state.message}</p>}
       </DialogContent>
-      {state?.message && <p className="text-green-600">{state.message}</p>}
     </Dialog>
   );
 };

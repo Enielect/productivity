@@ -79,6 +79,10 @@
   }
 }
 
+code {
+  @apply  text-wrap
+}
+
 .markdown a{
   color: rgb(140, 28, 219);
   text-decoration: underline;

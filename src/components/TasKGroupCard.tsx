@@ -1,4 +1,4 @@
-import { SelectTask, type SelectTaskGroup } from "@/server/db/schema";
+import type { SelectTask, SelectTaskGroup } from "@/server/db/schema";
 import { Folder } from "lucide-react";
 import React from "react";
 
@@ -30,17 +30,25 @@ export const TasKGroupCard = ({
   currentGroup,
   setCurrentTaskGroup,
 }: Props) => {
+  //new line
+
   const completedTasks = currentGroup.tasks.filter(
     (task) => task.isChecked,
   ).length;
+
   const totalTasks = currentGroup.tasks.length;
+
   const progress = (completedTasks / totalTasks) * 100;
+
   console.log(currentGroup, "current group");
+
   const randomColor = colorMix[Math.floor(Math.random() * colorMix.length)]!;
+
   const style = {
     "--light-color": randomColor.light,
     "--dark-color": randomColor.dark,
   } as React.CSSProperties;
+
   return (
     <div
       style={style}
@@ -54,7 +62,7 @@ export const TasKGroupCard = ({
           />
           <span> {title}</span>
         </div>
-        <span>{progress}%</span>
+        <span>{isNaN(progress) ? 0 : progress}%</span>
       </div>
       <div className="flex items-center justify-between">
         <span style={style} className="text-[var(--dark-color)]">

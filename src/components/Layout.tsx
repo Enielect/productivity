@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import {
   ChartNoAxesCombined,
   LayoutDashboardIcon,
+  NotebookPen,
   NotepadText,
 } from "lucide-react";
 import Image from "next/image";
@@ -11,10 +12,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { type ReactNode } from "react";
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default function Layout({
+  children,
+  username,
+  image,
+}: {
+  children: ReactNode;
+  username: string;
+  image: string;
+}) {
+  //changed overflow to hidden
   return (
-    <div>
-      <Header />
+    <div className="h-full overflow-hidden">
+      <Header name={username} img={image} />
       <main className="grid h-[calc(100dvh-50px)] grid-cols-[199px_1fr_200px]">
         <div className="h-full">
           <LeftNav />
@@ -28,33 +38,48 @@ export default function Layout({ children }: { children: ReactNode }) {
   );
 }
 
-function Header() {
+function Header({ name, img }: { name: string; img: string }) {
   return (
     <header className="flex h-[50px] w-full border-b border-[#444444]/20">
       <h1 className="h-full basis-[200px] border-r border-[#444444]/20">
         <Link href="/" className="flex h-full items-center pl-4">
-          Productivity App
+          <Image src={"/productivity.png"} alt="logo" width={40} height={40} />
+          Productivity
         </Link>
       </h1>
       <div className="flex flex-grow items-center justify-between px-7">
         <Input placeholder="search" type="text" className="w-[15rem]" />
-        <User />
-        <div>Tue, 20 Apr</div>
+        <div className="flex items-center gap-8">
+          <User name={name} img={img} />
+          <span>{new Date().toString().split(" ").splice(0, 4).join(" ")}</span>
+        </div>
       </div>
     </header>
   );
 }
 
-function User() {
+function User({ name, img }: { name: string; img: string }) {
   return (
-    <div className="flex items-center gap-5">
-      <div className="h-8 w-8 overflow-hidden rounded-full">
-        <Image src="/avatar.png" alt="User avatar" width={40} height={40} />
-      </div>
-      <span>Eniola</span>
-    </div>
+    <span className="flex items-center gap-5">
+      <span className="h-8 w-8 overflow-hidden rounded-full">
+        <Image src={img} alt="User avatar" width={40} height={40} />
+      </span>
+      <span>{name}</span>
+    </span>
   );
 }
+
+interface NavListProps {
+  icon: ReactNode;
+  text: string;
+}
+
+const navList: NavListProps[] = [
+  { icon: <LayoutDashboardIcon className="h-14 w-14" />, text: "Dashboard" },
+  { icon: <NotepadText />, text: "Reports" },
+  { icon: <ChartNoAxesCombined />, text: "Performance" },
+  { icon: <NotebookPen />, text: "Notes" },
+];
 
 // This is a better way to write the LeftNav component
 function LeftNav() {
@@ -90,14 +115,3 @@ function ListItem({ icon, text }: NavListProps) {
     </li>
   );
 }
-
-interface NavListProps {
-  icon: ReactNode;
-  text: string;
-}
-
-const navList: NavListProps[] = [
-  { icon: <LayoutDashboardIcon className="h-14 w-14" />, text: "Dashboard" },
-  { icon: <NotepadText />, text: "Reports" },
-  { icon: <ChartNoAxesCombined />, text: "Performance" },
-];

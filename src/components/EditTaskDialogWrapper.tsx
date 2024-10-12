@@ -4,7 +4,6 @@ import React, { useState, type ReactNode } from "react";
 import Markdown from "react-markdown";
 import { useSWRConfig } from "swr";
 
-// import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -23,7 +22,6 @@ import type { SelectTask } from "@/server/db/schema";
 
 type DialogProp = {
   children: ReactNode;
-  groupId?: number;
   task: SelectTask;
 };
 
@@ -31,7 +29,7 @@ const EditTaskDialogWrapper = ({ children, task }: DialogProp) => {
   const [taskGroup, setTaskGroup] = useState(task.name);
   const [markdown, setMarkdown] = useState(task.resource);
   const [resourceReason, setResourceReason] = useState(task.reasonForResource);
-  //   const [pending, startTransition] = useTransition();
+  const [summary, setSummary] = useState(task.summary);
   const [format, setFormat] = useState(false);
 
   const [state, action] = useFormState(editTask.bind(null, task.id), undefined);
@@ -85,6 +83,7 @@ const EditTaskDialogWrapper = ({ children, task }: DialogProp) => {
                   )}
                 </button>
               </div>
+              {/* if check button is clicked display markdown of the text input in the resource field else display the textarea */}
               {format ? (
                 <div className="markdown mt-2 border border-blue-400 px-3 py-2">
                   <Markdown>{markdown}</Markdown>
@@ -114,6 +113,23 @@ const EditTaskDialogWrapper = ({ children, task }: DialogProp) => {
                 required
               />
             </div>
+            {/* display a field for summary only if the summary for the current task was already inputed */}
+            {!!summary && (
+              <div className="grid">
+                <label htmlFor="title" className="flex items-center gap-2">
+                  <span>Summary(Things gained)</span>
+                  <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="summary"
+                  name="summary"
+                  value={summary}
+                  onChange={(e) => setSummary(e.target.value)}
+                  className="col-span-3 mt-2 w-full resize-none rounded-md border px-2 py-3 outline-transparent focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+            )}
           </div>
           <DialogFooter>
             <SubmitButton />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { Loader2, NotepadText, PlusIcon } from "lucide-react";
 import { getTasksFromGroup } from "@/action/task";
@@ -7,6 +7,8 @@ import Markdown from "react-markdown";
 import TaskCard from "@/app/(userFacing)/dashboard/components/TaskCard";
 import type { GroupType } from "@/components/TasKGroupCard";
 
+const fetcher = (url: string) => getTasksFromGroup(Number(url)).then(res => res!.tasks)
+
 export default function TaskGroupDetails({
   taskGroup,
 }: {
@@ -14,12 +16,10 @@ export default function TaskGroupDetails({
 }) {
   // const [tasks, setTasks] = useState<SelectTask[]>([]);
   const [currentTask, setCurrentTask] = useState("");
-  const { data: tasks, isLoading } = useSWR(`/group/task`, getTasks);
-  async function getTasks() {
-    const tasksFromGroup = await getTasksFromGroup(taskGroup.id);
-    // setTasks(tasksFromGroup!.tasks);
-    return tasksFromGroup!.tasks;
-  }
+  console.log(taskGroup.id)
+  const { data: tasks, isLoading } = useSWR(`${taskGroup.id}`, fetcher);
+  
+  useEffect(()=> {console.log(taskGroup.id, "tasks group");}, [tasks, taskGroup.id]);
   const currentSelectedTask = tasks?.find((task) => task.name === currentTask);
   return (
     <div className="px-4">

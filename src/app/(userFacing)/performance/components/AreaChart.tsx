@@ -20,27 +20,35 @@ import {
 
 export const description = "An area chart with axes"
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
+// const chartData = [
+//   { month: "January", desktop: 186, mobile: 80 },
+//   { month: "February", desktop: 305, mobile: 200 },
+//   { month: "March", desktop: 237, mobile: 120 },
+//   { month: "April", desktop: 73, mobile: 190 },
+//   { month: "May", desktop: 209, mobile: 130 },
+//   { month: "June", desktop: 214, mobile: 140 },
+// ]
+
+type ChartDataType =
+  | { day: string; currentWeek: number; lastWeek: number }
+  | { day: string; currentWeek: number; bestWeek: number };
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  currentWeek: {
+    label: "currentWeek",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "Mobile",
+  bestWeek: {
+    label: "bestWeek",
+    color: "hsl(var(--chart-2))",
+  },
+  lastWeek: {
+    label: "bestWeek",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
 
-export default function AreaChartWrapper() {
+export default function AreaChartWrapper({chartData}: {chartData: ChartDataType[]}) {
   return (
     <Card>
       <CardHeader>
@@ -61,7 +69,7 @@ export default function AreaChartWrapper() {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="day"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -75,19 +83,19 @@ export default function AreaChartWrapper() {
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Area
-              dataKey="mobile"
+              dataKey="currentWeek"
               type="natural"
-              fill="var(--color-mobile)"
+              fill="var(--color-currentWeek)"
               fillOpacity={0.4}
-              stroke="var(--color-mobile)"
+              stroke="var(--color-currentWeek)"
               stackId="a"
             />
             <Area
-              dataKey="desktop"
+              dataKey="bestWeek"
               type="natural"
-              fill="var(--color-desktop)"
+              fill="var(--color-bestWeek)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="var(--color-bestWeek)"
               stackId="a"
             />
           </AreaChart>

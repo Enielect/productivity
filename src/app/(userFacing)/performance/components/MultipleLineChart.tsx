@@ -20,32 +20,55 @@ import {
 
 export const description = "A multiple line chart";
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
+// const chartData = [
+//   { month: "January", desktop: 186, mobile: 80 },
+//   { month: "February", desktop: 305, mobile: 200 },
+//   { month: "March", desktop: 237, mobile: 120 },
+//   { month: "April", desktop: 73, mobile: 190 },
+//   { month: "May", desktop: 209, mobile: 130 },
+//   { month: "June", desktop: 214, mobile: 140 },
+// ];
+
+// const chartData = [
+//   { day: 'Monday', currentWeek: 100, lastWeek: 0 },
+//   { day: 'Tuesday', currentWeek: 0, lastWeek: 0 },
+//   { day: 'Wednesday', currentWeek: 50, lastWeek: 0 },
+//   { day: 'Thursday', currentWeek: 0, lastWeek: 0 },
+//   { day: 'Friday', currentWeek: 0, lastWeek: 0 },
+//   { day: 'Saturday', currentWeek: 0, lastWeek: 0 },
+//   { day: 'Sunday', currentWeek: 0, lastWeek: 0 }
+// ]
+
+type ChartDataType =
+  | { day: string; currentWeek: number; lastWeek: number }
+  | { day: string; currentWeek: number; bestWeek: number };
+// type ChartDataTye = Record<string, number>;
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  currentWeek: {
+    label: "currentWeek",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "Mobile",
+  lastWeek: {
+    label: "lastWeek",
+    color: "hsl(var(--chart-2))",
+  },
+  bestWeek: {
+    label: "lastWeek",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
-export default function MultipleLineChart() {
+export default function MultipleLineChart({
+  chartData,
+}: {
+  chartData: ChartDataType[];
+}) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Line Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardDescription>Monday - Sunday</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -59,7 +82,7 @@ export default function MultipleLineChart() {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="day"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -67,16 +90,16 @@ export default function MultipleLineChart() {
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
-              dataKey="desktop"
+              dataKey="currentWeek"
               type="monotone"
-              stroke="var(--color-desktop)"
+              stroke="var(--color-currentWeek)"
               strokeWidth={2}
               dot={false}
             />
             <Line
-              dataKey="mobile"
+              dataKey="lastWeek"
               type="monotone"
-              stroke="var(--color-mobile)"
+              stroke={`${Object.keys(chartData[0]!).includes('lastWeek') ? 'var(--color-lastWeek)': 'var(--color-bestWeek)'}`}
               strokeWidth={2}
               dot={false}
             />

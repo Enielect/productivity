@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { type ReactNode } from "react";
+import { RightCalendar } from "./RightCalendar";
 
 export default function Layout({
   children,
@@ -22,17 +23,30 @@ export default function Layout({
   image: string;
 }) {
   //changed overflow to hidden
+  const pathname = usePathname();
   return (
     <div className="h-full overflow-hidden">
       <Header name={username} img={image} />
-      <main className="grid h-[calc(100dvh-50px)] grid-cols-[199px_1fr_200px]">
+      <main className="grid h-[calc(100dvh-50px)] grid-cols-[199px_1fr_250px]">
         <div className="h-full">
           <LeftNav />
         </div>
         <div className="border-l border-r border-[#444444]/20 pt-4">
           {children}
         </div>
-        <div className="pl-3 pt-3">right na=</div>
+        <div className="pl-3 pr-3 pt-3">
+          {pathname === "/notes" ? (
+            <div>
+              <h3>Notes Calendar</h3>
+              <RightCalendar />
+            </div>
+          ) : (
+            <div>
+              <h3>TaskGroup Calendar</h3>
+              <RightCalendar />
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );

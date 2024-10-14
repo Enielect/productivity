@@ -2,7 +2,8 @@
 import { type GroupType } from "@/components/TasKGroupCard";
 import { db } from "..";
 import { auth } from "@/auth";
-import type { SelectNotes } from "../schema";
+import { notes, type SelectNotes } from "../schema";
+import { and, eq, ilike, or } from "drizzle-orm";
 
 export async function getGeneralGroupTasks() {
   const session = await auth();
@@ -89,7 +90,6 @@ export async function getGroupTasks(groupId: number) {
   });
 }
 
-
 //get notes associated with a particular day for a particular user
 export async function getNotes() {
   const session = await auth();
@@ -110,4 +110,23 @@ export async function formatNotesAccDay(notes: SelectNotes[]) {
     {},
   );
   return dict;
+}
+
+export async function searchUserNotes(searchTerm: string) {
+  const session = await auth();
+  if (!session?.user) return [];
+  const results = await db
+    .select()
+    .from(notes)
+    .where(
+      and(
+        eq(notes.userId, session.user.id),
+        or(
+          ilike(notes.title, `%${searchTerm}%`),
+          ilike(notes.content, `%${searchTerm}%`),
+        ),
+      ),
+    );
+
+  return results;
 }

@@ -4,23 +4,15 @@ import { db } from "..";
 import { auth } from "@/auth";
 import { notes, type SelectNotes } from "../schema";
 import { and, eq, ilike, or } from "drizzle-orm";
+import { getWeekNumber } from "@/lib/helpers";
 
 export async function getGeneralGroupTasks() {
   const session = await auth();
   if (!session?.user) return;
-  await db.query.taskGroups.findMany({
+  return await db.query.taskGroups.findMany({
     where: (taskGroups, { eq }) => eq(taskGroups.userId, session.user.id),
+    with: { tasks: true },
   });
-}
-
-//filter groups tasks by day created
-function getWeekNumber(date: Date) {
-  const oneJan = new Date(date.getFullYear(), 0, 1);
-  const numberOfDays = Math.ceil(
-    (date.getTime() - oneJan.getTime()) / 86400000,
-  );
-  const result = Math.ceil((numberOfDays + 1) / 7);
-  return result;
 }
 
 export async function formatGroupsAccWeekNum() {
@@ -130,3 +122,126 @@ export async function searchUserNotes(searchTerm: string) {
 
   return results;
 }
+
+//get the number of completed tasks in each day for a particualar week
+
+export async function getCompletedTasksInWeek(weeks: string) {
+  const weekdays = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+  const dayTaskData: Record<string, number> = {};
+  const weeksTasks = await getWeekGroupTasks(weeks);
+  console.log(weeksTasks, "weeksTasks");
+  if (weeksTasks) {
+    const tasksWithDay = await formatGroupsAccDay(weeksTasks);
+    for (const key of Object.keys(tasksWithDay)) {
+      const date = new Date(key);
+      const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "long" });
+      console.log(dayOfWeek, "dayOfWeek"); // Outputs the day of the week, e.g., "Wednesday"
+
+      const numCompletedTasks = tasksWithDay[key]?.reduce(
+        (acc, curr) => acc + curr.tasks.filter((task) => task.isChecked).length,
+        0,
+      );
+      const totalTasks = tasksWithDay[key]?.reduce(
+        (acc, curr) => acc + curr.tasks.length,
+        0,
+      );
+      if (!Object.keys(dayTaskData).includes(dayOfWeek))
+        dayTaskData[dayOfWeek] = (numCompletedTasks! / totalTasks!) * 100;
+    }
+  } else {
+    weekdays.forEach((day) => {
+      dayTaskData[day] = 0;
+    });
+  }
+  return dayTaskData;
+}
+
+export async function getBestPerformingWeek() {
+  let currHighest = 0;
+  let bestWeek = "";
+  const allWeekData = await formatGroupsAccWeekNum();
+  for (const week of Object.keys(allWeekData!)) {
+    const numCompletedTasks = allWeekData?.[week]?.reduce(
+      (acc, curr) => acc + curr.tasks.filter((task) => task.isChecked).length,
+      0,
+    );
+    const totalTasks = allWeekData?.[week]?.reduce(
+      (acc, curr) => acc + curr.tasks.length,
+      0,
+    );
+    const performancePercentage = (numCompletedTasks! / totalTasks!) * 100;
+    if (performancePercentage) {
+      currHighest = performancePercentage;
+      bestWeek = week;
+    }
+  }
+  return bestWeek;
+}
+
+//get total number of completed tasks per day
+
+export async function completedTasksPerDay() {
+  const userTaskGroups = await getGeneralGroupTasks();
+
+  const dict: Record<string, number[]> = userTaskGroups!.reduce(
+    (acc: Record<string, number[]>, curr) => {
+      const weekFormat = `${curr.createdAt.toLocaleString().replace("/", "-")}`;
+      if (!acc[weekFormat]) acc[weekFormat] = [];
+      acc[weekFormat].push(curr.tasks.filter((task) => task.isChecked).length);
+      return acc;
+    },
+    {},
+  );
+  return dict;
+}
+
+//get the number of tasks planned for the week vs the number of tasks compoleted for the week
+
+async function statForCurrWeek(currWeek: string) {
+  const dict = await formatGroupsAccWeekNum();
+  let totalTasksCreated = 0;
+  let totalTasksCompleted = 0;
+  if (dict) {
+    for (const group of Object.keys(dict)) {
+      totalTasksCompleted += dict[group]!.reduce(
+        (acc, curr) => acc + curr.tasks.filter((task) => task.isChecked).length,
+        0,
+      );
+      totalTasksCreated += dict[group]!.reduce(
+        (acc, curr) => acc + curr.tasks.length,
+        0,
+      );
+    }
+
+    return { totalTasksCompleted, totalTasksCreated };
+  }
+}
+
+//what is the progress for the current week?
+
+//how much more task have you planned this week than you best performing week?
+//how much more task have you completed this week than you best performing week?
+//how much more tasks have you planned this week than last week?
+//how much more tasks have you completed tihs week than last week.
+
+// onst chartData = [
+//   { date: "2024-04-01", desktop: 222, mobile: 150 },
+//   { date: "2024-04-02", desktop: 97, mobile: 180 },
+//   { date: "2024-04-03", desktop: 167, mobile: 120 },
+
+// const chartData = [
+//   { month: "January", desktop: 186, mobile: 80 },
+//   { month: "February", desktop: 305, mobile: 200 },
+//   { month: "March", desktop: 237, mobile: 120 },
+//   { month: "April", desktop: 73, mobile: 190 },
+//   { month: "May", desktop: 209, mobile: 130 },
+//   { month: "June", desktop: 214, mobile: 140 },
+// ];

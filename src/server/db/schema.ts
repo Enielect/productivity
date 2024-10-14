@@ -106,6 +106,13 @@ export const notes = createTable("notes", {
   ),
 });
 
+export const notesRelation = relations(notes, ({ one }) => ({
+  user: one(users, {
+    fields: [notes.userId],
+    references: [users.id],
+  }),
+}));
+
 export const taskGroupRelation = relations(taskGroups, ({ many, one }) => ({
   tasks: many(tasks),
   user: one(users, {

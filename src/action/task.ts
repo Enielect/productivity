@@ -9,11 +9,12 @@ import {
   editCheckedTask,
   updateTask,
 } from "@/server/db/queries/insert";
+import { and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 const session = await auth();
 
-export async function addTaskGroup(data: {name: string}) {
+export async function addTaskGroup(data: { name: string }) {
   await createTaskGroup(data);
   revalidatePath("/dashboard");
 }
@@ -75,7 +76,7 @@ export const getTasksFromGroup = async (id: number) => {
   if (!session?.user) return;
   const tasks = await db.query.taskGroups.findFirst({
     where: (taskGroups, { eq }) =>
-      eq(taskGroups.id, id) && eq(taskGroups.userId, session.user.id),
+      and(eq(taskGroups.id, id), eq(taskGroups.userId, session.user.id)),
     with: {
       tasks: true,
     },

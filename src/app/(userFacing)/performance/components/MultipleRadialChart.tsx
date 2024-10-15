@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { LabelList, RadialBar, RadialBarChart } from "recharts"
+import { TrendingDown, TrendingUp } from "lucide-react";
+import { LabelList, RadialBar, RadialBarChart } from "recharts";
 
 import {
   Card,
@@ -10,56 +10,67 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
-export const description = "A radial chart with a label"
+export const description = "A radial chart with a label";
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-]
+// const chartData = [
+//   { week: "chrome", completed: 275, fill: "var(--color-chrome)" },
+//   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+//   { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
+//   { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
+//   { browser: "other", visitors: 90, fill: "var(--color-other)" },
+// ]
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  completed: {
+    label: "Completed",
   },
-  chrome: {
-    label: "Chrome",
+  thisWeek: {
+    label: "This Week",
     color: "hsl(var(--chart-1))",
   },
-  safari: {
-    label: "Safari",
+  bestWeek: {
+    label: "Best Week",
     color: "hsl(var(--chart-2))",
   },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig
+  // firefox: {
+  //   label: "Firefox",
+  //   color: "hsl(var(--chart-3))",
+  // },
+  // edge: {
+  //   label: "Edge",
+  //   color: "hsl(var(--chart-4))",
+  // },
+  // other: {
+  //   label: "Other",
+  //   color: "hsl(var(--chart-5))",
+  // },
+} satisfies ChartConfig;
 
-export default function MultipleRadialChart() {
+export default function MultipleRadialChart({
+  chartData,
+}: {
+  chartData: {
+    week: string;
+    completed: number;
+    fill: string;
+  }[];
+}) {
+  const totalCompleted = chartData[0]!.completed + chartData[1]!.completed;
+  const howMuchMoreTaskCompletedThisWeek =
+    chartData[0]!.completed - chartData[1]!.completed;
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Radial Chart - Label</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Completed Tasks (This Week vs Best Ever Week)</CardTitle>
+        <CardDescription>all days of the week combined</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -75,12 +86,12 @@ export default function MultipleRadialChart() {
           >
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel nameKey="browser" />}
+              content={<ChartTooltipContent hideLabel nameKey="week" />}
             />
-            <RadialBar dataKey="visitors" background>
+            <RadialBar dataKey="completed" background>
               <LabelList
                 position="insideStart"
-                dataKey="browser"
+                dataKey="week"
                 className="fill-white capitalize mix-blend-luminosity"
                 fontSize={11}
               />
@@ -89,13 +100,21 @@ export default function MultipleRadialChart() {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
+        {howMuchMoreTaskCompletedThisWeek >= 0 ? (
+          <div className="flex items-center gap-2 font-medium leading-none">
+            You have completd {howMuchMoreTaskCompletedThisWeek} more Task this
+            week <TrendingUp className="h-4 w-4" />
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 font-medium leading-none">
+            You have completd {howMuchMoreTaskCompletedThisWeek} less Task this
+            week <TrendingDown className="h-4 w-4" />
+          </div>
+        )}
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          showing how much more tasks we complete per week than best week
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

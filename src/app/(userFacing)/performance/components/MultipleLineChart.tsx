@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
 import {
@@ -12,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -67,7 +66,7 @@ export default function MultipleLineChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Line Chart - Multiple</CardTitle>
+        <CardTitle>This Week vs Last Week</CardTitle>
         <CardDescription>Monday - Sunday</CardDescription>
       </CardHeader>
       <CardContent>
@@ -86,7 +85,7 @@ export default function MultipleLineChart({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={(value: string) => value.slice(0, 3)}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Line
@@ -99,7 +98,7 @@ export default function MultipleLineChart({
             <Line
               dataKey="lastWeek"
               type="monotone"
-              stroke={`${Object.keys(chartData[0]!).includes('lastWeek') ? 'var(--color-lastWeek)': 'var(--color-bestWeek)'}`}
+              stroke={`${Object.keys(chartData[0]!).includes("lastWeek") ? "var(--color-lastWeek)" : "var(--color-bestWeek)"}`}
               strokeWidth={2}
               dot={false}
             />
@@ -110,10 +109,11 @@ export default function MultipleLineChart({
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+              Try to beat Last week&apos; achievements!!
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Showing total visitors for the last 6 months
+              Showing week&apos; progress(task completed) in the past 7 days
+              against last week
             </div>
           </div>
         </div>

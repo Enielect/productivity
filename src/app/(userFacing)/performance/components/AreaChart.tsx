@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { TrendingUp } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -10,15 +10,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
-export const description = "An area chart with axes"
+export const description = "An area chart with axes";
 
 // const chartData = [
 //   { month: "January", desktop: 186, mobile: 80 },
@@ -46,16 +46,18 @@ const chartConfig = {
     label: "bestWeek",
     color: "hsl(var(--chart-2))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export default function AreaChartWrapper({chartData}: {chartData: ChartDataType[]}) {
+export default function AreaChartWrapper({
+  chartData,
+}: {
+  chartData: ChartDataType[];
+}) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Area Chart - Axes</CardTitle>
-        <CardDescription>
-          Showing total visitors for the last 6 months
-        </CardDescription>
+        <CardTitle>This week vs Best week</CardTitle>
+        <CardDescription>Monday - Sunday</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -73,7 +75,7 @@ export default function AreaChartWrapper({chartData}: {chartData: ChartDataType[
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={(value: string) => value.slice(0, 3)}
             />
             <YAxis
               tickLine={false}
@@ -105,14 +107,15 @@ export default function AreaChartWrapper({chartData}: {chartData: ChartDataType[
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+              Try to beat Best week&apos; achievements!!
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
+              Showing week&apos; progress(task completed) in the past 7 days
+              against last week
             </div>
           </div>
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

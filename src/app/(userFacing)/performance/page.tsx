@@ -9,11 +9,19 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import SelectScrollable from "./components/SelectWeek";
 import MultipleRadialChart from "./components/MultipleRadialChart";
-import { formatAreaChartData, getWeekNumber } from "@/lib/helpers";
 import {
+  formatAreaChartData,
+  getWeekNumber,
+  taskDataPerDay,
+  tasksCompletedThisWeekVsBestWeek,
+  tasksCompletedThisWeekVsLastWeek,
+} from "@/lib/helpers";
+import {
+  completedTasksPerDay,
   getBestPerformingWeek,
   getCompletedTasksInWeek,
   getWeekGroupTasks,
+  statForCurrWeek,
 } from "@/server/db/queries/select";
 
 const PerformancePage = async () => {
@@ -32,11 +40,35 @@ const PerformancePage = async () => {
   const currentWeek = await getCompletedTasksInWeek(currentWeekString);
   const chartData = formatAreaChartData(currentWeek, undefined, lastWeek);
 
-  const weekOfBestPerformance = await getBestPerformingWeek();  
+  const weekOfBestPerformance = await getBestPerformingWeek();
   const bestWeek = await getCompletedTasksInWeek(weekOfBestPerformance);
 
   const currentWeekVsBestChart = formatAreaChartData(currentWeek, bestWeek);
   console.log(currentWeekVsBestChart, "currentWeekVsBestChart");
+
+  const tasksToDay = await completedTasksPerDay();
+  const tasksPerDayChart = taskDataPerDay(tasksToDay);
+
+  const statForLastWeek = await statForCurrWeek(
+    `${getWeekNumber(lastWeekDate)}-${today.getFullYear()}`,
+  );
+  const statForThisWeek = await statForCurrWeek(
+    `${getWeekNumber(today)}-${today.getFullYear()}`,
+  );
+  const statForBestWeek = await statForCurrWeek(weekOfBestPerformance);
+
+  const thisWeekVsLastWeekChart = tasksCompletedThisWeekVsLastWeek(
+    statForThisWeek.totalTasksCompleted ?? 0,
+    statForLastWeek.totalTasksCompleted ?? 0,
+  );
+
+  const thisWeekEfficiency =
+    statForThisWeek.totalTasksCompleted / statForThisWeek.totalTasksCreated;
+
+  const thisWeekVsBestWeekChart = tasksCompletedThisWeekVsBestWeek(
+    statForThisWeek.totalTasksCompleted ?? 0,
+    statForBestWeek.totalTasksCompleted ?? 0,
+  );
 
   console.log(chartData, "chartData");
   return (
@@ -51,6 +83,7 @@ const PerformancePage = async () => {
         <div className="grid grid-cols-[30%_30%_auto] gap-4">
           {/* comparting this week's completed task with last week */}
           <div className="col-span-full grid grid-cols-2 gap-4">
+            {/* percentage of tasks completed per day */}
             <div>
               <MultipleLineChart chartData={chartData!} />
             </div>
@@ -61,23 +94,27 @@ const PerformancePage = async () => {
           </div>
           {/* comparing the number of tasks planned each day for the past 3 months */}
           <div className="col-span-full">
-            <LongLineChart />
+            <LongLineChart chartData={tasksPerDayChart} />
           </div>
           {/**you've planned 20 more tasks this weeek than last week */}
           <div>
-            <RadialCompareWrapper />
+            <RadialCompareWrapper chartData={thisWeekVsLastWeekChart} />
           </div>
 
           {/**progress with completing set tasks for the current week(efficiency) */}
           <div>
-            <RadialchartWrapper />
+            <RadialchartWrapper
+              chartData={[
+                { label: "Efficiency", efficiency: thisWeekEfficiency },
+              ]}
+            />
           </div>
           {/** you've planned 20 more taks this week than your best ever tally*/}
-          <div>
+          {/* <div>
             <RadialCompareWrapper />
-          </div>
+          </div> */}
           <div>
-            <MultipleRadialChart />
+            <MultipleRadialChart chartData={thisWeekVsBestWeekChart} />
           </div>
         </div>
       </ScrollArea>

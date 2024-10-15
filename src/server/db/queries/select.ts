@@ -191,11 +191,11 @@ export async function getBestPerformingWeek() {
 export async function completedTasksPerDay() {
   const userTaskGroups = await getGeneralGroupTasks();
 
-  const dict: Record<string, number[]> = userTaskGroups!.reduce(
-    (acc: Record<string, number[]>, curr) => {
-      const weekFormat = `${curr.createdAt.toLocaleString().replace("/", "-")}`;
-      if (!acc[weekFormat]) acc[weekFormat] = [];
-      acc[weekFormat].push(curr.tasks.filter((task) => task.isChecked).length);
+  const dict: Record<string, number> = userTaskGroups!.reduce(
+    (acc: Record<string, number>, curr) => {
+      const dayFormat = `${curr.createdAt.toLocaleString().replace("/", "-")}`;
+      // if (!acc[dayFormat]) acc[dayFormat] = 0;
+      acc[dayFormat] = curr.tasks.filter((task) => task.isChecked).length;
       return acc;
     },
     {},
@@ -205,24 +205,23 @@ export async function completedTasksPerDay() {
 
 //get the number of tasks planned for the week vs the number of tasks compoleted for the week
 
-async function statForCurrWeek(currWeek: string) {
-  const dict = await formatGroupsAccWeekNum();
+export async function statForCurrWeek(currWeek: string) {
+  const weekTasksGroups = await getWeekGroupTasks(currWeek);
   let totalTasksCreated = 0;
   let totalTasksCompleted = 0;
-  if (dict) {
-    for (const group of Object.keys(dict)) {
-      totalTasksCompleted += dict[group]!.reduce(
-        (acc, curr) => acc + curr.tasks.filter((task) => task.isChecked).length,
-        0,
-      );
-      totalTasksCreated += dict[group]!.reduce(
-        (acc, curr) => acc + curr.tasks.length,
-        0,
-      );
-    }
+  if (weekTasksGroups) {
+    totalTasksCompleted += weekTasksGroups.reduce(
+      (acc, curr) => acc + curr.tasks.filter((task) => task.isChecked).length,
+      0,
+    );
+    totalTasksCreated += weekTasksGroups.reduce(
+      (acc, curr) => acc + curr.tasks.length,
+      0,
+    );
 
     return { totalTasksCompleted, totalTasksCreated };
   }
+  return { totalTasksCompleted: 0, totalTasksCreated: 0 };
 }
 
 //what is the progress for the current week?

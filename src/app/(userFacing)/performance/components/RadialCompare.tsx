@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts"
+import { TrendingDown, TrendingUp } from "lucide-react";
+import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts";
 
 import {
   Card,
@@ -10,37 +10,46 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
-export const description = "A radial chart with stacked sections"
+export const description = "A radial chart with stacked sections";
 
-const chartData = [{ month: "january", desktop: 1260, mobile: 570 }]
+// const chartData = [{ month: "january", thisWeek: 1260, lastWeek: 570 }]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  thisWeek: {
+    label: "This Week",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "Mobile",
+  lastWeek: {
+    label: "Last Week",
     color: "hsl(var(--chart-2))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export default function RadialCompareWrapper() {
-  const totalVisitors = chartData[0]?.desktop + chartData[0]?.mobile
+export default function RadialCompareWrapper({
+  chartData,
+}: {
+  chartData: {
+    thisWeek: number;
+    lastWeek: number;
+  }[];
+}) {
+  const totalCompleted = chartData[0]!.thisWeek + chartData[0]!.lastWeek;
+  const howMuchMoreTaskCompletedThisWeek =
+    chartData[0]!.thisWeek - chartData[0]!.lastWeek;
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Radial Chart - Stacked</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Total Completed Tasks(Last Week vs This Week)</CardTitle>
+        <CardDescription>the whole week combined</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 items-center pb-0">
         <ChartContainer
@@ -65,34 +74,34 @@ export default function RadialCompareWrapper() {
                       <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) - 16}
+                          y={(viewBox.cy ?? 0) - 16}
                           className="fill-foreground text-2xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalCompleted.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 4}
+                          y={(viewBox.cy ?? 0) + 4}
                           className="fill-muted-foreground"
                         >
                           Visitors
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
             </PolarRadiusAxis>
             <RadialBar
-              dataKey="desktop"
+              dataKey="lastWeek"
               stackId="a"
               cornerRadius={5}
-              fill="var(--color-desktop)"
+              fill="var(--color-lastWeek)"
               className="stroke-transparent stroke-2"
             />
             <RadialBar
-              dataKey="mobile"
-              fill="var(--color-mobile)"
+              dataKey="thisWeek"
+              fill="var(--color-thisWeek)"
               stackId="a"
               cornerRadius={5}
               className="stroke-transparent stroke-2"
@@ -101,13 +110,21 @@ export default function RadialCompareWrapper() {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
+        {howMuchMoreTaskCompletedThisWeek >= 0 ? (
+          <div className="flex items-center gap-2 font-medium leading-none">
+            You have completd {howMuchMoreTaskCompletedThisWeek} more Task this
+            week <TrendingUp className="h-4 w-4" />
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 font-medium leading-none">
+            You have completd {howMuchMoreTaskCompletedThisWeek} less Task this
+            week <TrendingDown className="h-4 w-4" />
+          </div>
+        )}
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          showing how much more tasks we complete per week than previous week
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

@@ -10,7 +10,7 @@ import {
   updateTask,
 } from "@/server/db/queries/insert";
 import { and } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 
 const session = await auth();
 
@@ -72,7 +72,7 @@ export async function addSummary(
   }
 }
 
-export const getTasksFromGroup = async (id: number) => {
+export const getTasksFromGroup = unstable_cache(async (id: number) => {
   if (!session?.user) return;
   const tasks = await db.query.taskGroups.findFirst({
     where: (taskGroups, { eq }) =>
@@ -82,14 +82,14 @@ export const getTasksFromGroup = async (id: number) => {
     },
   });
   return tasks;
-};
+});
 
-export async function getTask(id: number) {
+export const getTask = unstable_cache(async (id: number) => {
   const task = await db.query.tasks.findFirst({
     where: (tasks, { eq }) => eq(tasks.id, id),
   });
   return task;
-}
+});
 
 export async function setChecked(isChecked: boolean, id: number) {
   try {

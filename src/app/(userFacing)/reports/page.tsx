@@ -8,12 +8,21 @@ const generateRandownLightColors = () => {
 
 const ReportsPage = async () => {
   const weeksDict = await formatGroupsAccWeekNum();
-  const dictKeys = Object.keys(weeksDict);
+  console.log(weeksDict, "weeksDict");
+  if (weeksDict) {
+    const dictKeys = Object.keys(weeksDict);
+
+    return (
+      <div className="space-y-4 px-3">
+        {dictKeys.map((key) => (
+          <ListItem key={key} url={key} />
+        ))}
+      </div>
+    );
+  }
   return (
-    <div className="space-y-4 px-3">
-      {dictKeys.map((key) => (
-        <ListItem key={key} url={key} />
-      ))}
+    <div className="flex h-screen w-full items-center justify-center">
+      Note enough data show report (create a new task/taskGroup to see report)
     </div>
   );
 };

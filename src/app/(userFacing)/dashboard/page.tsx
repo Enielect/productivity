@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import Dashboard from "@/components/Dashboard.Page";
 import { db } from "@/server/db";
 import { redirect } from "next/navigation";
+import { unstable_cache } from "next/cache";
 
 // export const dynamic = "force-dynamic";
 
@@ -24,19 +25,22 @@ export default async function DashboardPage() {
   endOfDay.setHours(23, 59, 59, 999);
   console.log(startOfDay, endOfDay);
 
-  const postGroups = await db.query.taskGroups.findMany({
-    with: { tasks: true },
-    where: (taskGroups, { lte, gte, eq }) =>
-      eq(taskGroups.userId, session.user.id) &&
-      lte(taskGroups.createdAt, endOfDay) &&
-      gte(taskGroups.createdAt, startOfDay),
+  const postGroups = unstable_cache(async () => {
+    return await db.query.taskGroups.findMany({
+      with: { tasks: true },
+      where: (taskGroups, { lte, gte, eq }) =>
+        eq(taskGroups.userId, session.user.id) &&
+        lte(taskGroups.createdAt, endOfDay) &&
+        gte(taskGroups.createdAt, startOfDay),
+    });
   });
+  const postGroupData = await postGroups();
   // const postGroups = await getTodaysTasksGroups();
-  console.log(postGroups);
+  console.log(postGroups, "postgroups");
   if (!session) redirect("/login");
   return (
     <div className="">
-      <Dashboard postGroups={postGroups} />
+      <Dashboard postGroups={postGroupData} />
       {/* This is the dashboard page */}
     </div>
   );

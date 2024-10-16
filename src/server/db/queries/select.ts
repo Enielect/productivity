@@ -5,27 +5,28 @@ import { auth } from "@/auth";
 import { notes, type SelectNotes } from "../schema";
 import { and, eq, ilike, or } from "drizzle-orm";
 import { getWeekNumber } from "@/lib/helpers";
+import { unstable_cache } from "next/cache";
 
-export async function getGeneralGroupTasks() {
-  const session = await auth();
-  if (!session?.user) return;
+export const getGeneralGroupTasks = unstable_cache(async (userId: string) => {
+  // const session = await auth();
+  // if (!session?.user) return;
   return await db.query.taskGroups.findMany({
-    where: (taskGroups, { eq }) => eq(taskGroups.userId, session.user.id),
+    where: (taskGroups, { eq }) => eq(taskGroups.userId, userId),
     with: { tasks: true },
   });
-}
+});
 
 export async function formatGroupsAccWeekNum() {
   const session = await auth();
+  console.log(session, "this is user session");
 
   if (!session?.user) return;
-  const taskGroups = await db.query.taskGroups.findMany({
-    where: (taskGroups, { eq }) => eq(taskGroups.userId, session.user.id),
-    with: { tasks: true },
-  });
+  const taskGroups = await getGeneralGroupTasks(session.user.id);
+  console.log(taskGroups, "taskGroups debug");
+  console.log("this is a console.log function");
   const dict: Record<string, GroupType[]> = taskGroups.reduce(
     (acc: Record<string, GroupType[]>, curr) => {
-      const weekFormat = `${getWeekNumber(curr.createdAt)}-${curr.createdAt.getFullYear()}`;
+      const weekFormat = `${getWeekNumber(curr.createdAt)}-${new Date(curr.createdAt).getFullYear()}`;
       if (!acc[weekFormat]) acc[weekFormat] = [];
       acc[weekFormat].push(curr);
       return acc;
@@ -83,13 +84,13 @@ export async function getGroupTasks(groupId: number) {
 }
 
 //get notes associated with a particular day for a particular user
-export async function getNotes() {
-  const session = await auth();
-  if (!session?.user) return [];
+export const getNotes = unstable_cache(async (userId: string) => {
+  // const session = await auth();
+  // if (!session?.user) return [];
   return await db.query.notes.findMany({
-    where: (notes, { eq }) => eq(notes.userId, session.user.id),
+    where: (notes, { eq }) => eq(notes.userId, userId),
   });
-}
+});
 
 export async function formatNotesAccDay(notes: SelectNotes[]) {
   const dict: Record<string, SelectNotes[]> = notes.reduce(
@@ -189,9 +190,10 @@ export async function getBestPerformingWeek() {
 //get total number of completed tasks per day
 
 export async function completedTasksPerDay() {
-  const userTaskGroups = await getGeneralGroupTasks();
+  const session = await auth();
+  const userTaskGroups = await getGeneralGroupTasks(session!.user.id);
 
-  const dict: Record<string, number> = userTaskGroups!.reduce(
+  const dict: Record<string, number> = userTaskGroups.reduce(
     (acc: Record<string, number>, curr) => {
       const dayFormat = `${curr.createdAt.toLocaleString().replace("/", "-")}`;
       // if (!acc[dayFormat]) acc[dayFormat] = 0;

@@ -1,17 +1,12 @@
 import { auth } from "@/auth";
 
-import {
-  formatNotesAccDay,
-  getNotes,
-  searchUserNotes,
-} from "@/server/db/queries/select";
+import { formatNotesAccDay, getNotes } from "@/server/db/queries/select";
 import type { SelectNotes } from "@/server/db/schema";
 import { redirect } from "next/navigation";
 import React from "react";
 import AddNote from "./component/AddNote";
 import Notecard from "./component/Notecard";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
 import NoteDisplayWrapper from "./component/NoteDisplayWrapper";
 import SearchBar from "@/components/SearchBar";
 
@@ -21,7 +16,7 @@ const NotesPage = async () => {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  const allUserNotes = await getNotes();
+  const allUserNotes = await getNotes(session.user.id);
   const notesByDate = await formatNotesAccDay(allUserNotes);
   const dayCreated = Object.keys(notesByDate);
   return (

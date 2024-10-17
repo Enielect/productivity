@@ -195,7 +195,7 @@ export async function completedTasksPerDay() {
 
   const dict: Record<string, number> = userTaskGroups.reduce(
     (acc: Record<string, number>, curr) => {
-      const dayFormat = `${curr.createdAt.toLocaleString().replace("/", "-")}`;
+      const dayFormat = `${curr.createdAt.toLocaleDateString().replace(/\//g, "-")}`;
       // if (!acc[dayFormat]) acc[dayFormat] = 0;
       acc[dayFormat] = curr.tasks.filter((task) => task.isChecked).length;
       return acc;
@@ -226,23 +226,116 @@ export async function statForCurrWeek(currWeek: string) {
   return { totalTasksCompleted: 0, totalTasksCreated: 0 };
 }
 
+export async function completedTasksInDay(day: string) {
+  const session = await auth();
+  const startOfDay = new Date(day).setHours(0, 0, 0, 0);
+  const endOfDay = new Date(day).setHours(23, 59, 59, 999);
+  const userTaskGroupsForDay = await db.query.taskGroups.findMany({
+    where: (taskGroups, { eq, lte, gte }) =>
+      and(
+        eq(taskGroups.userId, session!.user.id),
+        gte(taskGroups.createdAt, new Date(startOfDay)),
+        lte(taskGroups.createdAt, new Date(endOfDay)),
+      ),
+    with: { tasks: true },
+  });
+
+  console.log(userTaskGroupsForDay, "userTaskGroupsForDay");
+  console.log(new Date(day), "day");
+
+  const completedUserTasks = userTaskGroupsForDay
+    .map((task) =>
+      task.tasks.filter((task) => task.isChecked && task.updatedAt),
+    )
+    .flat();
+
+  const totalTasksPlanned = userTaskGroupsForDay
+    .map((task) => task.tasks.length)
+    .reduce((acc, curr) => acc + curr, 0);
+
+  const totalTasksCompleted = completedUserTasks.length;
+  const performancePercentage = totalTasksCompleted / totalTasksPlanned;
+  const totalTasksCreatedPerTaskGroup = userTaskGroupsForDay.map(
+    (taskGroup) => ({
+      taskGroup: taskGroup.name,
+      tasksLength: taskGroup.tasks.length,
+    }),
+  );
+  const percentageCompletePerTaskGroup = userTaskGroupsForDay.map(
+    (taskGroup) => {
+      const completedTasks = taskGroup.tasks.filter((task) => task.isChecked);
+      return {
+        taskGroup: taskGroup.name,
+        percentage: (completedTasks.length / taskGroup.tasks.length) * 100,
+      };
+    },
+  );
+  //useful links extractef from resource
+  const gridGradientChart = totalTasksCreatedPerTaskGroup.map(
+    (taskGroup, index) => ({
+      taskGroup: taskGroup.taskGroup,
+      taskLength: taskGroup.tasksLength,
+      fill:
+        generateUniqueColors(totalTasksCreatedPerTaskGroup.length)[index] ?? "",
+    }),
+  );
+
+  const pieChart = percentageCompletePerTaskGroup.map((taskGroup, index) => ({
+    taskGroup: taskGroup.taskGroup,
+    efficiency: taskGroup.percentage,
+    fill:
+      generateUniqueColors(percentageCompletePerTaskGroup.length)[index] ?? "",
+  }));
+
+  const radialChartEfficiency = [
+    { label: "Efficiency", efficiency: performancePercentage },
+  ];
+
+  const comparePlannedVsExecuted = [
+    { tasksPlanned: totalTasksPlanned, tasksCompleted: totalTasksCompleted },
+  ];
+
+  const completedLongLineChart = completedUserTasks.map((task) => ({
+    time: task.updatedAt!,
+    completedTask: task.name,
+  }));
+  console.log(completedLongLineChart, "completedLongLineChart");
+
+  return {
+    gridGradientChart,
+    pieChart,
+    radialChartEfficiency,
+    comparePlannedVsExecuted,
+    completedLongLineChart,
+  };
+}
+
+// chartData: {
+//   thisWeek: number;
+//   lastWeek: number;
+// }[];
+
+// { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
+// { browser: "other", visitors: 90, fill: "var(--color-other)" },
+
+function generateUniqueColors(numColors: number) {
+  const colors = [];
+  for (let i = 0; i < numColors; i++) {
+    // Distribute the colors evenly on the hue range (0 - 360)
+    const hue = Math.round((360 * i) / numColors);
+    // Convert hue to RGB
+    const color = `hsl(${hue}, 100%, 50%)`;
+    colors.push(color);
+  }
+  return colors;
+}
+
+function formatTime(date: string) {
+  return new Date(date).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
 //what is the progress for the current week?
-
-//how much more task have you planned this week than you best performing week?
-//how much more task have you completed this week than you best performing week?
-//how much more tasks have you planned this week than last week?
-//how much more tasks have you completed tihs week than last week.
-
-// onst chartData = [
-//   { date: "2024-04-01", desktop: 222, mobile: 150 },
-//   { date: "2024-04-02", desktop: 97, mobile: 180 },
-//   { date: "2024-04-03", desktop: 167, mobile: 120 },
-
-// const chartData = [
-//   { month: "January", desktop: 186, mobile: 80 },
-//   { month: "February", desktop: 305, mobile: 200 },
-//   { month: "March", desktop: 237, mobile: 120 },
-//   { month: "April", desktop: 73, mobile: 190 },
-//   { month: "May", desktop: 209, mobile: 130 },
-//   { month: "June", desktop: 214, mobile: 140 },
-// ];

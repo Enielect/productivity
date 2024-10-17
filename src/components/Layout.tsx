@@ -23,7 +23,6 @@ export default function Layout({
   image: string;
 }) {
   //changed overflow to hidden
-  const pathname = usePathname();
   return (
     <div className="h-full overflow-hidden">
       <Header name={username} img={image} />
@@ -35,17 +34,10 @@ export default function Layout({
           {children}
         </div>
         <div className="pl-3 pr-3 pt-3">
-          {pathname === "/notes" ? (
-            <div>
-              <h3>Notes Calendar</h3>
-              <RightCalendar />
-            </div>
-          ) : (
-            <div>
-              <h3>TaskGroup Calendar</h3>
-              <RightCalendar />
-            </div>
-          )}
+          <div>
+            <h3>TaskGroup Calendar</h3>
+            <RightCalendar />
+          </div>
         </div>
       </main>
     </div>

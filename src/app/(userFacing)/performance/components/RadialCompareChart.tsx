@@ -23,28 +23,29 @@ export const description = "A radial chart with stacked sections";
 // const chartData = [{ month: "january", thisWeek: 1260, lastWeek: 570 }]
 
 const chartConfig = {
-  tasksPlanned: {
-    label: "Tasks Planned",
+  thisWeek: {
+    label: "This Week",
     color: "hsl(var(--chart-1))",
   },
-  tasksCompleted: {
-    label: "Tassks Completed",
+  lastWeek: {
+    label: "Last Week",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
-export default function RadialCompareWrapper({
+// {
+//     tasksPlanned: number;
+//     tasksCompleted: number;
+//   }[]
+
+export default function RadialCompareChart({
   chartData,
 }: {
-  chartData: {
-    tasksPlanned: number;
-    tasksCompleted: number;
-  }[];
+  chartData: { thisWeek: number; lastWeek: number }[];
 }) {
-  const totalCompleted =
-    chartData[0]!.tasksPlanned + chartData[0]!.tasksCompleted;
+  const totalCompleted = chartData[0]!.thisWeek + chartData[0]!.lastWeek;
   const howMuchMoreTaskCompletedThisWeek =
-    chartData[0]!.tasksPlanned - chartData[0]!.tasksCompleted;
+    chartData[0]!.thisWeek - chartData[0]!.lastWeek;
 
   return (
     <Card className="flex flex-col">
@@ -94,15 +95,15 @@ export default function RadialCompareWrapper({
               />
             </PolarRadiusAxis>
             <RadialBar
-              dataKey="tasksPlanned"
+              dataKey="thisWeek"
               stackId="a"
               cornerRadius={5}
-              fill="var(--color-tasksPlanned)"
+              fill="var(--color-thisWeek)"
               className="stroke-transparent stroke-2"
             />
             <RadialBar
-              dataKey="tasksCompleted"
-              fill="var(--color-tasksCompleted)"
+              dataKey="lastWeek"
+              fill="var(--color-lastWeek)"
               stackId="a"
               cornerRadius={5}
               className="stroke-transparent stroke-2"

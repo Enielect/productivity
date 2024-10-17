@@ -23,6 +23,7 @@ import {
   getWeekGroupTasks,
   statForCurrWeek,
 } from "@/server/db/queries/select";
+import RadialCompareChart from "./components/RadialCompareChart";
 
 const PerformancePage = async () => {
   const session = await auth();
@@ -38,17 +39,9 @@ const PerformancePage = async () => {
   const lastWeekString = `${getWeekNumber(lastWeekDate)}-${lastWeekDate.getFullYear()}`;
   const lastWeek = await getCompletedTasksInWeek(lastWeekString);
   const currentWeek = await getCompletedTasksInWeek(currentWeekString);
-  const chartData = formatAreaChartData(currentWeek, undefined, lastWeek);
-
   const weekOfBestPerformance = await getBestPerformingWeek();
   const bestWeek = await getCompletedTasksInWeek(weekOfBestPerformance);
-
-  const currentWeekVsBestChart = formatAreaChartData(currentWeek, bestWeek);
-  console.log(currentWeekVsBestChart, "currentWeekVsBestChart");
-
   const tasksToDay = await completedTasksPerDay();
-  const tasksPerDayChart = taskDataPerDay(tasksToDay);
-
   const statForLastWeek = await statForCurrWeek(
     `${getWeekNumber(lastWeekDate)}-${today.getFullYear()}`,
   );
@@ -57,17 +50,45 @@ const PerformancePage = async () => {
   );
   const statForBestWeek = await statForCurrWeek(weekOfBestPerformance);
 
+  const [
+    lastWeekData,
+    thisWeekData,
+    bestWeekData,
+    tasksToDayData,
+    statForLastWeekData,
+    statForThisWeekData,
+    statForBestWeekData,
+  ] = await Promise.all([
+    lastWeek,
+    currentWeek,
+    bestWeek,
+    tasksToDay,
+    statForLastWeek,
+    statForThisWeek,
+    statForBestWeek,
+  ]);
+  const chartData = formatAreaChartData(thisWeekData, undefined, lastWeekData);
+
+  const currentWeekVsBestChart = formatAreaChartData(
+    thisWeekData,
+    bestWeekData,
+  );
+  console.log(currentWeekVsBestChart, "currentWeekVsBestChart");
+
+  const tasksPerDayChart = taskDataPerDay(tasksToDayData);
+
   const thisWeekVsLastWeekChart = tasksCompletedThisWeekVsLastWeek(
-    statForThisWeek.totalTasksCompleted ?? 0,
-    statForLastWeek.totalTasksCompleted ?? 0,
+    statForThisWeekData.totalTasksCompleted ?? 0,
+    statForLastWeekData.totalTasksCompleted ?? 0,
   );
 
   const thisWeekEfficiency =
-    statForThisWeek.totalTasksCompleted / statForThisWeek.totalTasksCreated;
+    statForThisWeekData.totalTasksCompleted /
+    statForThisWeekData.totalTasksCreated;
 
   const thisWeekVsBestWeekChart = tasksCompletedThisWeekVsBestWeek(
-    statForThisWeek.totalTasksCompleted ?? 0,
-    statForBestWeek.totalTasksCompleted ?? 0,
+    statForThisWeekData.totalTasksCompleted ?? 0,
+    statForBestWeekData.totalTasksCompleted ?? 0,
   );
 
   console.log(chartData, "chartData");
@@ -98,7 +119,7 @@ const PerformancePage = async () => {
           </div>
           {/**you've planned 20 more tasks this weeek than last week */}
           <div>
-            <RadialCompareWrapper chartData={thisWeekVsLastWeekChart} />
+            <RadialCompareChart chartData={thisWeekVsLastWeekChart} />
           </div>
 
           {/**progress with completing set tasks for the current week(efficiency) */}

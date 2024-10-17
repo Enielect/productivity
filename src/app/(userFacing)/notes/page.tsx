@@ -28,7 +28,7 @@ const NotesPage = async () => {
             {/* <Input placeholder="search" className="ml-10" /> */}
             <SearchBar />
           </div>
-          <ScrollArea className="h-[calc(100dvh-3rem-60px)] pr-5">
+          <ScrollArea className="h-[calc(100dvh-3rem-60px)] pb-[3rem] pr-5">
             <NoteDisplayWrapper
               dayCreated={dayCreated}
               notesByDate={notesByDate}
@@ -36,7 +36,7 @@ const NotesPage = async () => {
           </ScrollArea>
         </div>
       ) : (
-        <div>Add your first Note today</div>
+        <div className="flex items-center">Add your first Note today</div>
       )}
       <AddNote />
     </div>

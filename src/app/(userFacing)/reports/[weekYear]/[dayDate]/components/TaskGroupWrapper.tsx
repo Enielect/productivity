@@ -1,13 +1,57 @@
 "use client";
 
+import DayLongLineChart from "@/app/(userFacing)/performance/components/DayLongLineChart";
+import { GridRadialChart } from "@/app/(userFacing)/performance/components/GridRadialChart";
+import LongLineChart from "@/app/(userFacing)/performance/components/LongLineChart";
+import PieChartGraph from "@/app/(userFacing)/performance/components/PieChart";
+import RadialchartWrapper from "@/app/(userFacing)/performance/components/RadialChart";
+import RadialCompareWrapper from "@/app/(userFacing)/performance/components/RadialCompare";
 import TasKGroupCard, { type GroupType } from "@/components/TasKGroupCard";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import type { SelectTask } from "@/server/db/schema";
 import { Check, Columns2, NotepadText, X } from "lucide-react";
 import { notFound } from "next/navigation";
 import React, { useState } from "react";
 import Markdown from "react-markdown";
 
-const TaskGroupWrapper = ({ dayTasks }: { dayTasks: GroupType[] }) => {
+const TaskGroupWrapper = ({
+  dayTasks,
+  chartData,
+}: {
+  dayTasks: GroupType[];
+  chartData: {
+    gridGradientChart: {
+      taskGroup: string;
+      taskLength: number;
+      fill: string;
+    }[];
+    pieChart: {
+      taskGroup: string;
+      efficiency: number;
+      fill: string;
+    }[];
+    radialChartEfficiency: {
+      label: string;
+      efficiency: number;
+    }[];
+    comparePlannedVsExecuted: {
+      tasksPlanned: number;
+      tasksCompleted: number;
+    }[];
+    completedLongLineChart: {
+      time: Date;
+      completedTask: string;
+    }[];
+  };
+}) => {
+  const {
+    gridGradientChart,
+    pieChart,
+    radialChartEfficiency,
+    comparePlannedVsExecuted,
+    completedLongLineChart,
+  } = chartData;
+
   const [currentTaskGroup, setCurrentTaskGroup] = useState<
     GroupType | undefined
   >(!!dayTasks && dayTasks[0]);
@@ -104,6 +148,30 @@ const TaskGroupWrapper = ({ dayTasks }: { dayTasks: GroupType[] }) => {
           {selectedTab === "analytics" && (
             <div>
               <h1>Analytics</h1>
+              <ScrollArea className="h-[calc(100dvh-290px)] pb-[5rem] pr-4">
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <RadialchartWrapper chartData={radialChartEfficiency} />
+                  </div>
+                  {/**pie chart for distribution ot taksksgroups tasks creted for the day */}
+                  <div>
+                    <PieChartGraph chartData={pieChart} />
+                  </div>
+                  {/**compare completed tasks to created tasks */}
+                  <div>
+                    <RadialCompareWrapper
+                      chartData={comparePlannedVsExecuted}
+                    />
+                  </div>
+                  {/**pie chart for distribution ot takskgroups percentage tasks completed per day for the day */}
+                  <div>
+                    <GridRadialChart chartData={gridGradientChart} />
+                  </div>
+                  <div className="col-span-full">
+                    <DayLongLineChart chartData={completedLongLineChart} />
+                  </div>
+                </div>
+              </ScrollArea>
             </div>
           )}
         </div>

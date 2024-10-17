@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { ButtonHTMLAttributes, ReactElement, ReactNode } from "react";
 
 const Homepage = () => {
@@ -42,12 +43,11 @@ function Header() {
   );
 }
 
-function Button({
-  children,
-  ...props
-}: {
-  children: ReactNode & ButtonHTMLAttributes<HTMLButtonElement>;
-}) {
+type ButtonProps = {
+  children: ReactNode;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
+
+function Button({ children, ...props }: ButtonProps) {
   return (
     <button {...props} className="rounded-full bg-blue-500 px-3 py-2">
       {children}
@@ -63,7 +63,9 @@ function Hero() {
       </h2>
       <p>Analytics oriented approach to manage taks and tasks completion</p>
       <div>
-        <Button>Get Started</Button>
+        <Link href="/dashboard" className="rounded-full bg-blue-500 px-3 py-2">
+          Get Started
+        </Link>
       </div>
     </section>
   );

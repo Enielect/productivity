@@ -3,17 +3,20 @@
 import TasKGroupCard, { type GroupType } from "@/components/TasKGroupCard";
 import type { SelectTask } from "@/server/db/schema";
 import { Check, Columns2, NotepadText, X } from "lucide-react";
+import { notFound } from "next/navigation";
 import React, { useState } from "react";
 import Markdown from "react-markdown";
 
 const TaskGroupWrapper = ({ dayTasks }: { dayTasks: GroupType[] }) => {
-  const [currentTaskGroup, setCurrentTaskGroup] = useState<GroupType>(
-    dayTasks[0]!,
-  );
+  const [currentTaskGroup, setCurrentTaskGroup] = useState<
+    GroupType | undefined
+  >(!!dayTasks && dayTasks[0]);
   const [selectedTab, setSelectedTab] = useState<"tasks" | "analytics">(
     "tasks",
   );
   const [currentTask, setCurrentTask] = useState("");
+
+  if (!currentTaskGroup) return notFound();
 
   const currentSelectedTask = currentTaskGroup.tasks?.find(
     (task) => task.name === currentTask,
@@ -25,8 +28,12 @@ const TaskGroupWrapper = ({ dayTasks }: { dayTasks: GroupType[] }) => {
           <TasKGroupCard
             key={task.id}
             title={task.name}
-            currentGroup={currentTaskGroup}
-            setCurrentTaskGroup={setCurrentTaskGroup}
+            currentGroup={task}
+            setCurrentTaskGroup={
+              setCurrentTaskGroup as React.Dispatch<
+                React.SetStateAction<GroupType>
+              >
+            }
           />
         ))}
       </div>
@@ -82,6 +89,13 @@ const TaskGroupWrapper = ({ dayTasks }: { dayTasks: GroupType[] }) => {
                       Reason For Learning Resource
                     </header>
                     {currentSelectedTask!.reasonForResource}
+                  </div>
+                  <div className="rounded-md border px-2 py-2">
+                    <header className="py-3 text-lg font-semibold">
+                      Educate me.{" "}
+                      <small>(In as few amount of words as possible)</small>
+                    </header>
+                    {currentSelectedTask!.summary ?? <em>not specified yet</em>}
                   </div>
                 </div>
               )}

@@ -10,6 +10,7 @@ type Params = {
 const WeekPage = async ({ params }: Params) => {
   const weeksTasks = await getWeekGroupTasks(params.weekYear);
   const daysDicts = await formatGroupsAccDay(weeksTasks!);
+  // console.log(daysDicts, "dayDicts");
   const days = Object.keys(daysDicts);
   return (
     <div className="space-y-4 px-3">
@@ -19,7 +20,7 @@ const WeekPage = async ({ params }: Params) => {
           href={`/reports/${params.weekYear}/${day.split("/").join("-")}`}
           key={day}
         >
-          {day}
+          {new Date(day).toDateString()}
         </Link>
       ))}
     </div>

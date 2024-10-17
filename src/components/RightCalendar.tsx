@@ -16,7 +16,7 @@ export function RightCalendar() {
   //This was unintentional. I remembered that javascript compares obnects by reference,
   //but again, I wouldn't want to call the router.push function in the render method.
   //I would rather use a useEffect hook to handle this.(MAYBE THIS WOULD BE BETTER)
-  if (date !== new Date()) {
+  if (date?.toLocaleDateString() !== new Date().toLocaleDateString()) {
     router.push(`/reports/${currentWeekString}/${dayFormat}`);
   }
 

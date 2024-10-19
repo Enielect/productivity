@@ -61,12 +61,16 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply h-screen bg-background text-foreground;
   }
 }
 
 * {
   scrollbar-width: thin;
+}
+
+.add-percentage .tooltip-value::after {
+  content: "%";
 }
 
 .spinner_ajPY {
@@ -80,10 +84,10 @@
 }
 
 code {
-  @apply  text-wrap
+  @apply text-wrap;
 }
 
-.markdown a{
+.markdown a {
   color: rgb(140, 28, 219);
   text-decoration: underline;
 }

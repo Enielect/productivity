@@ -83,7 +83,10 @@ export default function AreaChartWrapper({
               tickMargin={8}
               tickCount={3}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent className="add-percentage" />}
+            />
             <Area
               dataKey="currentWeek"
               type="natural"

@@ -87,7 +87,10 @@ export default function MultipleLineChart({
               tickMargin={8}
               tickFormatter={(value: string) => value.slice(0, 3)}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent className="add-percentage" />}
+            />
             <Line
               dataKey="currentWeek"
               type="monotone"

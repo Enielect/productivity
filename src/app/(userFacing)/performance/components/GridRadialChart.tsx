@@ -17,6 +17,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import type {
+  NameType,
+  Payload,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 
 export const description = "A radial chart with a grid";
 
@@ -28,9 +33,11 @@ export const description = "A radial chart with a grid";
 //   { browser: "other", visitors: 90, fill: "var(--color-other)" },
 // ];
 
+type DynamicChartConfig = Record<string, { label: string; color: string }>;
+
 type ChartData = {
   taskGroup: string;
-  taskLength: number;
+  tasksLength: number;
   fill: string;
 };
 //   chrome: {
@@ -55,9 +62,10 @@ type ChartData = {
 //   },
 
 export function GridRadialChart({ chartData }: { chartData: ChartData[] }) {
-  const chartConfig = {
-    taskLength: {
+  const chartConfig: DynamicChartConfig = {
+    numberOfTasksPlanned: {
       label: "Tasks Length",
+      color: "hsl(var(--foreground))",
     },
     ...Object.fromEntries(
       chartData.map((item) => [
@@ -92,14 +100,20 @@ export function GridRadialChart({ chartData }: { chartData: ChartData[] }) {
               cursor={false}
               content={
                 <ChartTooltipContent
-                  hideLabel
-                  labelKey="taskGroup"
-                  nameKey="taskGroup"
+                  // hideLabel
+                  // labelKey="taskGroup"
+                  nameKey="numberOfTasksPlanned"
+                  labelFormatter={(
+                    _,
+                    payload: Payload<ValueType, NameType>[],
+                  ) => {
+                    return payload[0]!.payload.taskGroup as string;
+                  }}
                 />
               }
             />
             <PolarGrid gridType="circle" />
-            <RadialBar dataKey="taskLength" />
+            <RadialBar dataKey="tasksLength" />
           </RadialBarChart>
         </ChartContainer>
       </CardContent>

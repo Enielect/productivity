@@ -17,6 +17,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import {
+  NameType,
+  Payload,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 
 export const description = "A pie chart with a custom label";
 
@@ -60,21 +65,32 @@ export default function PieChartGraph({
         >
           <PieChart>
             <ChartTooltip
-              content={<ChartTooltipContent nameKey="efficiency" />}
+              content={
+                <ChartTooltipContent
+                  className="add-percentage"
+                  labelFormatter={(
+                    _,
+                    payload: Payload<ValueType, NameType>[],
+                  ) => {
+                    return payload[0]!.payload.taskGroup as string;
+                  }}
+                  nameKey="efficiency"
+                />
+              }
             />
             <Pie
               data={chartData}
               dataKey="efficiency"
-              nameKey="taskGroup"
+              // nameKey="taskGroup"
               cx="50%"
               cy="50%"
               outerRadius={80}
             >
-              {chartData.map((entry, index) => (
+              {/* {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.fill} />
-              ))}
+              ))} */}
             </Pie>
-            <ChartLegend
+            {/* <ChartLegend
               content={({ payload }) => (
                 <ul className="flex flex-wrap justify-center gap-4 text-sm">
                   {payload?.map((entry, index) => (
@@ -91,7 +107,7 @@ export default function PieChartGraph({
                   ))}
                 </ul>
               )}
-            />
+            /> */}
           </PieChart>
         </ChartContainer>
       </CardContent>

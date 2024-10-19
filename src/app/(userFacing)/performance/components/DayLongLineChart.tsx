@@ -11,11 +11,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import type {
+  NameType,
+  Payload,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 
 export const description = "An interactive line chart";
 
@@ -115,14 +120,14 @@ export const description = "An interactive line chart";
 
 const chartConfig = {
   completed: {
-    label: "Task Completed",
+    label: "Tasks Completed",
   },
-  completedTask: {
-    label: "completedTask",
-    color: "hsl(var(--chart-1))",
-  },
+  // completedTask: {
+  //   label: "No. of completed Tasks",
+  //   color: "hsl(var(--chart-1))",
+  // },
   numberOfCompleted: {
-    label: "Number of Completed",
+    label: "Number of Completed Tasks",
     color: "hsl(var(--chart-2))",
   },
   // mobile: {
@@ -233,14 +238,13 @@ export default function DayLongLineChart({
               content={
                 <ChartTooltipContent
                   className="w-auto"
-                  nameKey="completedTask"
-                  labelKey="completed"
-                  labelFormatter={(value: Date) => {
-                    return new Date(value).toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    });
+                  nameKey="completed"
+                  // labelKey="completed"
+                  labelFormatter={(
+                    _,
+                    payload: Payload<ValueType, NameType>[],
+                  ) => {
+                    return payload[0]!.payload.completedTask as string;
                   }}
                 />
               }

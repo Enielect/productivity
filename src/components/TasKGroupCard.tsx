@@ -52,7 +52,7 @@ export const TasKGroupCard = ({
   return (
     <div
       style={style}
-      className="flex w-1/3 flex-col justify-between space-y-3 rounded-md bg-[var(--light-color)] p-4"
+      className="flex h-[6rem] flex-col justify-between space-y-3 rounded-md bg-[var(--light-color)] p-4"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -60,9 +60,13 @@ export const TasKGroupCard = ({
             style={style}
             className="fill-[var(--dark-color)] stroke-transparent"
           />
-          <span> {title}</span>
+          <span className="max-w-[7rem] overflow-hidden text-ellipsis whitespace-nowrap text-sm sm:text-base">
+            {title}
+          </span>
         </div>
-        <span>{isNaN(progress) ? 0 : progress}%</span>
+        <span className="text-sm sm:text-base">
+          {isNaN(progress) ? 0 : progress}%
+        </span>
       </div>
       <div className="flex items-center justify-between">
         <span style={style} className="text-[var(--dark-color)]">

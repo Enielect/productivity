@@ -93,17 +93,17 @@ const PerformancePage = async () => {
 
   console.log(chartData, "chartData");
   return (
-    <div className="px-3">
-      <div className="flex items-center justify-between">
+    <div className="mt-[49px] px-3 md:mt-0">
+      <div className="flex w-screen items-center justify-between border-b pr-5 md:w-full">
         <h2 className="py-3 text-lg font-semibold">
           Performance Characterization
         </h2>
         <SelectScrollable />
       </div>
-      <ScrollArea className="h-[calc(100dvh-8rem)] pr-4">
-        <div className="grid grid-cols-[30%_30%_auto] gap-4">
+      <ScrollArea className="h-[calc(100dvh-5rem)] w-screen pb-[60px] pr-6 pt-2 md:w-full md:pb-9">
+        <div className="space-y-3 md:grid md:grid-cols-[30%_30%_auto] md:gap-4 md:space-y-0">
           {/* comparting this week's completed task with last week */}
-          <div className="col-span-full grid grid-cols-2 gap-4">
+          <div className="grid gap-4 md:col-span-full md:grid-cols-2">
             {/* percentage of tasks completed per day */}
             <div>
               <MultipleLineChart chartData={chartData!} />

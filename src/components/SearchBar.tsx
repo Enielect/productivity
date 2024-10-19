@@ -25,9 +25,9 @@ const SearchBar = () => {
       return params.toString();
     };
     // const handler = setTimeout(() => {
-      if (inputValue !== searchValue) {
-        router.push(pathName + "?" + padUrl("search", inputValue));
-      }
+    if (inputValue !== searchValue) {
+      router.push(pathName + "?" + padUrl("search", inputValue));
+    }
     // }, 100); // 500ms debounce
 
     // return () => clearTimeout(handler); // Cleanup the timeout on every change
@@ -40,7 +40,7 @@ const SearchBar = () => {
   return (
     <Input
       type="search"
-      className="ml-10"
+      className="ml-10 min-w-[300px]"
       placeholder="Search..."
       value={inputValue}
       onChange={handleInputChange}

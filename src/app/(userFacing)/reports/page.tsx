@@ -13,7 +13,7 @@ const ReportsPage = async () => {
     const dictKeys = Object.keys(weeksDict);
 
     return (
-      <div className="space-y-4 px-3">
+      <div className="mt-[60px] space-y-4 px-3 md:mt-3">
         {dictKeys.map((key) => (
           <ListItem key={key} url={key} />
         ))}

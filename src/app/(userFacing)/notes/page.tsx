@@ -20,7 +20,7 @@ const NotesPage = async () => {
   const notesByDate = await formatNotesAccDay(allUserNotes);
   const dayCreated = Object.keys(notesByDate);
   return (
-    <div className="w-full px-6">
+    <div className="mt-[49px] w-full px-6 md:mt-0">
       {allUserNotes.length > 0 ? (
         <div className="grid">
           <div className="flex h-[3rem] w-[calc(100%-480px)] items-center bg-white">
@@ -28,7 +28,7 @@ const NotesPage = async () => {
             {/* <Input placeholder="search" className="ml-10" /> */}
             <SearchBar />
           </div>
-          <ScrollArea className="h-[calc(100dvh-3rem-60px)] pb-[3rem] pr-5">
+          <ScrollArea className="h-[calc(100dvh-3rem-60px)] pb-0 pr-3 md:pr-5">
             <NoteDisplayWrapper
               dayCreated={dayCreated}
               notesByDate={notesByDate}

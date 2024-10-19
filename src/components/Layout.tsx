@@ -12,6 +12,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { type ReactNode } from "react";
 import { RightCalendar } from "./RightCalendar";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
 export default function Layout({
   children,
@@ -23,20 +24,35 @@ export default function Layout({
   image: string;
 }) {
   //changed overflow to hidden
+  const [open, setOpen] = React.useState(false);
   return (
-    <div className="h-full overflow-hidden">
-      <Header name={username} img={image} />
-      <main className="grid h-[calc(100dvh-50px)] grid-cols-[199px_1fr_250px]">
-        <div className="h-full">
-          <LeftNav />
+    <div className="grid h-full overflow-hidden">
+      <Header toggle={setOpen} name={username} img={image} />
+
+      <main className="h-[calc(100dvh-50px)]">
+        <div className="relative top-[49px] hidden h-full grid-cols-[199px_1fr_250px] md:grid">
+          <div className="">
+            <LeftNav />
+          </div>
+          <div className="border-l border-r border-[#444444]/20">
+            {children}
+          </div>
+          <div className="pl-3 pr-3 pt-3">
+            <div className="">
+              <h3>TaskGroup Calendar</h3>
+              <RightCalendar />
+            </div>
+          </div>
         </div>
-        <div className="border-l border-r border-[#444444]/20 pt-4">
-          {children}
-        </div>
-        <div className="pl-3 pr-3 pt-3">
-          <div>
-            <h3>TaskGroup Calendar</h3>
-            <RightCalendar />
+        <div className="block h-full md:hidden">{children}</div>
+        <div
+          className={`${open ? "left-0 top-[49px] z-10" : "-left-[700px]"} fixed h-full w-screen overflow-x-hidden pr-8 transition-all`}
+        >
+          <div
+            className={`absolute -z-10 h-full w-full bg-black/65 md:hidden`}
+          ></div>
+          <div className="z-20 h-full w-1/2 bg-white">
+            <LeftNav />
           </div>
         </div>
       </main>
@@ -44,20 +60,44 @@ export default function Layout({
   );
 }
 
-function Header({ name, img }: { name: string; img: string }) {
+function Header({
+  name,
+  img,
+  toggle,
+}: {
+  name: string;
+  img: string;
+  toggle: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
-    <header className="flex h-[50px] w-full border-b border-[#444444]/20">
-      <h1 className="h-full basis-[200px] border-r border-[#444444]/20">
+    <header className="fixed z-20 flex h-[50px] w-full border-b border-[#444444]/20 bg-white">
+      <h1 className="hidden h-full basis-[200px] border-r border-[#444444]/20 md:block">
         <Link href="/" className="flex h-full items-center pl-4">
           <Image src={"/productivity.png"} alt="logo" width={40} height={40} />
           Productivity
         </Link>
       </h1>
-      <div className="flex flex-grow items-center justify-between px-7">
+      <button
+        onClick={() => toggle((c: boolean) => !c)}
+        className="ml-3 block md:hidden"
+      >
+        <HamburgerMenuIcon className="h-6 w-6" />
+      </button>
+      <div className="flex flex-grow items-center justify-between px-4 sm:px-7">
         <Input placeholder="search" type="text" className="w-[15rem]" />
         <div className="flex items-center gap-8">
           <User name={name} img={img} />
-          <span>{new Date().toString().split(" ").splice(0, 4).join(" ")}</span>
+          <span className="sm:hidden">
+            {new Date()
+              .toString()
+              .split(" ")
+              .splice(0, 4)
+              .join(" ")
+              .slice(0, -4)}
+          </span>
+          <span className="hidden sm:inline-block">
+            {new Date().toString().split(" ").splice(0, 4).join(" ")}
+          </span>
         </div>
       </div>
     </header>
@@ -67,10 +107,10 @@ function Header({ name, img }: { name: string; img: string }) {
 function User({ name, img }: { name: string; img: string }) {
   return (
     <span className="flex items-center gap-5">
+      <span className="hidden md:inline-block">{name}</span>
       <span className="h-8 w-8 overflow-hidden rounded-full">
         <Image src={img} alt="User avatar" width={40} height={40} />
       </span>
-      <span>{name}</span>
     </span>
   );
 }
@@ -90,7 +130,7 @@ const navList: NavListProps[] = [
 // This is a better way to write the LeftNav component
 function LeftNav() {
   return (
-    <ul className="pt-5">
+    <ul className="bg-white pt-5">
       {navList.map(({ icon, text }) => (
         <ListItem key={text} icon={icon} text={text} />
       ))}

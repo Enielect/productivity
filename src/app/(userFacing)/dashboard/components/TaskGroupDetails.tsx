@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { Loader2, NotepadText, PlusIcon } from "lucide-react";
+import { Loader2, NotepadText, PlusIcon, Trash2 } from "lucide-react";
 import { getTasksFromGroup } from "@/action/task";
 import TaskDialogWrapper from "@/components/TaskDialogWrapper";
 import Markdown from "react-markdown";
 import TaskCard from "@/app/(userFacing)/dashboard/components/TaskCard";
 import type { GroupType } from "@/components/TasKGroupCard";
 
-const fetcher = (url: string) => getTasksFromGroup(Number(url)).then(res => res!.tasks)
+const fetcher = (url: string) =>
+  getTasksFromGroup(Number(url)).then((res) => res!.tasks);
 
 export default function TaskGroupDetails({
   taskGroup,
@@ -16,31 +17,41 @@ export default function TaskGroupDetails({
 }) {
   // const [tasks, setTasks] = useState<SelectTask[]>([]);
   const [currentTask, setCurrentTask] = useState("");
-  console.log(taskGroup.id)
+  console.log(taskGroup.id);
   const { data: tasks, isLoading } = useSWR(`${taskGroup.id}`, fetcher);
-  
-  useEffect(()=> {console.log(taskGroup.id, "tasks group");}, [tasks, taskGroup.id]);
+
+  useEffect(() => {
+    console.log(taskGroup.id, "tasks group");
+  }, [tasks, taskGroup.id]);
   const currentSelectedTask = tasks?.find((task) => task.name === currentTask);
   return (
     <div className="px-4">
-      <div className="flex items-center gap-4 py-5">
+      <div className="flex flex-col items-center gap-4 py-5 lg:flex-row">
         <NotepadText className="h-7 w-7 stroke-blue-600" />
-        <span className="text-2xl font-semibold">{taskGroup.name}</span>
-        <em>
+        <span className="text-center text-2xl font-semibold sm:text-justify">
+          {taskGroup.name}
+        </span>
+        <em className="text-center sm:text-justify">
           (Note that checkboxes are disabled by default. Click on the + icon to
           provide a summary of the task before you can check the task done)
         </em>
       </div>
-      <div className="flex space-x-5">
-        <div className="w-[4rem] rounded-bl-md rounded-tl-md border border-blue-800 px-3 py-2 text-blue-600">
-          Tasks
+      <div className="flex w-full items-center justify-between">
+        <div className="flex space-x-5">
+          <div className="w-[4rem] rounded-bl-md rounded-tl-md border border-blue-800 px-3 py-2 text-blue-600">
+            Tasks
+          </div>
+          <TaskDialogWrapper groupId={taskGroup.id}>
+            <button className="flex items-center space-x-2 text-blue-700">
+              <PlusIcon />
+              <span>Add New</span>
+            </button>
+          </TaskDialogWrapper>
         </div>
-        <TaskDialogWrapper groupId={taskGroup.id}>
-          <button className="flex items-center space-x-2 text-blue-700">
-            <PlusIcon />
-            <span>Add New</span>
-          </button>
-        </TaskDialogWrapper>
+        <button className="flex items-center gap-3 text-red-600">
+          <Trash2 className="h-6 w-6 text-red-600" />
+          Delete Group
+        </button>
       </div>
       {tasks && !isLoading && (
         <div className="flex w-full gap-3">

@@ -7,7 +7,7 @@ import Markdown from "react-markdown";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { updateNote } from "../action/note";
-import NoteDeleteDialog from "@/components/NoteDeleteDialog";
+import DeleteDialog from "@/components/DeleteDialog";
 
 type NoteCardProps = {
   title: string;
@@ -26,11 +26,11 @@ function NoteCard({ title, content, noteId }: NoteCardProps) {
       <header className="flex items-center justify-between">
         {<strong>{edit ? "Edit" : title}</strong>}
         <div className="flex items-center gap-4">
-          <NoteDeleteDialog noteId={noteId}>
+          <DeleteDialog deleteType="note" noteId={noteId}>
             <button>
               <Trash2 className="h-5 w-5" />
             </button>
-          </NoteDeleteDialog>
+          </DeleteDialog>
           <button onClick={() => setEdit(!edit)}>
             <Edit className="h-5 w-5" />
           </button>

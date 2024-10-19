@@ -1,8 +1,9 @@
 import { setChecked } from "@/action/task";
+import DeleteDialog from "@/components/DeleteDialog";
 import EditTaskDialogWrapper from "@/components/EditTaskDialogWrapper";
 import SummaryDialogWrapper from "@/components/SummaryDialogWrapper";
 import type { SelectTask } from "@/server/db/schema";
-import { Columns2, Pencil, PlusIcon, X } from "lucide-react";
+import { Columns2, Pencil, PlusIcon, Trash2, X } from "lucide-react";
 import { startTransition, useState } from "react";
 
 type TaskProp = {
@@ -37,6 +38,11 @@ export default function TaskCard({ task, setCurrentTask, current }: TaskProp) {
         </label>
       </div>
       <div className="space-x-4">
+        <DeleteDialog deleteType="task">
+          <button>
+            <Trash2 className="h-6 w-6 text-red-600" />
+          </button>
+        </DeleteDialog>
         <SummaryDialogWrapper taskId={task.id}>
           <button>
             <PlusIcon />

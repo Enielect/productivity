@@ -83,3 +83,24 @@ export function tasksCompletedThisWeekVsBestWeek(
     { week: "bestWeek", completed: bestWeek, fill: "var(--color-bestWeek)" },
   ];
 }
+
+export function getPreviousWeek(weekString: string): string {
+  const [weekNumber, year] = weekString.split("-").map(Number);
+
+  let previousWeekNumber = weekNumber! - 1;
+  let previousYear = year;
+
+  if (previousWeekNumber < 1) {
+    previousYear! -= 1;
+    const lastDayOfPreviousYear = new Date(previousYear!, 11, 31);
+    const lastWeekNumber = getWeekNumber(lastDayOfPreviousYear);
+    previousWeekNumber = lastWeekNumber;
+  }
+
+  return `${previousWeekNumber}-${previousYear}`;
+}
+
+// async function getCompletedTasksPerDay(dayString: string) {
+//   const completedTasks = await completedTasksPerDay();
+//   const tasks = completedTasks[dayString];
+// }

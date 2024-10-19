@@ -1,5 +1,6 @@
-import * as React from "react"
+"use client";
 
+import { GroupType } from "@/components/TasKGroupCard";
 import {
   Select,
   SelectContent,
@@ -8,68 +9,64 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function SelectScrollable() {
+// Helper function to get the start and end dates of a week
+function getWeekDateRange(weekNumber: number, year: number) {
+  const firstDayOfYear = new Date(year, 0, 1);
+  const daysOffset = (weekNumber - 1) * 7;
+  const startDate = new Date(
+    firstDayOfYear.setDate(firstDayOfYear.getDate() + daysOffset),
+  );
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 6);
+
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+  };
+
+  const startDateString = startDate.toLocaleDateString("en-US", options);
+  const endDateString = endDate.toLocaleDateString("en-US", options);
+
+  return `${startDateString} - ${endDateString}`;
+}
+
+export default function SelectScrollable({
+  weeksDict,
+}: {
+  weeksDict: Record<string, GroupType[]>;
+}) {
+  const activeWeeksKeys = Object.keys(weeksDict);
+  const router = useRouter();
+
+  function onWeekSelect(weekKey: string) {
+    router.push(`/performance/${weekKey}`);
+    console.log(weekKey, "weekKey");
+  }
+
   return (
-    <Select>
+    <Select onValueChange={onWeekSelect}>
       <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder="Select a timezone" />
+        <SelectValue placeholder="Select a week" />
       </SelectTrigger>
-      <SelectContent className='overflow-y-auto max-h-[15rem]'>
+      <SelectContent className="max-h-[15rem] overflow-y-auto">
         <SelectGroup>
-          <SelectLabel>North America</SelectLabel>
-          <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-          <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
-          <SelectItem value="mst">Mountain Standard Time (MST)</SelectItem>
-          <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-          <SelectItem value="akst">Alaska Standard Time (AKST)</SelectItem>
-          <SelectItem value="hst">Hawaii Standard Time (HST)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Europe & Africa</SelectLabel>
-          <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
-          <SelectItem value="cet">Central European Time (CET)</SelectItem>
-          <SelectItem value="eet">Eastern European Time (EET)</SelectItem>
-          <SelectItem value="west">
-            Western European Summer Time (WEST)
-          </SelectItem>
-          <SelectItem value="cat">Central Africa Time (CAT)</SelectItem>
-          <SelectItem value="eat">East Africa Time (EAT)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Asia</SelectLabel>
-          <SelectItem value="msk">Moscow Time (MSK)</SelectItem>
-          <SelectItem value="ist">India Standard Time (IST)</SelectItem>
-          <SelectItem value="cst_china">China Standard Time (CST)</SelectItem>
-          <SelectItem value="jst">Japan Standard Time (JST)</SelectItem>
-          <SelectItem value="kst">Korea Standard Time (KST)</SelectItem>
-          <SelectItem value="ist_indonesia">
-            Indonesia Central Standard Time (WITA)
-          </SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Australia & Pacific</SelectLabel>
-          <SelectItem value="awst">
-            Australian Western Standard Time (AWST)
-          </SelectItem>
-          <SelectItem value="acst">
-            Australian Central Standard Time (ACST)
-          </SelectItem>
-          <SelectItem value="aest">
-            Australian Eastern Standard Time (AEST)
-          </SelectItem>
-          <SelectItem value="nzst">New Zealand Standard Time (NZST)</SelectItem>
-          <SelectItem value="fjt">Fiji Time (FJT)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>South America</SelectLabel>
-          <SelectItem value="art">Argentina Time (ART)</SelectItem>
-          <SelectItem value="bot">Bolivia Time (BOT)</SelectItem>
-          <SelectItem value="brt">Brasilia Time (BRT)</SelectItem>
-          <SelectItem value="clt">Chile Standard Time (CLT)</SelectItem>
+          <SelectLabel>Weeks</SelectLabel>
+          {activeWeeksKeys.map((weekKey) => {
+            const [weekNumber, year] = weekKey.split("-").map(Number);
+            const weekRangeString = getWeekDateRange(weekNumber!, year!);
+            return (
+              <SelectItem key={weekKey} value={weekKey}>
+                {weekRangeString}
+              </SelectItem>
+            );
+          })}
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }

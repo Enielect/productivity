@@ -2,9 +2,10 @@ import React from "react";
 
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import SelectScrollable from "./components/SelectWeek";
+import SelectScrollable from "../components/SelectWeek";
 import {
   formatAreaChartData,
+  getPreviousWeek,
   getWeekNumber,
   taskDataPerDay,
   tasksCompletedThisWeekVsBestWeek,
@@ -18,28 +19,25 @@ import {
   getWeekGroupTasks,
   statForCurrWeek,
 } from "@/server/db/queries/select";
-import RadialCompareChart from "./components/RadialCompareChart";
-import PerformanceChartData from "./components/PerformanceChartData";
+import RadialCompareChart from "../components/RadialCompareChart";
+import PerformanceChartData from "../components/PerformanceChartData";
 
-const PerformancePage = async () => {
+const WeekPerformancePage = async ({
+  params,
+}: {
+  params: { weekYear: string };
+}) => {
   const session = await auth();
 
   if (!session?.user) redirect("/login");
-  const today = new Date();
-  const currentWeekString = `${getWeekNumber(today)}-${today.getFullYear()}`;
-  const lastWeekDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate() - 7,
-  );
-  const lastWeekString = `${getWeekNumber(lastWeekDate)}-${lastWeekDate.getFullYear()}`;
+  const lastWeekString = getPreviousWeek(params.weekYear);
   const lastWeek = await getCompletedTasksInWeek(lastWeekString);
-  const currentWeek = await getCompletedTasksInWeek(currentWeekString);
+  const currentWeek = await getCompletedTasksInWeek(params.weekYear);
   const weekOfBestPerformance = await getBestPerformingWeek();
   const bestWeek = await getCompletedTasksInWeek(weekOfBestPerformance);
   const tasksToDay = await completedTasksPerDay();
   const statForLastWeek = await statForCurrWeek(lastWeekString);
-  const statForThisWeek = await statForCurrWeek(currentWeekString);
+  const statForThisWeek = await statForCurrWeek(params.weekYear);
   const statForBestWeek = await statForCurrWeek(weekOfBestPerformance);
 
   const [
@@ -82,8 +80,6 @@ const PerformancePage = async () => {
     statForThisWeekData.totalTasksCompleted ?? 0,
     statForBestWeekData.totalTasksCompleted ?? 0,
   );
-
-  console.log(chartData, "chartData");
   return (
     <PerformanceChartData
       chartData={chartData}
@@ -96,4 +92,4 @@ const PerformancePage = async () => {
   );
 };
 
-export default PerformancePage;
+export default WeekPerformancePage;

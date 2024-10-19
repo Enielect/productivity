@@ -7,14 +7,18 @@ import { and, eq, ilike, or } from "drizzle-orm";
 import { getWeekNumber } from "@/lib/helpers";
 import { unstable_cache } from "next/cache";
 
-export const getGeneralGroupTasks = unstable_cache(async (userId: string) => {
-  // const session = await auth();
-  // if (!session?.user) return;
-  return await db.query.taskGroups.findMany({
-    where: (taskGroups, { eq }) => eq(taskGroups.userId, userId),
-    with: { tasks: true },
-  });
-});
+export const getGeneralGroupTasks = unstable_cache(
+  async (userId: string) => {
+    // const session = await auth();
+    // if (!session?.user) return;
+    return await db.query.taskGroups.findMany({
+      where: (taskGroups, { eq }) => eq(taskGroups.userId, userId),
+      with: { tasks: true },
+    });
+  },
+  ["generalGroupTasks"],
+  { revalidate: 60 * 60 * 24 },
+);
 
 export async function formatGroupsAccWeekNum() {
   const session = await auth();
@@ -195,7 +199,8 @@ export async function completedTasksPerDay() {
 
   const dict: Record<string, number> = userTaskGroups.reduce(
     (acc: Record<string, number>, curr) => {
-      const dayFormat = `${curr.createdAt.toLocaleDateString().replace(/\//g, "-")}`;
+      console.log(curr, "currenet date");
+      const dayFormat = `${new Date(curr.createdAt).toLocaleDateString().replace(/\//g, "-")}`;
       // if (!acc[dayFormat]) acc[dayFormat] = 0;
       acc[dayFormat] = curr.tasks.filter((task) => task.isChecked).length;
       return acc;
@@ -256,11 +261,13 @@ export async function completedTasksInDay(day: string) {
   const totalTasksCompleted = completedUserTasks.length;
   const performancePercentage = totalTasksCompleted / totalTasksPlanned;
   const totalTasksCreatedPerTaskGroup = userTaskGroupsForDay.map(
-    (taskGroup) => ({
+    (taskGroup, index) => ({
       taskGroup: taskGroup.name,
       tasksLength: taskGroup.tasks.length,
+      fill: generateUniqueColors(userTaskGroupsForDay.length)[index] ?? "",
     }),
   );
+
   const percentageCompletePerTaskGroup = userTaskGroupsForDay.map(
     (taskGroup) => {
       const completedTasks = taskGroup.tasks.filter((task) => task.isChecked);
@@ -270,15 +277,7 @@ export async function completedTasksInDay(day: string) {
       };
     },
   );
-  //useful links extractef from resource
-  const gridGradientChart = totalTasksCreatedPerTaskGroup.map(
-    (taskGroup, index) => ({
-      taskGroup: taskGroup.taskGroup,
-      taskLength: taskGroup.tasksLength,
-      fill:
-        generateUniqueColors(totalTasksCreatedPerTaskGroup.length)[index] ?? "",
-    }),
-  );
+  //useful links extractef from resoure
 
   const pieChart = percentageCompletePerTaskGroup.map((taskGroup, index) => ({
     taskGroup: taskGroup.taskGroup,
@@ -302,21 +301,13 @@ export async function completedTasksInDay(day: string) {
   console.log(completedLongLineChart, "completedLongLineChart");
 
   return {
-    gridGradientChart,
+    totalTasksCreatedPerTaskGroup,
     pieChart,
     radialChartEfficiency,
     comparePlannedVsExecuted,
     completedLongLineChart,
   };
 }
-
-// chartData: {
-//   thisWeek: number;
-//   lastWeek: number;
-// }[];
-
-// { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-// { browser: "other", visitors: 90, fill: "var(--color-other)" },
 
 function generateUniqueColors(numColors: number) {
   const colors = [];

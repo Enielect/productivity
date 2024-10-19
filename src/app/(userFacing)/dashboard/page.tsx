@@ -25,7 +25,7 @@ export default async function DashboardPage() {
   endOfDay.setHours(23, 59, 59, 999);
   console.log(startOfDay, endOfDay);
 
-  const postGroups = unstable_cache(async () => {
+  const postGroups = async () => {
     return await db.query.taskGroups.findMany({
       with: { tasks: true },
       where: (taskGroups, { lte, gte, eq }) =>
@@ -33,7 +33,7 @@ export default async function DashboardPage() {
         lte(taskGroups.createdAt, endOfDay) &&
         gte(taskGroups.createdAt, startOfDay),
     });
-  });
+  };
   const postGroupData = await postGroups();
   // const postGroups = await getTodaysTasksGroups();
   console.log(postGroups, "postgroups");

@@ -8,6 +8,13 @@ import { addTaskGroup } from "@/action/task";
 
 import { Progress } from "./Progress";
 import TaskGroupDetails from "./TaskGroupDetails";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface PostGroups {
   postGroups: GroupType[];
@@ -39,7 +46,7 @@ const Goals = ({ postGroups }: PostGroups) => {
   const progress = combinedPercentages / postGroups.length;
   return (
     <div>
-      <div className="border-b px-3 py-6">
+      <div className="border-b px-3 pb-10">
         <Progress
           progress={progress}
           completed={numberOfCompletedTasks}
@@ -47,16 +54,26 @@ const Goals = ({ postGroups }: PostGroups) => {
         />
         <h1>Add the tasks you want to cover this week</h1>
         <AddGoalInput />
-        <div className="flex gap-5">
-          {postGroups.map((group) => (
-            <TasKGroupCard
-              currentGroup={group}
-              setCurrentTaskGroup={setCurrentTaskGroup}
-              key={group.id}
-              title={group.name}
-            />
-          ))}
-        </div>
+        {/* <div className="> */}
+        <Carousel className="md:w-[calc(100dvw-470px)]">
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {postGroups.map((group) => (
+              <CarouselItem
+                className="md:1/3 basis-1/2 pl-3 lg:basis-1/4"
+                key={group.id}
+              >
+                <TasKGroupCard
+                  currentGroup={group}
+                  setCurrentTaskGroup={setCurrentTaskGroup}
+                  title={group.name}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+        {/* </div> */}
       </div>
       <div>
         <TaskGroupDetails taskGroup={currentTaskGroup} />
@@ -71,6 +88,7 @@ function AddGoalInput() {
   function handleAddTaskGroup() {
     startTransition(async () => {
       await addTaskGroup({ name: taskGroup });
+      setTaskGroup("");
       console.log("upload complete");
     });
     console.log("adding task group");

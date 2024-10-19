@@ -7,6 +7,13 @@ import PieChartGraph from "@/app/(userFacing)/performance/components/PieChart";
 import RadialchartWrapper from "@/app/(userFacing)/performance/components/RadialChart";
 import RadialCompareWrapper from "@/app/(userFacing)/performance/components/RadialCompare";
 import TasKGroupCard, { type GroupType } from "@/components/TasKGroupCard";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { SelectTask } from "@/server/db/schema";
 import { Check, Columns2, NotepadText, X } from "lucide-react";
@@ -20,9 +27,9 @@ const TaskGroupWrapper = ({
 }: {
   dayTasks: GroupType[];
   chartData: {
-    gridGradientChart: {
+    totalTasksCreatedPerTaskGroup: {
       taskGroup: string;
-      taskLength: number;
+      tasksLength: number;
       fill: string;
     }[];
     pieChart: {
@@ -45,7 +52,7 @@ const TaskGroupWrapper = ({
   };
 }) => {
   const {
-    gridGradientChart,
+    totalTasksCreatedPerTaskGroup,
     pieChart,
     radialChartEfficiency,
     comparePlannedVsExecuted,
@@ -67,20 +74,29 @@ const TaskGroupWrapper = ({
   );
   return (
     <div className="">
-      <div className="flex gap-4 border-b px-4 py-3">
-        {dayTasks?.map((task) => (
-          <TasKGroupCard
-            key={task.id}
-            title={task.name}
-            currentGroup={task}
-            setCurrentTaskGroup={
-              setCurrentTaskGroup as React.Dispatch<
-                React.SetStateAction<GroupType>
-              >
-            }
-          />
-        ))}
-      </div>
+      <Carousel className="ml-3 mt-3 md:w-[calc(100dvw-470px)]">
+        <CarouselContent className="-ml-2 md:-ml-4">
+          {dayTasks?.map((task) => (
+            <CarouselItem
+              className="md:1/3 basis-1/2 pl-3 lg:basis-1/4"
+              key={task.id}
+            >
+              <TasKGroupCard
+                // key={task.id}
+                title={task.name}
+                currentGroup={task}
+                setCurrentTaskGroup={
+                  setCurrentTaskGroup as React.Dispatch<
+                    React.SetStateAction<GroupType>
+                  >
+                }
+              />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
       <div className="px-3">
         <div className="flex items-center gap-4 py-5">
           <NotepadText className="h-7 w-7 stroke-blue-600" />
@@ -88,7 +104,7 @@ const TaskGroupWrapper = ({
             {currentTaskGroup.name}
           </span>
         </div>
-        <div className="flex">
+        <div className="flex border-b pb-2">
           <button
             onClick={() => setSelectedTab("tasks")}
             className={`w-[4rem] rounded-bl-md rounded-tl-md border px-3 py-2 ${selectedTab === "tasks" && "border-blue-800 text-blue-600"}`}
@@ -147,8 +163,7 @@ const TaskGroupWrapper = ({
           )}
           {selectedTab === "analytics" && (
             <div>
-              <h1>Analytics</h1>
-              <ScrollArea className="h-[calc(100dvh-290px)] pb-[5rem] pr-4">
+              <ScrollArea className="h-[calc(100dvh-250px)] pb-[5rem] pr-4">
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <RadialchartWrapper chartData={radialChartEfficiency} />
@@ -165,7 +180,9 @@ const TaskGroupWrapper = ({
                   </div>
                   {/**pie chart for distribution ot takskgroups percentage tasks completed per day for the day */}
                   <div>
-                    <GridRadialChart chartData={gridGradientChart} />
+                    <GridRadialChart
+                      chartData={totalTasksCreatedPerTaskGroup}
+                    />
                   </div>
                   <div className="col-span-full">
                     <DayLongLineChart chartData={completedLongLineChart} />

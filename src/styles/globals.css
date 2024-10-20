@@ -73,6 +73,10 @@
   content: "%";
 }
 
+.animate-grid {
+  transition: grid-template-rows 0.5s;
+}
+
 .spinner_ajPY {
   transform-origin: center;
   animation: spinner_AtaB 0.75s infinite linear;

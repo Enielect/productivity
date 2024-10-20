@@ -146,9 +146,9 @@ function SubmitButton() {
   return (
     <button
       type="submit"
-      className="rounded-md bg-blue-700 px-4 py-2 text-white"
+      className="flex justify-center rounded-md bg-blue-700 px-4 py-2 text-white"
     >
-      {pending ? <Loader /> : " Edit Task"}
+      {pending ? <Loader className="stroke-white" /> : " Edit Task"}
     </button>
   );
 }

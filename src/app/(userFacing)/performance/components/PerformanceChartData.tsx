@@ -60,9 +60,9 @@ const PerformanceChartData = ({
 }) => {
   return (
     <ScrollArea className="h-[calc(100dvh-5rem)] w-screen pb-[60px] pr-6 pt-2 md:w-full md:pb-9">
-      <div className="space-y-3 md:grid md:grid-cols-[30%_30%_auto] md:gap-4 md:space-y-0">
+      <div className="space-y-3 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 xl:grid-cols-[30%_30%_auto]">
         {/* comparting this week's completed task with last week */}
-        <div className="grid gap-4 md:col-span-full md:grid-cols-2">
+        <div className="grid gap-4 md:col-span-full md:grid-cols-1 min-[1100px]:grid-cols-2">
           {/* percentage of tasks completed per day */}
           <div>
             <MultipleLineChart chartData={chartData!} />

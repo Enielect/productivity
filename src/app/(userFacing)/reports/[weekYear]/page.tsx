@@ -13,7 +13,7 @@ const WeekPage = async ({ params }: Params) => {
   // console.log(daysDicts, "dayDicts");
   const days = Object.keys(daysDicts);
   return (
-    <div className="space-y-4 px-3">
+    <div className="mt-2 space-y-4 px-3">
       {days.map((day) => (
         <Link
           className="block w-full rounded-md bg-green-500 px-3 py-2"

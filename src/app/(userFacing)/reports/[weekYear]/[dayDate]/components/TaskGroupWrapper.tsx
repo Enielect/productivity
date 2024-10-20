@@ -1,5 +1,6 @@
 "use client";
 
+import TaskInfo from "@/app/(userFacing)/dashboard/components/TaskInfo";
 import DayLongLineChart from "@/app/(userFacing)/performance/components/DayLongLineChart";
 import { GridRadialChart } from "@/app/(userFacing)/performance/components/GridRadialChart";
 import LongLineChart from "@/app/(userFacing)/performance/components/LongLineChart";
@@ -16,7 +17,7 @@ import {
 } from "@/components/ui/carousel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { SelectTask } from "@/server/db/schema";
-import { Check, Columns2, NotepadText, X } from "lucide-react";
+import { Check, ChevronsDown, Columns2, NotepadText, X } from "lucide-react";
 import { notFound } from "next/navigation";
 import React, { useState } from "react";
 import Markdown from "react-markdown";
@@ -74,11 +75,11 @@ const TaskGroupWrapper = ({
   );
   return (
     <div className="">
-      <Carousel className="ml-3 mt-3 md:w-[calc(100dvw-470px)]">
+      <Carousel className="mx-3 mt-3 md:w-[calc(100dvw-470px)]">
         <CarouselContent className="-ml-2 md:-ml-4">
           {dayTasks?.map((task) => (
             <CarouselItem
-              className="md:1/3 basis-1/2 pl-3 lg:basis-1/4"
+              className="basis-full pl-3 sm:basis-1/2 md:basis-full min-[900px]:basis-1/2 lg:basis-1/3 xl:basis-1/4"
               key={task.id}
             >
               <TasKGroupCard
@@ -97,7 +98,7 @@ const TaskGroupWrapper = ({
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-      <div className="px-3">
+      <div className="mt-6 px-3">
         <div className="flex items-center gap-4 py-5">
           <NotepadText className="h-7 w-7 stroke-blue-600" />
           <span className="text-2xl font-semibold">
@@ -123,7 +124,7 @@ const TaskGroupWrapper = ({
             <div className="flex w-full gap-3">
               <div
                 data-open={String(currentTask.length > 0)}
-                className="mt-5 min-h-[16rem] w-full space-y-3 overflow-auto pr-3 transition-all data-[open=true]:w-1/2"
+                className="mt-5 min-h-[16rem] w-full space-y-3 overflow-auto pr-3 transition-all min-[1200px]:data-[open=true]:w-1/2"
               >
                 {currentTaskGroup.tasks.map((task) => (
                   <TaskList
@@ -135,36 +136,40 @@ const TaskGroupWrapper = ({
                 ))}
               </div>
               {currentTask.length > 0 && (
-                <div className="h-full w-1/2 space-y-3 border-2 border-blue-600 p-2">
-                  <div className="rounded-md border px-2 py-2">
-                    <header className="py-3 text-lg font-semibold">
-                      Learning resources
-                    </header>
-                    <div className="markdown">
-                      <Markdown>{currentSelectedTask!.resource}</Markdown>
-                    </div>
-                  </div>
-                  <div className="rounded-md border px-2 py-2">
-                    <header className="py-3 text-lg font-semibold">
-                      Reason For Learning Resource
-                    </header>
-                    {currentSelectedTask!.reasonForResource}
-                  </div>
-                  <div className="rounded-md border px-2 py-2">
-                    <header className="py-3 text-lg font-semibold">
-                      Educate me.{" "}
-                      <small>(In as few amount of words as possible)</small>
-                    </header>
-                    {currentSelectedTask!.summary ?? <em>not specified yet</em>}
-                  </div>
+                // <div className="h-full w-1/2 space-y-3 border-2 border-blue-600 p-2">
+                //   <div className="rounded-md border px-2 py-2">
+                //     <header className="py-3 text-lg font-semibold">
+                //       Learning resources
+                //     </header>
+                //     <div className="markdown">
+                //       <Markdown>{currentSelectedTask!.resource}</Markdown>
+                //     </div>
+                //   </div>
+                //   <div className="rounded-md border px-2 py-2">
+                //     <header className="py-3 text-lg font-semibold">
+                //       Reason For Learning Resource
+                //     </header>
+                //     {currentSelectedTask!.reasonForResource}
+                //   </div>
+                //   <div className="rounded-md border px-2 py-2">
+                //     <header className="py-3 text-lg font-semibold">
+                //       Educate me.{" "}
+                //       <small>(In as few amount of words as possible)</small>
+                //     </header>
+                //     {currentSelectedTask!.summary ?? <em>not specified yet</em>}
+                //   </div>
+                // </div>
+                <div className="hidden w-full min-[1200px]:block min-[1200px]:w-1/2">
+                  <TaskInfo currentSelectedTask={currentSelectedTask} />
                 </div>
               )}
             </div>
           )}
           {selectedTab === "analytics" && (
-            <div>
+            <div className="mt-5">
               <ScrollArea className="h-[calc(100dvh-250px)] pb-[5rem] pr-4">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid sm:grid-cols-2 sm:gap-3 md:grid-cols-1 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
+                  {/* <div className="sm:flex sm:gap-3"> */}
                   <div>
                     <RadialchartWrapper chartData={radialChartEfficiency} />
                   </div>
@@ -172,7 +177,9 @@ const TaskGroupWrapper = ({
                   <div>
                     <PieChartGraph chartData={pieChart} />
                   </div>
+                  {/* </div> */}
                   {/**compare completed tasks to created tasks */}
+                  {/* <div className="sm:flex sm:gap-3"> */}
                   <div>
                     <RadialCompareWrapper
                       chartData={comparePlannedVsExecuted}
@@ -184,6 +191,7 @@ const TaskGroupWrapper = ({
                       chartData={totalTasksCreatedPerTaskGroup}
                     />
                   </div>
+                  {/* </div> */}
                   <div className="col-span-full">
                     <DayLongLineChart chartData={completedLongLineChart} />
                   </div>
@@ -205,29 +213,46 @@ type TaskListProp = {
 
 function TaskList({ task, setCurrentTask, current }: TaskListProp) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-md bg-gray-200 px-4 py-3">
-      <div className="flex items-center gap-3">
-        {task.isChecked ? (
-          <Check className="h-6 w-6 text-green-500" />
-        ) : (
-          <X className="h-6 w-6 text-red-500" />
-        )}
-        <label htmlFor={task.name} className="font-semibold">
-          {task.name}
-        </label>
+    <div
+      className={`max-md:animate-grid max-md:grid ${current === task.name ? "max-md:grid-rows-[auto,1fr]" : "max-md:grid-rows-1"}`}
+    >
+      <div className="flex items-center justify-between gap-4 rounded-md bg-gray-200 px-4 py-3">
+        <div className="flex items-center gap-3">
+          {task.isChecked ? (
+            <Check className="h-6 w-6 text-green-500" />
+          ) : (
+            <X className="h-6 w-6 text-red-500" />
+          )}
+          <label htmlFor={task.name} className="font-semibold">
+            {task.name}
+          </label>
+        </div>
+        <div className="space-x-4">
+          <button
+            onClick={() => {
+              setCurrentTask((c: string) => {
+                if (c === task.name) return "";
+                return task.name;
+              });
+            }}
+          >
+            {current === task.name ? (
+              <X />
+            ) : (
+              <>
+                <Columns2 className="hidden min-[1200px]:inline-block" />
+                <ChevronsDown className="inline-block min-[1200px]:hidden" />
+              </>
+            )}
+          </button>
+        </div>
       </div>
-      <div className="space-x-4">
-        <button
-          onClick={() => {
-            setCurrentTask((c: string) => {
-              if (c === task.name) return "";
-              return task.name;
-            });
-          }}
-        >
-          {current === task.name ? <X /> : <Columns2 />}
-        </button>
-      </div>
+
+      {current === task.name && (
+        <div className="h-[12rem] md:hidden">
+          <TaskInfo currentSelectedTask={task} />
+        </div>
+      )}
     </div>
   );
 }

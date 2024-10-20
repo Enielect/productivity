@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { type ReactNode } from "react";
+import React, { useEffect, useRef, type ReactNode } from "react";
 import { RightCalendar } from "./RightCalendar";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
@@ -25,11 +25,29 @@ export default function Layout({
 }) {
   //changed overflow to hidden
   const [open, setOpen] = React.useState(false);
+  const closeRef = useRef<HTMLDivElement | null>(null);
+
+  const outsideClick = (e: MouseEvent) => {
+    // if (e.target instanceof HTMLElement) {
+    //   if (e.target.closest(".fixed") === null) {
+    //     setOpen(false);
+    //   }
+    // }
+    if (e.target === closeRef.current) {
+      setOpen(false);
+    }
+  };
+  useEffect(() => {
+    if (open) {
+      document.addEventListener("click", outsideClick);
+    }
+    return () => document.removeEventListener("click", outsideClick);
+  }, [open]);
   return (
     <div className="grid h-full overflow-hidden">
       <Header toggle={setOpen} name={username} img={image} />
 
-      <main className="relative top-[49px] h-[calc(100dvh-50px)]">
+      <main className="relative top-[49px] md:h-[calc(100dvh-50px)]">
         <div className="relative hidden h-full grid-cols-[199px_1fr_250px] md:grid">
           <div className="">
             <LeftNav />
@@ -49,10 +67,11 @@ export default function Layout({
           className={`${open ? "left-0 z-10" : "-left-[700px]"} fixed top-[50px] h-full w-screen overflow-x-hidden pr-8 transition-all duration-300 md:hidden`}
         >
           <div
+            ref={closeRef}
             className={`absolute -z-10 h-full w-full bg-black/65 md:hidden`}
           ></div>
           <div className="z-20 flex h-full w-3/4 flex-col items-start justify-between bg-white">
-            <div>
+            <div className="w-full">
               <LeftNav />
             </div>
             <div className="mb-[52px] pl-3">

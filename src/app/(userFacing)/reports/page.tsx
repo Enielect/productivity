@@ -9,11 +9,12 @@ const generateRandownLightColors = () => {
 const ReportsPage = async () => {
   const weeksDict = await formatGroupsAccWeekNum();
   console.log(weeksDict, "weeksDict");
+  console.log(weeksDict, "weeksDict");
   if (weeksDict) {
     const dictKeys = Object.keys(weeksDict);
 
     return (
-      <div className="mt-[60px] space-y-4 px-3 md:mt-3">
+      <div className="mt-2 space-y-4 px-3 md:mt-3">
         {dictKeys.map((key) => (
           <ListItem key={key} url={key} />
         ))}

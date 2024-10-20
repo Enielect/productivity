@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, type ReactNode } from "react";
+import React, { useEffect, useState, type ReactNode } from "react";
 import Markdown from "react-markdown";
 import { useSWRConfig } from "swr";
 
@@ -34,6 +34,15 @@ const TaskDialogWrapper = ({ children, groupId }: DialogProp) => {
   const [state, action] = useFormState(addTask.bind(null, groupId!), undefined);
 
   if (state?.message) void mutate("/group/task");
+
+  useEffect(() => {
+    if (state?.message === "Task added successfully") {
+      setTaskGroup("");
+      setMarkdown("");
+      setResourceReason("");
+      setFormat(false);
+    }
+  }, [state?.message]);
 
   function handleMarkDown() {
     setFormat((c) => !c);
@@ -127,9 +136,9 @@ function SubmitButton() {
   return (
     <button
       type="submit"
-      className="rounded-md bg-blue-700 px-4 py-2 text-white"
+      className="flex justify-center rounded-md bg-blue-700 px-4 py-2 text-center text-white"
     >
-      {pending ? <Loader /> : " Add Task"}
+      {pending ? <Loader className="stoke-white" /> : " Add Task"}
     </button>
   );
 }

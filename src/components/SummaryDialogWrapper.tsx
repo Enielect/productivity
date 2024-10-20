@@ -70,9 +70,9 @@ function SubmitButton() {
   return (
     <button
       type="submit"
-      className="rounded-md bg-blue-700 px-4 py-2 text-white"
+      className="flex justify-center rounded-md bg-blue-700 px-4 py-2 text-center text-white"
     >
-      {pending ? <Loader /> : " Add Summary"}
+      {pending ? <Loader className="stroke-white" /> : " Add Summary"}
     </button>
   );
 }

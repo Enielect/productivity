@@ -6,7 +6,7 @@ const PerformanceLayout = async ({ children }: { children: ReactNode }) => {
   const weeksDict = await formatGroupsAccWeekNum();
 
   return (
-    <div className="mt-[49px] px-3 md:mt-0">
+    <div className="px-3 md:mt-0">
       <div className="flex w-screen items-center justify-between border-b pr-5 md:w-full">
         <h2 className="py-3 text-lg font-semibold">
           Performance Characterization

@@ -29,8 +29,8 @@ export default function Layout({
     <div className="grid h-full overflow-hidden">
       <Header toggle={setOpen} name={username} img={image} />
 
-      <main className="h-[calc(100dvh-50px)]">
-        <div className="relative top-[49px] hidden h-full grid-cols-[199px_1fr_250px] md:grid">
+      <main className="relative top-[49px] h-[calc(100dvh-50px)]">
+        <div className="relative hidden h-full grid-cols-[199px_1fr_250px] md:grid">
           <div className="">
             <LeftNav />
           </div>
@@ -44,15 +44,20 @@ export default function Layout({
             </div>
           </div>
         </div>
-        <div className="block h-full md:hidden">{children}</div>
+        <div className="block h-full overflow-y-auto md:hidden">{children}</div>
         <div
-          className={`${open ? "left-0 top-[49px] z-10" : "-left-[700px]"} fixed h-full w-screen overflow-x-hidden pr-8 transition-all`}
+          className={`${open ? "left-0 z-10" : "-left-[700px]"} fixed top-[50px] h-full w-screen overflow-x-hidden pr-8 transition-all duration-300 md:hidden`}
         >
           <div
             className={`absolute -z-10 h-full w-full bg-black/65 md:hidden`}
           ></div>
-          <div className="z-20 h-full w-1/2 bg-white">
-            <LeftNav />
+          <div className="z-20 flex h-full w-3/4 flex-col items-start justify-between bg-white">
+            <div>
+              <LeftNav />
+            </div>
+            <div className="mb-[52px] pl-3">
+              <RightCalendar />
+            </div>
           </div>
         </div>
       </main>

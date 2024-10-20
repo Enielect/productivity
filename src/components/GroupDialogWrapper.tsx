@@ -35,7 +35,7 @@ const GroupDialogWrapper = ({ children }: DialogProp) => {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="rounded-md sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add a New Task Group</DialogTitle>
           <DialogDescription>
@@ -57,9 +57,9 @@ const GroupDialogWrapper = ({ children }: DialogProp) => {
           <button
             type="submit"
             onClick={handleAddTaskGroup}
-            className="rounded-md bg-blue-700 px-4 py-2 text-white"
+            className="flex justify-center rounded-md bg-blue-700 px-4 py-2 text-center text-white"
           >
-            {pending ? <Loader /> : "Add Task Group"}
+            {pending ? <Loader className="stroke-white" /> : "Add Task Group"}
           </button>
         </DialogFooter>
       </DialogContent>

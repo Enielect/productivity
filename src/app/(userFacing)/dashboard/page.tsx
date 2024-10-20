@@ -39,7 +39,7 @@ export default async function DashboardPage() {
   console.log(postGroups, "postgroups");
   if (!session) redirect("/login");
   return (
-    <div className="">
+    <div className="h-full">
       <Dashboard postGroups={postGroupData} />
       {/* This is the dashboard page */}
     </div>

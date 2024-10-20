@@ -45,7 +45,7 @@ const Goals = ({ postGroups }: PostGroups) => {
 
   const progress = combinedPercentages / postGroups.length;
   return (
-    <div>
+    <div className="h-full">
       <div className="border-b px-3 pb-10">
         <Progress
           progress={progress}
@@ -59,7 +59,7 @@ const Goals = ({ postGroups }: PostGroups) => {
           <CarouselContent className="-ml-2 md:-ml-4">
             {postGroups.map((group) => (
               <CarouselItem
-                className="md:1/3 basis-1/2 pl-3 lg:basis-1/4"
+                className="basis-full pl-3 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
                 key={group.id}
               >
                 <TasKGroupCard
@@ -75,9 +75,7 @@ const Goals = ({ postGroups }: PostGroups) => {
         </Carousel>
         {/* </div> */}
       </div>
-      <div>
-        <TaskGroupDetails taskGroup={currentTaskGroup} />
-      </div>
+      <TaskGroupDetails taskGroup={currentTaskGroup} />
     </div>
   );
 };

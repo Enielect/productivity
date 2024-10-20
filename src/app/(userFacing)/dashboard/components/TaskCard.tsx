@@ -3,8 +3,16 @@ import DeleteDialog from "@/components/DeleteDialog";
 import EditTaskDialogWrapper from "@/components/EditTaskDialogWrapper";
 import SummaryDialogWrapper from "@/components/SummaryDialogWrapper";
 import type { SelectTask } from "@/server/db/schema";
-import { Columns2, Pencil, PlusIcon, Trash2, X } from "lucide-react";
+import {
+  ChevronsDown,
+  Columns2,
+  Pencil,
+  PlusIcon,
+  Trash2,
+  X,
+} from "lucide-react";
 import { startTransition, useState } from "react";
+import TaskInfo from "./TaskInfo";
 
 type TaskProp = {
   task: SelectTask;
@@ -23,47 +31,63 @@ export default function TaskCard({ task, setCurrentTask, current }: TaskProp) {
     });
   }
   return (
-    <div className="flex items-center justify-between gap-4 rounded-md bg-gray-200 px-4 py-3">
-      <div className="flex items-center gap-3">
-        <input
-          id={task.name}
-          checked={isChecked}
-          disabled={!task.summary || isChecked}
-          onChange={handleChecked}
-          className="h-5 w-5 accent-blue-600"
-          type="checkbox"
-        />
-        <label htmlFor={task.name} className="font-semibold">
-          {task.name}
-        </label>
+    <div
+      className={`max-md:animate-grid max-md:grid ${current === task.name ? "max-md:grid-rows-[auto,1fr]" : "max-md:grid-rows-1"}`}
+    >
+      <div className="flex flex-col justify-between gap-4 rounded-md bg-gray-200 px-4 py-3 md:flex-row md:items-center">
+        <div className="flex items-center gap-3">
+          <input
+            id={task.name}
+            checked={isChecked}
+            disabled={!task.summary || isChecked}
+            onChange={handleChecked}
+            className="h-5 w-5 accent-blue-600"
+            type="checkbox"
+          />
+          <label htmlFor={task.name} className="font-semibold">
+            {task.name}
+          </label>
+        </div>
+        <div className="justify-end space-x-4 self-end md:flex">
+          <DeleteDialog deleteType="task">
+            <button>
+              <Trash2 className="h-4 w-4 text-red-600 sm:h-6 sm:w-6" />
+            </button>
+          </DeleteDialog>
+          <SummaryDialogWrapper taskId={task.id}>
+            <button>
+              <PlusIcon className="h-4 w-4 sm:h-6 sm:w-6" />
+            </button>
+          </SummaryDialogWrapper>
+          <EditTaskDialogWrapper task={task}>
+            <button>
+              <Pencil className="h-4 w-4 sm:h-6 sm:w-6" />
+            </button>
+          </EditTaskDialogWrapper>
+          <button
+            onClick={() => {
+              setCurrentTask((c: string) => {
+                if (c === task.name) return "";
+                return task.name;
+              });
+            }}
+          >
+            {current === task.name ? (
+              <X className="h-4 w-4 sm:h-6 sm:w-6" />
+            ) : (
+              <>
+                <Columns2 className="hidden h-4 w-4 sm:h-6 sm:w-6 md:inline-block" />
+                <ChevronsDown className="h-4 w-4 sm:h-6 sm:w-6 md:hidden" />
+              </>
+            )}
+          </button>
+        </div>
       </div>
-      <div className="space-x-4">
-        <DeleteDialog deleteType="task">
-          <button>
-            <Trash2 className="h-6 w-6 text-red-600" />
-          </button>
-        </DeleteDialog>
-        <SummaryDialogWrapper taskId={task.id}>
-          <button>
-            <PlusIcon />
-          </button>
-        </SummaryDialogWrapper>
-        <EditTaskDialogWrapper task={task}>
-          <button>
-            <Pencil className="h-6 w-6" />
-          </button>
-        </EditTaskDialogWrapper>
-        <button
-          onClick={() => {
-            setCurrentTask((c: string) => {
-              if (c === task.name) return "";
-              return task.name;
-            });
-          }}
-        >
-          {current === task.name ? <X /> : <Columns2 />}
-        </button>
-      </div>
+      {current === task.name && (
+        <div className="h-[12rem] md:hidden">
+          <TaskInfo currentSelectedTask={task} />
+        </div>
+      )}
     </div>
   );
 }

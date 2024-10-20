@@ -6,6 +6,8 @@ import TaskDialogWrapper from "@/components/TaskDialogWrapper";
 import Markdown from "react-markdown";
 import TaskCard from "@/app/(userFacing)/dashboard/components/TaskCard";
 import type { GroupType } from "@/components/TasKGroupCard";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import TaskInfo from "./TaskInfo";
 
 const fetcher = (url: string) =>
   getTasksFromGroup(Number(url)).then((res) => res!.tasks);
@@ -25,7 +27,7 @@ export default function TaskGroupDetails({
   }, [tasks, taskGroup.id]);
   const currentSelectedTask = tasks?.find((task) => task.name === currentTask);
   return (
-    <div className="px-4">
+    <div className="h-full px-4">
       <div className="flex flex-col items-center gap-4 py-5 lg:flex-row">
         <NotepadText className="h-7 w-7 stroke-blue-600" />
         <span className="text-center text-2xl font-semibold sm:text-justify">
@@ -36,7 +38,7 @@ export default function TaskGroupDetails({
           provide a summary of the task before you can check the task done)
         </em>
       </div>
-      <div className="flex w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between pb-2">
         <div className="flex space-x-5">
           <div className="w-[4rem] rounded-bl-md rounded-tl-md border border-blue-800 px-3 py-2 text-blue-600">
             Tasks
@@ -54,44 +56,39 @@ export default function TaskGroupDetails({
         </button>
       </div>
       {tasks && !isLoading && (
-        <div className="flex w-full gap-3">
-          <div
+        <div className={`flex w-full gap-3`}>
+          <ScrollArea
             data-open={String(currentTask.length > 0)}
-            className="mt-5 h-[16rem] w-full space-y-3 overflow-auto pr-3 transition-all data-[open=true]:w-1/2"
+            className="hidden h-[5rem] w-full pb-[1.3rem] md:block md:h-[16rem] md:data-[open=true]:w-1/2"
           >
-            {tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                setCurrentTask={setCurrentTask}
-                task={task}
-                groupId={taskGroup.id}
-                current={currentTask}
-              />
-            ))}
+            <div className="mt-5 w-full space-y-3 overflow-auto pr-3 transition-all">
+              {tasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  setCurrentTask={setCurrentTask}
+                  task={task}
+                  groupId={taskGroup.id}
+                  current={currentTask}
+                />
+              ))}
+            </div>
+          </ScrollArea>
+          <div className="w-full md:hidden">
+            <div className="mt-5 w-full space-y-3 overflow-auto pr-3 transition-all">
+              {tasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  setCurrentTask={setCurrentTask}
+                  task={task}
+                  groupId={taskGroup.id}
+                  current={currentTask}
+                />
+              ))}
+            </div>
           </div>
           {currentTask.length > 0 && (
-            <div className="h-[16rem] w-1/2 space-y-3 overflow-auto border-2 border-blue-600 p-2">
-              <div className="rounded-md border px-2 py-2">
-                <header className="py-3 text-lg font-semibold">
-                  Learning resources
-                </header>
-                <div className="markdown">
-                  <Markdown>{currentSelectedTask!.resource}</Markdown>
-                </div>
-              </div>
-              <div className="rounded-md border px-2 py-2">
-                <header className="py-3 text-lg font-semibold">
-                  Reason For Learning Resource
-                </header>
-                {currentSelectedTask!.reasonForResource}
-              </div>
-              <div className="rounded-md border px-2 py-2">
-                <header className="py-3 text-lg font-semibold">
-                  Educate me.{" "}
-                  <small>(In as few amount of words as possible)</small>
-                </header>
-                {currentSelectedTask!.summary ?? <em>not specified yet</em>}
-              </div>
+            <div className="hidden md:block md:w-1/2">
+              <TaskInfo currentSelectedTask={currentSelectedTask} />
             </div>
           )}
         </div>

@@ -11,6 +11,7 @@ import {
 } from "@/server/db/queries/insert";
 import { and } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { redirect } from "next/navigation";
 
 const session = await auth();
 
@@ -30,6 +31,7 @@ export async function addTask(
   try {
     await createTask({ taskGroupId: id, name, resource, reasonForResource });
     revalidatePath("/dashboard");
+    redirect("/dashboard");
     return { message: "Task added successfully" };
   } catch (error) {
     console.error(error);
@@ -72,24 +74,24 @@ export async function addSummary(
   }
 }
 
-export const getTasksFromGroup = unstable_cache(async (id: number) => {
-  if (!session?.user) return;
-  const tasks = await db.query.taskGroups.findFirst({
-    where: (taskGroups, { eq }) =>
-      and(eq(taskGroups.id, id), eq(taskGroups.userId, session.user.id)),
-    with: {
-      tasks: true,
-    },
-  });
-  return tasks;
-});
+// export const getTasksFromGroup = unstable_cache(async (id: number) => {
+//   if (!session?.user) return;
+//   const tasks = await db.query.taskGroups.findFirst({
+//     where: (taskGroups, { eq }) =>
+//       and(eq(taskGroups.id, id), eq(taskGroups.userId, session.user.id)),
+//     with: {
+//       tasks: true,
+//     },
+//   });
+//   return tasks;
+// });
 
-export const getTask = unstable_cache(async (id: number) => {
-  const task = await db.query.tasks.findFirst({
-    where: (tasks, { eq }) => eq(tasks.id, id),
-  });
-  return task;
-});
+// export const getTask = unstable_cache(async (id: number) => {
+//   const task = await db.query.tasks.findFirst({
+//     where: (tasks, { eq }) => eq(tasks.id, id),
+//   });
+//   return task;
+// });
 
 export async function setChecked(isChecked: boolean, id: number) {
   try {

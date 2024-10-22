@@ -1,31 +1,22 @@
-import { useEffect, useState } from "react";
-import useSWR from "swr";
-import { Loader2, NotepadText, PlusIcon, Trash2 } from "lucide-react";
-import { getTasksFromGroup } from "@/action/task";
+import { useState } from "react";
+import { NotepadText, PlusIcon, Trash2 } from "lucide-react";
 import TaskDialogWrapper from "@/components/TaskDialogWrapper";
-import Markdown from "react-markdown";
 import TaskCard from "@/app/(userFacing)/dashboard/components/TaskCard";
 import type { GroupType } from "@/components/TasKGroupCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import TaskInfo from "./TaskInfo";
-
-const fetcher = (url: string) =>
-  getTasksFromGroup(Number(url)).then((res) => res!.tasks);
 
 export default function TaskGroupDetails({
   taskGroup,
 }: {
   taskGroup: GroupType;
 }) {
-  // const [tasks, setTasks] = useState<SelectTask[]>([]);
   const [currentTask, setCurrentTask] = useState("");
   console.log(taskGroup.id);
-  const { data: tasks, isLoading } = useSWR(`${taskGroup.id}`, fetcher);
 
-  useEffect(() => {
-    console.log(taskGroup.id, "tasks group");
-  }, [tasks, taskGroup.id]);
-  const currentSelectedTask = tasks?.find((task) => task.name === currentTask);
+  const currentSelectedTask = taskGroup.tasks?.find(
+    (task) => task.name === currentTask,
+  );
   return (
     <div className="h-full px-4">
       <div className="flex flex-col items-center gap-4 py-5 lg:flex-row">
@@ -55,14 +46,14 @@ export default function TaskGroupDetails({
           Delete Group
         </button>
       </div>
-      {tasks && !isLoading && (
-        <div className={`flex w-full gap-3`}>
+      {taskGroup.tasks && (
+        <div className={`flex w-full gap-3 md:h-[calc(100%-210px)]`}>
           <ScrollArea
             data-open={String(currentTask.length > 0)}
-            className="hidden h-[5rem] w-full pb-[1.3rem] md:block md:h-[16rem] md:data-[open=true]:w-1/2"
+            className="hidden h-[5rem] w-full pb-[1.3rem] md:block md:h-full md:data-[open=true]:w-1/2"
           >
             <div className="mt-5 w-full space-y-3 overflow-auto pr-3 transition-all">
-              {tasks.map((task) => (
+              {taskGroup.tasks.map((task) => (
                 <TaskCard
                   key={task.id}
                   setCurrentTask={setCurrentTask}
@@ -75,7 +66,7 @@ export default function TaskGroupDetails({
           </ScrollArea>
           <div className="w-full md:hidden">
             <div className="mt-5 w-full space-y-3 overflow-auto pr-3 transition-all">
-              {tasks.map((task) => (
+              {taskGroup.tasks.map((task) => (
                 <TaskCard
                   key={task.id}
                   setCurrentTask={setCurrentTask}
@@ -91,11 +82,6 @@ export default function TaskGroupDetails({
               <TaskInfo currentSelectedTask={currentSelectedTask} />
             </div>
           )}
-        </div>
-      )}
-      {isLoading && (
-        <div className="flex h-full w-full items-center justify-center">
-          <Loader2 className="animate-spin" />
         </div>
       )}
     </div>

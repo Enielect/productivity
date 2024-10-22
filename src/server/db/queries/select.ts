@@ -7,18 +7,12 @@ import { and, eq, ilike, or } from "drizzle-orm";
 import { getWeekNumber } from "@/lib/helpers";
 import { unstable_cache } from "next/cache";
 
-export const getGeneralGroupTasks = unstable_cache(
-  async (userId: string) => {
-    // const session = await auth();
-    // if (!session?.user) return;
-    return await db.query.taskGroups.findMany({
-      where: (taskGroups, { eq }) => eq(taskGroups.userId, userId),
-      with: { tasks: true },
-    });
-  },
-  ["generalGroupTasks"],
-  { revalidate: 60 * 60 * 24 },
-);
+export const getGeneralGroupTasks = async (userId: string) => {
+  return await db.query.taskGroups.findMany({
+    where: (taskGroups, { eq }) => eq(taskGroups.userId, userId),
+    with: { tasks: true },
+  });
+};
 
 export async function formatGroupsAccWeekNum() {
   const session = await auth();
@@ -81,20 +75,24 @@ export async function getDayGroupTasks(weekTask: GroupType[], day: string) {
 
 //get tasks based on taskGroupsId
 
-export async function getGroupTasks(groupId: number) {
-  return await db.query.tasks.findMany({
-    where: (tasks, { eq }) => eq(tasks.taskGroupId, groupId),
-  });
-}
+// export async function getGroupTasks(groupId: number) {
+//   return await db.query.tasks.findMany({
+//     where: (tasks, { eq }) => eq(tasks.taskGroupId, groupId),
+//   });
+// }
 
 //get notes associated with a particular day for a particular user
-export const getNotes = unstable_cache(async (userId: string) => {
-  // const session = await auth();
-  // if (!session?.user) return [];
-  return await db.query.notes.findMany({
-    where: (notes, { eq }) => eq(notes.userId, userId),
-  });
-});
+export const getNotes = unstable_cache(
+  async (userId: string) => {
+    // const session = await auth();
+    // if (!session?.user) return [];
+    return await db.query.notes.findMany({
+      where: (notes, { eq }) => eq(notes.userId, userId),
+    });
+  },
+  ["getNotes"],
+  { revalidate: 60 * 60 },
+);
 
 export async function formatNotesAccDay(notes: SelectNotes[]) {
   const dict: Record<string, SelectNotes[]> = notes.reduce(

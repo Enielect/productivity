@@ -20,7 +20,6 @@ import type { SelectTask } from "@/server/db/schema";
 import { Check, ChevronsDown, Columns2, NotepadText, X } from "lucide-react";
 import { notFound } from "next/navigation";
 import React, { useState } from "react";
-import Markdown from "react-markdown";
 
 const TaskGroupWrapper = ({
   dayTasks,
@@ -136,29 +135,6 @@ const TaskGroupWrapper = ({
                 ))}
               </div>
               {currentTask.length > 0 && (
-                // <div className="h-full w-1/2 space-y-3 border-2 border-blue-600 p-2">
-                //   <div className="rounded-md border px-2 py-2">
-                //     <header className="py-3 text-lg font-semibold">
-                //       Learning resources
-                //     </header>
-                //     <div className="markdown">
-                //       <Markdown>{currentSelectedTask!.resource}</Markdown>
-                //     </div>
-                //   </div>
-                //   <div className="rounded-md border px-2 py-2">
-                //     <header className="py-3 text-lg font-semibold">
-                //       Reason For Learning Resource
-                //     </header>
-                //     {currentSelectedTask!.reasonForResource}
-                //   </div>
-                //   <div className="rounded-md border px-2 py-2">
-                //     <header className="py-3 text-lg font-semibold">
-                //       Educate me.{" "}
-                //       <small>(In as few amount of words as possible)</small>
-                //     </header>
-                //     {currentSelectedTask!.summary ?? <em>not specified yet</em>}
-                //   </div>
-                // </div>
                 <div className="hidden w-full min-[1200px]:block min-[1200px]:w-1/2">
                   <TaskInfo currentSelectedTask={currentSelectedTask} />
                 </div>

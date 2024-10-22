@@ -29,11 +29,8 @@ const TaskDialogWrapper = ({ children, groupId }: DialogProp) => {
   const [markdown, setMarkdown] = useState("");
   const [resourceReason, setResourceReason] = useState("");
   const [format, setFormat] = useState(false);
-  const { mutate } = useSWRConfig();
 
   const [state, action] = useFormState(addTask.bind(null, groupId!), undefined);
-
-  if (state?.message) void mutate("/group/task");
 
   useEffect(() => {
     if (state?.message === "Task added successfully") {

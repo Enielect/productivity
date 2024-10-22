@@ -5,11 +5,6 @@ import Dashboard from "@/components/Dashboard.Page";
 import { db } from "@/server/db";
 import { redirect } from "next/navigation";
 
-// export const dynamic = "force-dynamic";
-
-// const getTodaysTasksGroups = unstable_cache(async () => {
-// });
-
 export default async function DashboardPage() {
   const session = await auth();
 

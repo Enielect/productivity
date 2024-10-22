@@ -48,20 +48,20 @@ export default function TaskCard({ task, setCurrentTask, current }: TaskProp) {
             {task.name}
           </label>
         </div>
-        <div className="justify-end space-x-4 self-end md:flex">
+        <div className="justify-end space-x-2 self-end md:flex">
           <DeleteDialog deleteType="task">
             <button>
-              <Trash2 className="h-4 w-4 text-red-600 sm:h-6 sm:w-6" />
+              <Trash2 className="h-4 w-5 text-red-600 sm:h-6 sm:w-6" />
             </button>
           </DeleteDialog>
           <SummaryDialogWrapper taskId={task.id}>
             <button>
-              <PlusIcon className="h-4 w-4 sm:h-6 sm:w-6" />
+              <PlusIcon className="h-4 w-5 sm:h-6 sm:w-6" />
             </button>
           </SummaryDialogWrapper>
           <EditTaskDialogWrapper task={task}>
             <button>
-              <Pencil className="h-4 w-4 sm:h-6 sm:w-6" />
+              <Pencil className="h-4 w-5 sm:h-6 sm:w-6" />
             </button>
           </EditTaskDialogWrapper>
           <button
@@ -73,11 +73,11 @@ export default function TaskCard({ task, setCurrentTask, current }: TaskProp) {
             }}
           >
             {current === task.name ? (
-              <X className="h-4 w-4 sm:h-6 sm:w-6" />
+              <X className="h-4 w-5 sm:h-6 sm:w-6" />
             ) : (
               <>
-                <Columns2 className="hidden h-4 w-4 sm:h-6 sm:w-6 md:inline-block" />
-                <ChevronsDown className="h-4 w-4 sm:h-6 sm:w-6 md:hidden" />
+                <Columns2 className="hidden h-4 w-5 sm:h-6 sm:w-6 md:inline-block" />
+                <ChevronsDown className="h-4 w-5 sm:h-6 sm:w-6 md:hidden" />
               </>
             )}
           </button>

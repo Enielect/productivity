@@ -6,11 +6,13 @@ import {
   LayoutDashboardIcon,
   NotebookPen,
   NotepadText,
+  SearchIcon,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useRef, type ReactNode } from "react";
+import React, { useEffect, useRef, useState, type ReactNode } from "react";
 import { RightCalendar } from "./RightCalendar";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
@@ -28,11 +30,6 @@ export default function Layout({
   const closeRef = useRef<HTMLDivElement | null>(null);
 
   const outsideClick = (e: MouseEvent) => {
-    // if (e.target instanceof HTMLElement) {
-    //   if (e.target.closest(".fixed") === null) {
-    //     setOpen(false);
-    //   }
-    // }
     if (e.target === closeRef.current) {
       setOpen(false);
     }
@@ -48,16 +45,20 @@ export default function Layout({
       <Header toggle={setOpen} name={username} img={image} />
 
       <main className="relative top-[49px] md:h-[calc(100dvh-50px)]">
-        <div className="relative hidden h-full grid-cols-[199px_1fr_250px] md:grid">
-          <div className="">
+        <div className="relative hidden h-full md:grid md:grid-cols-[260px_1fr] min-[890px]:grid-cols-[199px_1fr_260px]">
+          <div className="flex flex-col justify-between">
             <LeftNav />
+            <div className="hidden pl-2 pr-2 pt-2 md:block min-[890px]:hidden">
+              <h3 className="py-2 text-center">TaskGroup Calendar</h3>
+              <RightCalendar />
+            </div>
           </div>
           <div className="border-l border-r border-[#444444]/20">
             {children}
           </div>
-          <div className="pl-3 pr-3 pt-3">
+          <div className="pl-3 pr-3 pt-3 md:hidden min-[890px]:block">
             <div className="">
-              <h3>TaskGroup Calendar</h3>
+              <h3 className="py-2 text-center">TaskGroup Calendar</h3>
               <RightCalendar />
             </div>
           </div>
@@ -74,7 +75,7 @@ export default function Layout({
             <div className="w-full">
               <LeftNav />
             </div>
-            <div className="mb-[52px] pl-3">
+            <div className="mb-[52px] pl-3 md:hidden min-[890px]:block">
               <RightCalendar />
             </div>
           </div>
@@ -93,6 +94,8 @@ function Header({
   img: string;
   toggle: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const [displaySearch, setDisplaySearch] = useState(false);
+
   return (
     <header className="fixed z-20 flex h-[50px] w-full border-b border-[#444444]/20 bg-white">
       <h1 className="hidden h-full basis-[200px] border-r border-[#444444]/20 md:block">
@@ -107,11 +110,24 @@ function Header({
       >
         <HamburgerMenuIcon className="h-6 w-6" />
       </button>
-      <div className="flex flex-grow items-center justify-between px-4 sm:px-7">
-        <Input placeholder="search" type="text" className="w-[15rem]" />
-        <div className="flex items-center gap-8">
+      <div
+        className={`flex flex-grow items-center transition-all duration-500 ${displaySearch ? "justify-between" : "justify-end"} px-4 sm:px-7`}
+      >
+        <Input
+          placeholder="search"
+          type="text"
+          className={`${displaySearch ? "inline-block w-[15rem]" : "hidden w-0"} transition-all duration-500`}
+        />
+        <div className="flex items-center gap-3 md:gap-8">
+          {!displaySearch ? (
+            <SearchIcon onClick={() => setDisplaySearch(true)} />
+          ) : (
+            <X onClick={() => setDisplaySearch(false)} />
+          )}
           <User name={name} img={img} />
-          <span className="sm:hidden">
+          <span
+            className={`sm:hidden ${displaySearch && "hidden"} transition-all duration-500`}
+          >
             {new Date()
               .toString()
               .split(" ")

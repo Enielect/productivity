@@ -13,7 +13,7 @@ function AddNote() {
   return (
     <form
       action={action}
-      className="fixed left-0 mx-auto h-[200px] w-[100vw] transition-all data-[open=false]:-bottom-[135px] data-[open=true]:bottom-[60px]"
+      className="fixed left-0 mx-auto h-[200px] w-[100vw] transition-all data-[open=false]:-bottom-[135px] data-[open=true]:bottom-[120px]"
       data-open={String(showAddNote)}
     >
       <div className="flex justify-center text-center">
@@ -35,6 +35,7 @@ function AddNote() {
               <Textarea
                 name="content"
                 placeholder="Type your message here."
+                className="h-[6rem] resize-none"
                 required
               />
               <SubmitButton />

@@ -2,7 +2,7 @@ type ProgressProp = { progress: number; completed: number; noOfTasks: number };
 
 export function Progress({ progress, completed, noOfTasks }: ProgressProp) {
   return (
-    <div className="flex flex-col items-start gap-3 py-5 sm:flex-row sm:items-center sm:gap-[80px]">
+    <div className="flex flex-col items-start gap-3 py-5 sm:flex-row sm:items-center sm:gap-[80px] min-[890px]:flex-col min-[890px]:items-start min-[890px]:gap-3 min-[992px]:flex-row min-[992px]:items-center min-[992px]:gap-8">
       <div className="">
         <ProgressBar progress={progress} />
       </div>

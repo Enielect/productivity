@@ -21,7 +21,12 @@ type TaskProp = {
   setCurrentTask: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function TaskCard({ task, setCurrentTask, current }: TaskProp) {
+export default function TaskCard({
+  task,
+  setCurrentTask,
+  groupId,
+  current,
+}: TaskProp) {
   const [isChecked, setIsChecked] = useState(task.isChecked!);
   function handleChecked(e: React.ChangeEvent<HTMLInputElement>) {
     startTransition(async () => {
@@ -32,9 +37,9 @@ export default function TaskCard({ task, setCurrentTask, current }: TaskProp) {
   }
   return (
     <div
-      className={`max-md:animate-grid max-md:grid ${current === task.name ? "max-md:grid-rows-[auto,1fr]" : "max-md:grid-rows-1"}`}
+      className={`animate-grid grid ${current === task.name ? "grid-rows-[auto,1fr]" : "grid-rows-1"}`}
     >
-      <div className="flex flex-col justify-between gap-4 rounded-md bg-gray-200 px-4 py-3 md:flex-row md:items-center">
+      <div className="flex flex-col justify-between gap-3 rounded-md bg-gray-200 px-4 py-3 md:flex-row md:items-center">
         <div className="flex items-center gap-3">
           <input
             id={task.name}
@@ -49,7 +54,11 @@ export default function TaskCard({ task, setCurrentTask, current }: TaskProp) {
           </label>
         </div>
         <div className="justify-end space-x-2 self-end md:flex">
-          <DeleteDialog deleteType="task">
+          <DeleteDialog
+            taskGroupId={groupId}
+            taskId={task.id}
+            deleteType="task"
+          >
             <button>
               <Trash2 className="h-4 w-5 text-red-600 sm:h-6 sm:w-6" />
             </button>
@@ -84,7 +93,7 @@ export default function TaskCard({ task, setCurrentTask, current }: TaskProp) {
         </div>
       </div>
       {current === task.name && (
-        <div className="h-[12rem] md:hidden">
+        <div className="h-[16rem] md:hidden min-[890px]:block min-[1000px]:hidden">
           <TaskInfo currentSelectedTask={task} />
         </div>
       )}

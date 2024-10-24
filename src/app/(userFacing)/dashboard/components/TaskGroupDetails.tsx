@@ -5,6 +5,7 @@ import TaskCard from "@/app/(userFacing)/dashboard/components/TaskCard";
 import type { GroupType } from "@/components/TasKGroupCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import TaskInfo from "./TaskInfo";
+import DeleteDialog from "@/components/DeleteDialog";
 
 export default function TaskGroupDetails({
   taskGroup,
@@ -41,18 +42,20 @@ export default function TaskGroupDetails({
             </button>
           </TaskDialogWrapper>
         </div>
-        <button className="flex items-center gap-3 text-red-600">
-          <Trash2 className="h-6 w-6 text-red-600" />
-          Delete Group
-        </button>
+        <DeleteDialog taskGroupId={taskGroup.id} deleteType="taskGroup">
+          <button className="flex items-center gap-3 text-red-600">
+            <Trash2 className="h-6 w-6 text-red-600" />
+            Delete Group
+          </button>
+        </DeleteDialog>
       </div>
       {taskGroup.tasks && (
-        <div className={`flex w-full gap-3 md:h-[calc(100%-210px)]`}>
+        <div className={`flex w-full gap-3 md:h-[calc(100%-230px)]`}>
           <ScrollArea
             data-open={String(currentTask.length > 0)}
-            className="hidden h-[5rem] w-full pb-[1.3rem] md:block md:h-full md:data-[open=true]:w-1/2"
+            className="hidden h-[5rem] w-full pb-[1.3rem] md:block md:h-full min-[890px]:data-[open=true]:w-full min-[1000px]:data-[open=true]:w-1/2"
           >
-            <div className="mt-5 w-full space-y-3 overflow-auto pr-3 transition-all">
+            <div className="h-full w-full space-y-3 overflow-auto pr-3 pt-5 transition-all">
               {taskGroup.tasks.map((task) => (
                 <TaskCard
                   key={task.id}
@@ -78,7 +81,7 @@ export default function TaskGroupDetails({
             </div>
           </div>
           {currentTask.length > 0 && (
-            <div className="hidden md:block md:w-1/2">
+            <div className="hidden md:block md:w-1/2 min-[890px]:hidden min-[1000px]:block">
               <TaskInfo currentSelectedTask={currentSelectedTask} />
             </div>
           )}

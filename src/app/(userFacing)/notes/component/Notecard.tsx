@@ -43,12 +43,13 @@ function NoteCard({ title, content, noteId }: NoteCardProps) {
             onChange={(e) => setEditTitle(e.target.value)}
           />
           <Textarea
+            className="h-16"
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
           />
         </div>
       ) : (
-        <p className={`text-black`}>
+        <div className={`text-black`}>
           {showMore ? (
             <div className="markdown flex flex-wrap">
               <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
@@ -56,10 +57,10 @@ function NoteCard({ title, content, noteId }: NoteCardProps) {
           ) : (
             content.slice(0, 50) + "..."
           )}
-        </p>
+        </div>
       )}
 
-      {content.length > 50 && !edit && (
+      {content.length >= 50 && !edit && (
         <button
           onClick={() => setShowMore(!showMore)}
           className="flex items-center text-blue-600"

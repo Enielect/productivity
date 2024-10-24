@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Input } from "./ui/input";
 
@@ -8,33 +8,45 @@ const SearchBar = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathName = usePathname();
-  const isFirstrendition = React.useRef(true);
   const searchValue = searchParams.get("search") ?? "";
 
-  const [inputValue, setInputValue] = useState(searchValue); // Local state for input value
+  // Initialize input value with searchValue
+  const [inputValue, setInputValue] = useState(searchValue);
 
-  // Debounce handler
-  useEffect(() => {
-    if (isFirstrendition.current) {
-      isFirstrendition.current = false;
-      return;
-    }
-    const padUrl = (name: string, value: string) => {
+  const padUrl = useCallback(
+    (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name); // Remove the parameter if value is empty
+      }
       return params.toString();
-    };
-    // const handler = setTimeout(() => {
-    if (inputValue !== searchValue) {
-      router.push(pathName + "?" + padUrl("search", inputValue));
-    }
-    // }, 100); // 500ms debounce
+    },
+    [searchParams],
+  );
 
-    // return () => clearTimeout(handler); // Cleanup the timeout on every change
-  }, [inputValue, pathName, searchValue, router, searchParams]);
+  // Sync input value with URL when searchValue changes
+  useEffect(() => {
+    setInputValue(searchValue);
+  }, [searchValue]);
+
+  // Debounced URL update
+  useEffect(() => {
+    // Only update URL if input value is different from current search value
+    if (inputValue === searchValue) return;
+
+    const handler = setTimeout(() => {
+      const queryString = padUrl("search", inputValue);
+      const newUrl = pathName + (queryString ? `?${queryString}` : "");
+      router.push(newUrl);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [inputValue, pathName, searchValue, router, padUrl]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value.toLowerCase()); // Update local input value state
+    setInputValue(e.target.value.toLowerCase());
   };
 
   return (

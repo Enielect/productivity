@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import useSWR from "swr";
 import { NotesByDateWrapper } from "../page";
 import { useSearchParams } from "next/navigation";
 import { searchUserNotes } from "@/server/db/queries/select";
 import useDebounce from "@/app/hooks/useDebounce";
-import { SelectNotes } from "@/server/db/schema";
+import type { SelectNotes } from "@/server/db/schema";
 import { Loader2 } from "lucide-react";
 
 type WrapperProps = {
@@ -47,19 +46,19 @@ const NoteDisplayWrapper = ({ dayCreated, notesByDate }: WrapperProps) => {
     }
   }, []);
 
-  // const debouncedFunction = useDebounce(fetchSearchResults, 200);
+  const debouncedFunction = useDebounce(fetchSearchResults, 2000);
   useEffect(() => {
     if (searchValue.length > 0) {
-      void fetchSearchResults(searchValue);
+      debouncedFunction(searchValue);
     }
-  }, [searchValue, fetchSearchResults]);
+  }, [searchValue, debouncedFunction]);
   return (
     <div>
       {searchValue.length > 0 ? (
         <div>
           {/* <h3>Searched Result</h3> */}
           {loading ? (
-            <div className="flex items-center h-[calc(100vh-200px)] justify-center">
+            <div className="flex h-[calc(100vh-200px)] items-center justify-center">
               <Loader2 className="animate-spin" />
             </div>
           ) : (

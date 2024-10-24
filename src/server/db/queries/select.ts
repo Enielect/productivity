@@ -180,8 +180,10 @@ export async function getBestPerformingWeek() {
       (acc, curr) => acc + curr.tasks.length,
       0,
     );
-    const performancePercentage = (numCompletedTasks! / totalTasks!) * 100;
-    if (performancePercentage) {
+    const performancePercentage = isNaN(numCompletedTasks! / totalTasks!)
+      ? 0
+      : (numCompletedTasks! / totalTasks!) * 100;
+    if (performancePercentage && performancePercentage > currHighest) {
       currHighest = performancePercentage;
       bestWeek = week;
     }

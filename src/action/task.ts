@@ -10,10 +10,10 @@ import {
   updateTask,
 } from "@/server/db/queries/insert";
 import { and } from "drizzle-orm";
-import { revalidatePath, unstable_cache } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-const session = await auth();
+// const session = await auth();
 
 export async function addTaskGroup(data: { name: string }) {
   await createTaskGroup(data);
@@ -30,11 +30,11 @@ export async function addTask(
   const reasonForResource = formData.get("reasonForResource") as string;
   try {
     await createTask({ taskGroupId: id, name, resource, reasonForResource });
-    revalidatePath("/dashboard");
-    redirect("/dashboard");
+
     return { message: "Task added successfully" };
   } catch (error) {
     console.error(error);
+    return { message: "Task not added" };
   }
 }
 
@@ -53,6 +53,7 @@ export async function editTask(
     else await updateTask({ id, name, resource, reasonForResource });
 
     revalidatePath("/dashboard");
+    redirect("/dashboard");
     return { message: "Task updated successfully" };
   } catch (error) {
     console.error(error);
@@ -68,6 +69,7 @@ export async function addSummary(
   try {
     await createSummary(taskId, summary);
     revalidatePath("/dashboard");
+    redirect("/dashboard");
     return { message: "Summary added successfully" };
   } catch (error) {
     console.error(error);

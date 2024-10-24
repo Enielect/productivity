@@ -1,7 +1,11 @@
+import "server-only";
+
 import { and, eq } from "drizzle-orm";
 import { db } from "..";
 import { type InsertTask, notes, taskGroups, tasks } from "../schema";
 import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 type EditProps = {
   title: string;
@@ -18,6 +22,8 @@ export async function createTaskGroup(data: { name: string }) {
 export async function createTask(data: InsertTask) {
   const session = await auth();
   if (session?.user) await db.insert(tasks).values(data);
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
 
 export async function createSummary(taskId: number, summary: string) {
@@ -44,9 +50,11 @@ export async function deleteTask(taskId: number, taskGroupId: number) {
     await db.delete(tasks).where(
       and(
         eq(tasks.id, taskId),
-        eq(tasks.taskGroupId, taskGroupId), // eq(tasks.userId, session.user.id)
+        eq(tasks.taskGroupId, taskGroupId),
+        //eq(taskGroups.userId, session.user.id),
       ),
     );
+  redirect("/dashboard");
 }
 
 export async function deleteTaskGroup(taskGroupId: number) {
@@ -60,6 +68,7 @@ export async function deleteTaskGroup(taskGroupId: number) {
           eq(taskGroups.userId, session.user.id),
         ),
       );
+  redirect("/dashboard");
 }
 
 export async function createNote(data: { title: string; content: string }) {
@@ -76,5 +85,10 @@ export async function editNote(data: EditProps) {
 
 export async function deleteNote(id: number) {
   const session = await auth();
-  if (session?.user) await db.delete(notes).where(eq(notes.id, id));
+  if (session?.user)
+    await db
+      .delete(notes)
+      .where(and(eq(notes.id, id), eq(notes.userId, session.user.id)));
+  revalidatePath("/notes");
+  redirect("/notes");
 }

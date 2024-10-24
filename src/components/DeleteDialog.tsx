@@ -1,4 +1,5 @@
 "use client";
+import { deleteTaskAction, deleteTaskGroupAction } from "@/action/delete";
 import { removeNote } from "@/app/(userFacing)/notes/action/note";
 import {
   Dialog,
@@ -9,9 +10,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { deleteTask, deleteTaskGroup } from "@/server/db/queries/insert";
 import { Loader2 } from "lucide-react";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 export default function DeleteDialog({
   children,
@@ -27,8 +27,9 @@ export default function DeleteDialog({
   deleteType: "note" | "task" | "taskGroup";
 }) {
   const [pending, startTransition] = useTransition();
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -42,14 +43,21 @@ export default function DeleteDialog({
           <button
             onClick={() => {
               startTransition(async () => {
-                if (deleteType === "note" && noteId) await removeNote(noteId);
-                if (deleteType === "task" && taskId && taskGroupId)
-                  await deleteTask(taskId, taskGroupId); //adding the taskGroupId here is still experimental
-                if (deleteType === "taskGroup" && taskGroupId)
-                  await deleteTaskGroup(taskGroupId);
+                if (deleteType === "note" && noteId) {
+                  await removeNote(noteId);
+                  setOpen(false);
+                }
+                if (deleteType === "task" && taskId && taskGroupId) {
+                  await deleteTaskAction(taskId, taskGroupId);
+                  setOpen(false);
+                } //adding the taskGroupId here is still experimental
+                if (deleteType === "taskGroup" && taskGroupId) {
+                  await deleteTaskGroupAction(taskGroupId);
+                  setOpen(false);
+                }
               });
             }}
-            className="rounded-md bg-blue-600 px-2 py-1 text-white"
+            className="flex justify-center rounded-md bg-blue-600 px-2 py-1 text-center text-white"
             type="submit"
           >
             {pending ? <Loader2 className="animate-spin" /> : "Confirm"}

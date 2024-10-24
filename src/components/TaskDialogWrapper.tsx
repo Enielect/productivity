@@ -29,6 +29,7 @@ const TaskDialogWrapper = ({ children, groupId }: DialogProp) => {
   const [markdown, setMarkdown] = useState("");
   const [resourceReason, setResourceReason] = useState("");
   const [format, setFormat] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const [state, action] = useFormState(addTask.bind(null, groupId!), undefined);
 
@@ -41,12 +42,14 @@ const TaskDialogWrapper = ({ children, groupId }: DialogProp) => {
     }
   }, [state?.message]);
 
+  if (state?.message === "Task added successfully") setOpen(false);
+
   function handleMarkDown() {
     setFormat((c) => !c);
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form action={action}>

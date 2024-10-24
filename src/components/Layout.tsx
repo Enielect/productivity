@@ -65,7 +65,7 @@ export default function Layout({
         </div>
         <div className="block h-full overflow-y-auto md:hidden">{children}</div>
         <div
-          className={`${open ? "left-0 z-10" : "-left-[700px]"} fixed top-[50px] h-full w-screen overflow-x-hidden pr-8 transition-all duration-300 md:hidden`}
+          className={`${open ? "left-0 z-10" : "-left-[700px]"} fixed top-[50px] h-full w-screen overflow-x-hidden pr-8 transition-all delay-150 duration-300 md:hidden`}
         >
           <div
             ref={closeRef}
@@ -73,7 +73,7 @@ export default function Layout({
           ></div>
           <div className="z-20 flex h-full w-3/4 flex-col items-start justify-between bg-white">
             <div className="w-full">
-              <LeftNav />
+              <LeftNav setOpen={setOpen} open={open} />
             </div>
             <div className="mb-[52px] pl-3 md:hidden min-[890px]:block">
               <RightCalendar />
@@ -156,6 +156,8 @@ function User({ name, img }: { name: string; img: string }) {
 }
 
 interface NavListProps {
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  open?: boolean;
   icon: ReactNode;
   text: string;
 }
@@ -168,17 +170,29 @@ const navList: NavListProps[] = [
 ];
 
 // This is a better way to write the LeftNav component
-function LeftNav() {
+function LeftNav({
+  setOpen,
+  open,
+}: {
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  open?: boolean;
+}) {
   return (
     <ul className="bg-white pt-5">
       {navList.map(({ icon, text }) => (
-        <ListItem key={text} icon={icon} text={text} />
+        <ListItem
+          setOpen={setOpen}
+          key={text}
+          open={open}
+          icon={icon}
+          text={text}
+        />
       ))}
     </ul>
   );
 }
 
-function ListItem({ icon, text }: NavListProps) {
+function ListItem({ icon, text, setOpen, open }: NavListProps) {
   const [hover, setHover] = React.useState(false);
   const pathName = usePathname();
 
@@ -186,9 +200,19 @@ function ListItem({ icon, text }: NavListProps) {
     className: `${pathName === `/${text.toLowerCase()}` && "text-blue-700"}`,
   });
 
+  function handleClick() {
+    setTimeout(() => {
+      if (open && open) {
+        console.log("open");
+        if (setOpen) setOpen(false);
+      }
+    }, 500);
+  }
+
   return (
     <li
       onMouseEnter={() => setHover(true)}
+      onClick={handleClick}
       onMouseLeave={() => setHover(false)}
       className={` ${hover && "bg-blue-700/30"} `}
     >

@@ -105,7 +105,7 @@ function AddGoalInput() {
         className="flex items-center justify-center rounded-full bg-blue-700 p-2"
       >
         {pending ? (
-          <Loader2 className="animate-spin" />
+          <Loader2 className="animate-spin text-white" />
         ) : (
           <PlusIcon className="stroke-white" />
         )}

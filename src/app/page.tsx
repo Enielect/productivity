@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import {
   BicepsFlexed,
   ChartLine,
@@ -10,64 +13,208 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { ButtonHTMLAttributes, ReactElement, ReactNode } from "react";
+import React, {
+  ButtonHTMLAttributes,
+  ReactElement,
+  ReactNode,
+  useEffect,
+} from "react";
 
 const Homepage = () => {
+  // const [isFirstMounted, setIsFirstMounted] = React.useState(false);
+  const [isMounted, setIsMounted] = React.useState(false);
+  const [displayContent, setDisplayContent] = React.useState(false);
+  // const count = React.useRef(1);
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      setIsMounted(true);
+    }, 500);
+
+    return () => clearTimeout(timeOut);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      const timeout = setTimeout(() => {
+        setDisplayContent(true);
+      }, 2000);
+      return () => clearInterval(timeout);
+    }
+  }, [isMounted]);
+  // //the flip technique
+  // useEffect(() => {
+  //   if (isFirstMounted && count.current === 1) {
+  //     const imageEl = document.querySelector(".animate-image")!;
+  //     const firstRect = imageEl?.getBoundingClientRect();
+  //     const timeout = setTimeout(() => {
+  //       setIsMounted(true);
+  //       requestAnimationFrame(() => {
+  //         const lastRect = imageEl?.getBoundingClientRect();
+  //         if (firstRect && lastRect) {
+  //           const dx = firstRect.x - lastRect.x;
+  //           const dy = firstRect.y - lastRect.y;
+  //           const dw = firstRect.width / lastRect.width;
+  //           const dh = firstRect.height / lastRect.height;
+  //           console.log(dx, "--dx");
+  //           imageEl.style.setProperty("--dx", dx);
+  //           imageEl.style.setProperty("--dy", dy);
+  //           imageEl.style.setProperty("--dh", dh);
+  //           imageEl.style.setProperty("--dw", dw);
+
+  //           console.log(dx);
+  //           imageEl.dataset.flip = "invert";
+
+  //           requestAnimationFrame(() => {
+  //             console.log(count.current);
+  //             imageEl.dataset.flip = "play";
+  //             console.log(dx);
+  //           });
+  //         }
+  //       });
+  //       count.current += 1;
+  //     }, 700);
+  //     if (isMounted) return () => clearInterval(timeout);
+  //   }
+  // }, [isFirstMounted, isMounted]);
   return (
-    <div>
-      <Header />
-      <Hero />
-      <SecondSection />
-      <ThirdSection />
-      <Bio />
-      <Footer />
+    <div className="relative">
+      {" "}
+      <div
+        className={`${displayContent ? "hidden opacity-0" : "opacity-1"} fixed grid h-screen w-screen place-items-center overflow-hidden bg-white text-5xl transition-all duration-300`}
+      >
+        <div
+          data-open={`${isMounted ? "mounted" : "closed"}`}
+          className="mounted-wrapper grid place-items-center data-[open='closed']:grid-cols-[1fr] data-[open='mounted']:grid-cols-[8rem_1fr] data-[open='closed']:grid-rows-[1fr]"
+        >
+          <motion.div
+            layout
+            className={`animate-image h-[8rem] w-[8rem] ${!isMounted ? "mount-image" : ""}`}
+          >
+            <Image
+              width={50}
+              height={50}
+              className="h-full w-full"
+              alt="logo"
+              src="/productivity.png"
+            />
+          </motion.div>
+          <p className="mount-text-animate">Pepductivity</p>
+        </div>
+      </div>
+      <div className={`${!displayContent ? "hidden" : "block"}`}>
+        <Header show={displayContent} />
+        <Hero show={displayContent} />
+        <SecondSection />
+        <ThirdSection />
+        <Bio />
+        <Footer />
+      </div>
     </div>
   );
 };
 
-function Header() {
+function Header({ show }: { show: boolean }) {
+  const [showHeader, setShowHeader] = React.useState(false);
+
+  useEffect(() => {
+    if (show) {
+      // Simulate the end of the enter animation
+      const timeout = setTimeout(() => {
+        setShowHeader(true);
+      }, 1000); // 1s delay before showing the header
+
+      return () => clearTimeout(timeout);
+    }
+  }, [show]);
+
   return (
-    <header className="flex items-center justify-between px-7">
+    <header
+      className={`${!showHeader ? "-translate-y-full" : "translate-y-0"} animate-header flex items-center justify-between px-7`}
+    >
       <div className="flex items-center space-x-3">
         <Image width={50} height={50} alt="logo" src="/productivity.png" />
-        <span>Pepductivity</span>
+        <span className="text-animate inline-block text-lg">Pepductivity</span>
       </div>
       <nav className="space-x-4">
-        <a>Home</a>
+        <a className="text-xl">Home</a>
         <a>About</a>
         <a>Services</a>
         <a href="#">Contact</a>
       </nav>
-      <Button>Sign Up</Button>
+      <Button className="sign-up inline-block">
+        <span className="inline-block">Sign Up</span>
+      </Button>
     </header>
   );
 }
 
 type ButtonProps = {
   children: ReactNode;
+  className: string;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-function Button({ children, ...props }: ButtonProps) {
+function Button({ className = "", children, ...props }: ButtonProps) {
   return (
-    <button {...props} className="rounded-full bg-blue-500 px-3 py-2">
+    <button
+      {...props}
+      className={`rounded-full bg-blue-500 px-3 py-2 ${className}`}
+    >
       {children}
     </button>
   );
 }
 
-function Hero() {
+function Hero({ show }: { show: boolean }) {
+  const [showHeader, setShowHeader] = React.useState(false);
+  // const staggerMenuItems = stagger(0.1, { startDelay: 0.15 });
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3, // Stagger delay between children
+      },
+    },
+  };
+
+  useEffect(() => {
+    if (show) {
+      // Simulate the end of the enter animation
+      const timeout = setTimeout(() => {
+        setShowHeader(true);
+      }, 2000); // 1s delay before showing the header
+
+      return () => clearTimeout(timeout);
+    }
+  }, [show]);
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <section className="flex h-[calc(100dvh-100px)] flex-col justify-center gap-7 text-center">
-      <h2 className="text-3xl font-semibold">
+    <motion.section
+      initial="hidden"
+      animate={showHeader ? "visible" : "hidde "}
+      variants={containerVariants}
+      className={`flex h-[calc(100dvh-100px)] flex-col justify-center gap-7 text-center`}
+    >
+      <motion.h2 className={`text-5xl font-semibold`} variants={itemVariants}>
         Best Way to keep consistency in completing tasks
-      </h2>
-      <p>Analytics oriented approach to manage taks and tasks completion</p>
-      <div>
-        <Link href="/dashboard" className="rounded-full bg-blue-500 px-3 py-2">
-          Get Started
+      </motion.h2>
+      <motion.p className={`text-xl`} variants={itemVariants}>
+        Analytics oriented approach to manage taks and tasks completion
+      </motion.p>
+      <motion.div className={``} variants={itemVariants}>
+        <Link
+          href="/dashboard"
+          className="get-started inline-block rounded-full bg-blue-500 px-3 py-2"
+        >
+          <span className="inline-block">Get Started</span>
         </Link>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }
 

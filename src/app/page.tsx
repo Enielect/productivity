@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, stagger, useAnimate, useInView } from "framer-motion";
 import {
   BicepsFlexed,
   ChartLine,
@@ -11,6 +11,16 @@ import {
   ShieldHalf,
   Sparkles,
 } from "lucide-react";
+import { Github, Linkedin, Twitter } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button as BioButton } from "@/components/ui/button";
+import {
+  Card as BioCard,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import React, {
@@ -101,12 +111,14 @@ const Homepage = () => {
           <p className="mount-text-animate">Pepductivity</p>
         </div>
       </div>
-      <div className={`${!displayContent ? "hidden" : "block"}`}>
+      <div
+        className={`${!displayContent ? "hidden" : "block"} bg-[url('/bg-image.jpg')]`}
+      >
         <Header show={displayContent} />
         <Hero show={displayContent} />
         <SecondSection />
         <ThirdSection />
-        <Bio />
+        <DeveloperProfileCard />
         <Footer />
       </div>
     </div>
@@ -135,11 +147,11 @@ function Header({ show }: { show: boolean }) {
         <Image width={50} height={50} alt="logo" src="/productivity.png" />
         <span className="text-animate inline-block text-lg">Pepductivity</span>
       </div>
-      <nav className="space-x-4">
-        <a className="text-xl">Home</a>
-        <a>About</a>
-        <a>Services</a>
-        <a href="#">Contact</a>
+      <nav className="hidden space-x-4 text-xl md:block">
+        <a href="/">Home</a>
+        <a href="/#about">About</a>
+        <a href="/#services">Services</a>
+        <a href="/#contact">Contact</a>
       </nav>
       <Button className="sign-up inline-block">
         <span className="inline-block">Sign Up</span>
@@ -220,7 +232,7 @@ function Hero({ show }: { show: boolean }) {
 
 function SecondSection() {
   return (
-    <section className="grid grid-cols-3 gap-5 bg-blue-600 px-[5rem] py-[2rem]">
+    <section className="grid gap-5 bg-blue-600 px-[5rem] py-[2rem] md:grid-cols-3">
       <Card
         firstIcon={<Sparkles />}
         header="Bright and Assured"
@@ -251,9 +263,30 @@ function SecondSection() {
 }
 
 function ThirdSection() {
+  const staggerMenuItems = stagger(0.3, { startDelay: 0.15 });
+
+  const [scope, animate] = useAnimate();
+  const isInView = useInView(scope);
+
+  useEffect(() => {
+    animate("div", isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -80 }, {
+      duration: 0.3,
+      delay: isInView ? staggerMenuItems : 0,
+    });
+  }, [isInView, animate, staggerMenuItems]);
   return (
-    <section className="grid grid-cols-2 gap-6 px-5 py-5">
-      <div>image</div>
+    <section className="grid gap-6 px-5 py-5 md:grid-cols-[520px_1fr]">
+      <div className="gradient-background mx-auto h-[425px] w-[500px] p-1">
+        <div className="h-full w-full border-[2px]">
+          <Image
+            src="/app-preview.png"
+            width={500}
+            height={500}
+            className="h-full w-full object-cover"
+            alt="task-management-preview"
+          />
+        </div>
+      </div>
       <div>
         <h3 className="py-3 text-justify text-2xl font-semibold">
           Key Benefits of Our System for your Productivity{" "}
@@ -261,7 +294,7 @@ function ThirdSection() {
         <p className="my-4 text-sm">
           Our sytem boosts productivity, cuts hassle, and drive self confidence
         </p>
-        <div className="space-y-4">
+        <div ref={scope} className="space-y-4">
           <CheckPoint
             header="Boosting Quality with Analytics"
             content="with some graphs plotted for the task created agains some of your best moment and previous week, you can have a feel of where you are at, in order to know how to improve"
@@ -280,30 +313,77 @@ function ThirdSection() {
   );
 }
 
-function Bio() {
-  return (
-    <section className="mx-auto my-4 max-w-[60vw] rounded-md bg-blue-400 px-3 py-3 text-justify">
-      <header className="text-center">Developer</header>
-      <strong>Abayomi Eniola Faithful</strong>
-      <article>
-        I built this project to help myself improve in planning my tasks. I had
-        a strong need to evacuate the illusion of how successfull I have been in
-        day, and so analytics of my tasks seemed like the best solution, and
-        there you have it, I embaked on this wonderful project
-      </article>
-      <div>
-        <span>Tech stack for this project</span>
-        <ul>
-          <li>NextJs for the FrontEnd and Backend</li>
-          <li>Vercel Postgres for the database</li>
-          <li>Drizzle ORM for querying the database</li>
-          <li>TailwindCss for styling</li>
-          <li>Framer motion for ainmation</li>
-        </ul>
-      </div>
+// function Bio() {
+//   return (
+//     <section className="mx-auto my-4 max-w-[80vw] rounded-md bg-blue-400 px-3 py-3 text-center">
+//       <header className="text-center">Developer</header>
+//       <strong>Abayomi Eniola Faithful</strong>
+//       <article className="py-3">
+//         I built this project to help myself improve in planning my tasks. I had
+//         a strong need to evacuate the illusion of how successfull I have been in
+//         day, and so analytics of my tasks seemed like the best solution, and
+//         there you have it, I embaked on this wonderful project
+//       </article>
+//       <div>
+//         <span>Tech stack for this project</span>
+//         <ul className="list-disc text-justify">
+//           <li>NextJs for the FrontEnd and Backend</li>
+//           <li>Vercel Postgres for the database</li>
+//           <li>Drizzle ORM for querying the database</li>
+//           <li>TailwindCss for styling</li>
+//           <li>Framer motion for ainmation</li>
+//         </ul>
+//       </div>
 
-      {/**connnect with me */}
-    </section>
+//       {/**connnect with me */}
+//     </section>
+//   );
+// }
+
+function DeveloperProfileCard() {
+  return (
+    <div className="py-5">
+      <BioCard className="mx-auto w-full max-w-md bg-gradient-to-br from-primary/10 to-secondary/10 shadow-lg">
+        <CardHeader className="flex flex-col items-center space-y-4 pb-2">
+          <Avatar className="h-24 w-24 border-4 border-primary">
+            <AvatarImage
+              src="/placeholder.svg?height=96&width=96"
+              alt="Abayomi Eniola Faithful"
+            />
+            <AvatarFallback>AEF</AvatarFallback>
+          </Avatar>
+          <div className="text-center">
+            <h2 className="text-2xl font-bold">Abayomi Eniola Faithful</h2>
+            <p className="text-muted-foreground">FrontEnd Developer</p>
+          </div>
+        </CardHeader>
+        <CardContent className="text-center">
+          <p className="mb-4">
+            Passionate about building scalable web applications and improving
+            developer productivity. Currently working on a project to streamline
+            task management for development teams.
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            <Badge variant="secondary">React</Badge>
+            <Badge variant="secondary">Drizzle(ORM)</Badge>
+            {/* <Badge variant="secondary">PostgreSQL</Badge> */}
+            <Badge variant="secondary">TypeScript</Badge>
+            <Badge variant="secondary">TailwindCss</Badge>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-center space-x-4">
+          <BioButton variant="outline" size="icon">
+            <Github className="h-4 w-4" />
+          </BioButton>
+          <BioButton variant="outline" size="icon">
+            <Linkedin className="h-4 w-4" />
+          </BioButton>
+          <BioButton variant="outline" size="icon">
+            <Twitter className="h-4 w-4" />
+          </BioButton>
+        </CardFooter>
+      </BioCard>
+    </div>
   );
 }
 

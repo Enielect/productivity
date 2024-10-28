@@ -10,7 +10,7 @@ const LoginForm = async () => {
       action={async () => {
         "use server";
         if (!!session) await signOut();
-        else await signIn("google");
+        else await signIn("google", { callbackUrl: "/dashboard" });
       }}
       className="flex items-center justify-center"
     >

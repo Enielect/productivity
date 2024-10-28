@@ -248,7 +248,7 @@ function SecondSection() {
   return (
     <section
       ref={scope}
-      className="grid justify-center gap-5 bg-blue-500 px-[5rem] py-[2rem] md:grid-cols-3"
+      className="grid justify-center gap-5 bg-blue-500 px-[5rem] py-[2rem] md:grid-cols-2 lg:grid-cols-3"
     >
       <Card
         firstIcon={<Sparkles className="md:h-10 md:w-10" />}

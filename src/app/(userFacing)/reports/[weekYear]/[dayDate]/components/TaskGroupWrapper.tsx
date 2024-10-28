@@ -144,7 +144,7 @@ const TaskGroupWrapper = ({
           {selectedTab === "analytics" && (
             <div className="mt-5">
               <ScrollArea className="h-[calc(100dvh-250px)] pb-[5rem] pr-4">
-                <div className="grid sm:grid-cols-2 sm:gap-3 md:grid-cols-1 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
+                <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-1 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
                   {/* <div className="sm:flex sm:gap-3"> */}
                   <div>
                     <RadialchartWrapper chartData={radialChartEfficiency} />

@@ -112,7 +112,7 @@ const Homepage = () => {
         </div>
       </div>
       <div
-        className={`${!displayContent ? "hidden" : "block"} bg-[url('/bg-image.jpg')]`}
+        className={`${!displayContent ? "hidden" : "block"} bg-[url('/bg-image.jpeg')]`}
       >
         <Header show={displayContent} />
         <Hero show={displayContent} />
@@ -169,7 +169,7 @@ function Button({ className = "", children, ...props }: ButtonProps) {
   return (
     <button
       {...props}
-      className={`rounded-full bg-blue-500 px-3 py-2 ${className}`}
+      className={`rounded-full bg-blue-500 px-3 py-2 text-white ${className}`}
     >
       {children}
     </button>
@@ -212,7 +212,10 @@ function Hero({ show }: { show: boolean }) {
       variants={containerVariants}
       className={`flex h-[calc(100dvh-100px)] flex-col justify-center gap-7 text-center`}
     >
-      <motion.h2 className={`text-5xl font-semibold`} variants={itemVariants}>
+      <motion.h2
+        className={`text-4xl font-semibold md:text-5xl`}
+        variants={itemVariants}
+      >
         Best Way to keep consistency in completing tasks
       </motion.h2>
       <motion.p className={`text-xl`} variants={itemVariants}>
@@ -223,7 +226,7 @@ function Hero({ show }: { show: boolean }) {
           href="/dashboard"
           className="get-started inline-block rounded-full bg-blue-500 px-3 py-2"
         >
-          <span className="inline-block">Get Started</span>
+          <span className="inline-block text-white">Get Started</span>
         </Link>
       </motion.div>
     </motion.section>
@@ -231,30 +234,44 @@ function Hero({ show }: { show: boolean }) {
 }
 
 function SecondSection() {
+  const staggerCardItems = stagger(0.09, { startDelay: 0.15 });
+  const [scope, animate] = useAnimate();
+  const isInView = useInView(scope);
+
+  useEffect(() => {
+    animate(
+      "div",
+      isInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0 },
+      { duration: 0.1, delay: isInView ? staggerCardItems : 0 },
+    );
+  }, [isInView, animate, staggerCardItems]);
   return (
-    <section className="grid gap-5 bg-blue-600 px-[5rem] py-[2rem] md:grid-cols-3">
+    <section
+      ref={scope}
+      className="grid justify-center gap-5 bg-blue-500 px-[5rem] py-[2rem] md:grid-cols-3"
+    >
       <Card
-        firstIcon={<Sparkles />}
+        firstIcon={<Sparkles className="md:h-10 md:w-10" />}
         header="Bright and Assured"
         summary="Get an oppurtunity to be better than ever before"
       />
       <Card
-        firstIcon={<BicepsFlexed />}
+        firstIcon={<BicepsFlexed className="md:h-10 md:w-10" />}
         header="Boost Confidence"
         summary="improve your confidence in the process of planning your tasks"
       />
       <Card
-        firstIcon={<ShieldHalf />}
+        firstIcon={<ShieldHalf className="md:h-10 md:w-10" />}
         header="Be Immune to Previous Regrets"
         summary="Immunity to the illusions of efficiency in executing your goals in an unanalytic system"
       />
       <Card
-        firstIcon={<Scan />}
+        firstIcon={<Scan className="md:h-10 md:w-10" />}
         header="Easy to Follow Procedure"
         summary="navigating the application is as easy as it can get, helping you bring the best out of yourself"
       />
       <Card
-        firstIcon={<ChartLine />}
+        firstIcon={<ChartLine className="md:h-10 md:w-10" />}
         header="Analysis Driven"
         summary="Get to view the analytics of your progress againt your best moement, and get pumped to beat it"
       />
@@ -276,7 +293,7 @@ function ThirdSection() {
   }, [isInView, animate, staggerMenuItems]);
   return (
     <section className="grid gap-6 px-5 py-5 md:grid-cols-[520px_1fr]">
-      <div className="gradient-background mx-auto h-[425px] w-[500px] p-1">
+      <div className="gradient-background mx-auto h-[195px] w-[280px] p-1 md:h-[425px] md:w-[500px]">
         <div className="h-full w-full border-[2px]">
           <Image
             src="/app-preview.png"
@@ -288,10 +305,10 @@ function ThirdSection() {
         </div>
       </div>
       <div>
-        <h3 className="py-3 text-justify text-2xl font-semibold">
+        <h3 className="py-3 text-justify text-2xl font-semibold md:text-3xl">
           Key Benefits of Our System for your Productivity{" "}
         </h3>
-        <p className="my-4 text-sm">
+        <p className="my-4 text-sm md:text-xl">
           Our sytem boosts productivity, cuts hassle, and drive self confidence
         </p>
         <div ref={scope} className="space-y-4">
@@ -373,13 +390,19 @@ function DeveloperProfileCard() {
         </CardContent>
         <CardFooter className="flex justify-center space-x-4">
           <BioButton variant="outline" size="icon">
-            <Github className="h-4 w-4" />
+            <Link href="https://www.github.com/Enielect">
+              <Github className="h-4 w-4" />
+            </Link>
           </BioButton>
           <BioButton variant="outline" size="icon">
-            <Linkedin className="h-4 w-4" />
+            <Link href="https://www.linkedin.com/in/eniola-abayomi-045605232/">
+              <Linkedin className="h-4 w-4" />
+            </Link>
           </BioButton>
           <BioButton variant="outline" size="icon">
-            <Twitter className="h-4 w-4" />
+            <Link href="https://www.twitter.com/enielect">
+              <Twitter className="h-4 w-4" />
+            </Link>
           </BioButton>
         </CardFooter>
       </BioCard>
@@ -403,9 +426,10 @@ function CheckPoint({ header, content }: CheckPointProps) {
   return (
     <div className="space-y-3">
       <header className="flex items-center space-x-3">
-        <CircleCheckBig className="h-5 w-5" /> <strong>{header}</strong>
+        <CircleCheckBig className="h-5 w-5" />{" "}
+        <strong className="md:text-2xl">{header}</strong>
       </header>
-      <p className="pl-8">{content}</p>
+      <p className="pl-8 md:text-xl">{content}</p>
     </div>
   );
 }
@@ -417,13 +441,17 @@ type CardProp = {
 };
 function Card({ firstIcon, header, summary }: CardProp) {
   return (
-    <div className="flex h-[135px] flex-col justify-between rounded-md bg-blue-300 px-3 py-2">
-      <header className="items-between flex justify-between px-2 py-3">
-        {firstIcon} <MoveUpRight />
+    <div className="flex w-[80vw] flex-col justify-between gap-7 rounded-md bg-blue-300 px-3 py-4 md:w-auto">
+      <header className="items-between flex justify-center px-2 py-3 md:justify-between md:text-3xl">
+        {firstIcon} <MoveUpRight className="hidden md:inline-block" />
       </header>
       <div className="space-y-1">
-        <strong>{header}</strong>
-        <p className="text-sm">{summary}</p>
+        <strong className="block text-center md:text-justify md:text-2xl">
+          {header}
+        </strong>
+        <p className="text-center text-sm md:text-justify md:text-xl">
+          {summary}
+        </p>
       </div>
     </div>
   );

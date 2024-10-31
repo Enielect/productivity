@@ -4,10 +4,12 @@ import { db } from "..";
 import { auth } from "@/auth";
 import { notes, type SelectNotes } from "../schema";
 import { and, eq, ilike, or } from "drizzle-orm";
-import { getWeekNumber } from "@/lib/helpers";
+import { generateUniqueColors, getWeekNumber } from "@/lib/helpers";
 import { unstable_cache } from "next/cache";
+import { redirect } from "next/navigation";
 
 export const getGeneralGroupTasks = async (userId: string) => {
+  //get all taskGroups associated with a particular user
   return await db.query.taskGroups.findMany({
     where: (taskGroups, { eq }) => eq(taskGroups.userId, userId),
     with: { tasks: true },
@@ -20,8 +22,7 @@ export async function formatGroupsAccWeekNum() {
 
   if (!session?.user) return;
   const taskGroups = await getGeneralGroupTasks(session.user.id);
-  console.log(taskGroups, "taskGroups debug");
-  console.log("this is a console.log function");
+  //format a user's taskGroups according to the week they were created in the format "{weekNumber-year: GroupType[]}"
   const dict: Record<string, GroupType[]> = taskGroups.reduce(
     (acc: Record<string, GroupType[]>, curr) => {
       const weekFormat = `${getWeekNumber(curr.createdAt)}-${new Date(curr.createdAt).getFullYear()}`;
@@ -34,9 +35,8 @@ export async function formatGroupsAccWeekNum() {
   return dict;
 }
 
-//sort weeks tasks according to day(24/04/20) created
-
 export async function formatGroupsAccDay(weekTask: GroupType[]) {
+  //format a week's tasks according to the day they were created in the format "{day-month-year: GroupType[]}"
   const dict: Record<string, GroupType[]> = weekTask.reduce(
     (acc: Record<string, GroupType[]>, curr) => {
       const dayFormat = new Date(curr.createdAt).toLocaleDateString();
@@ -50,6 +50,7 @@ export async function formatGroupsAccDay(weekTask: GroupType[]) {
 }
 
 export async function getWeekGroupTasks(week: string) {
+  //get taskGroups associated with a particular week. (week is in the format "weekNumber-year")
   const dict = await formatGroupsAccWeekNum();
   if (!dict) return [];
   return dict[week];
@@ -60,32 +61,10 @@ export async function getDayGroupTasks(weekTask: GroupType[], day: string) {
   return dict[day];
 }
 
-//filtering taskGroupa on a weekly basis
-
-//format a date to get the week number in that year
-
-//filtering taskGroups on a weekly basis
-//format a date to get the week number in that year
-
-///create a functionality where users can't add tasks to a group that is not created on the same day
-
-//fetching taskGroups based on date created
-
-//filtering tasks on a daily basis
-
-//get tasks based on taskGroupsId
-
-// export async function getGroupTasks(groupId: number) {
-//   return await db.query.tasks.findMany({
-//     where: (tasks, { eq }) => eq(tasks.taskGroupId, groupId),
-//   });
-// }
-
-//get notes associated with a particular day for a particular user
 export const getNotes = unstable_cache(
+  //get notes associated with a particular day for a particular user
   async (userId: string) => {
-    // const session = await auth();
-    // if (!session?.user) return [];
+    if (!userId) redirect("/login");
     return await db.query.notes.findMany({
       where: (notes, { eq }) => eq(notes.userId, userId),
     });
@@ -95,6 +74,7 @@ export const getNotes = unstable_cache(
 );
 
 export async function formatNotesAccDay(notes: SelectNotes[]) {
+  //format a user's notes according to the day they were created in the format "{day-month-year: SelectNotes[]}"
   const dict: Record<string, SelectNotes[]> = notes.reduce(
     (acc: Record<string, SelectNotes[]>, curr) => {
       const dayFormat = new Date(curr.createdAt).toDateString();
@@ -126,9 +106,8 @@ export async function searchUserNotes(searchTerm: string) {
   return results;
 }
 
-//get the number of completed tasks in each day for a particualar week
-
-export async function getCompletedTasksInWeek(weeks: string) {
+export async function getCompletedTasksInWeek(week: string) {
+  //return the record of the efficiency for each day for a particular week e.g {Monday: 50, Tuesday: 60, Wednesday: 70, Thursday: 80, Friday: 90, Saturday: 100, Sunday: 100}
   const weekdays = [
     "Monday",
     "Tuesday",
@@ -139,10 +118,9 @@ export async function getCompletedTasksInWeek(weeks: string) {
     "Sunday",
   ];
   const dayTaskData: Record<string, number> = {};
-  const weeksTasks = await getWeekGroupTasks(weeks);
-  console.log(weeksTasks, "weeksTasks");
-  if (weeksTasks) {
-    const tasksWithDay = await formatGroupsAccDay(weeksTasks);
+  const weekTasks = await getWeekGroupTasks(week);
+  if (weekTasks) {
+    const tasksWithDay = await formatGroupsAccDay(weekTasks);
     for (const key of Object.keys(tasksWithDay)) {
       const date = new Date(key);
       const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "long" });
@@ -168,6 +146,7 @@ export async function getCompletedTasksInWeek(weeks: string) {
 }
 
 export async function getBestPerformingWeek() {
+  //return the week with the highest efficiency e.g "42-2024"("weekNumber-year")
   let currHighest = 0;
   let bestWeek = "";
   const allWeekData = await formatGroupsAccWeekNum();
@@ -191,9 +170,8 @@ export async function getBestPerformingWeek() {
   return bestWeek;
 }
 
-//get total number of completed tasks per day
-
 export async function completedTasksPerDay() {
+  //return the record of the number of completed tasks for each day from the whole user's tasks e.g {'2024-10-31': 5, '2024-11-01': 3, '2024-11-02': 2}
   const session = await auth();
   const userTaskGroups = await getGeneralGroupTasks(session!.user.id);
 
@@ -201,7 +179,6 @@ export async function completedTasksPerDay() {
     (acc: Record<string, number>, curr) => {
       console.log(curr, "currenet date");
       const dayFormat = `${new Date(curr.createdAt).toLocaleDateString().replace(/\//g, "-")}`;
-      // if (!acc[dayFormat]) acc[dayFormat] = 0;
       acc[dayFormat] = curr.tasks.filter((task) => task.isChecked).length;
       return acc;
     },
@@ -210,9 +187,8 @@ export async function completedTasksPerDay() {
   return dict;
 }
 
-//get the number of tasks planned for the week vs the number of tasks compoleted for the week
-
 export async function statForCurrWeek(currWeek: string) {
+  //return the total number of tasks created and completed for a particular week (weekFormat: "weekNumber-year")
   const weekTasksGroups = await getWeekGroupTasks(currWeek);
   let totalTasksCreated = 0;
   let totalTasksCompleted = 0;
@@ -232,6 +208,7 @@ export async function statForCurrWeek(currWeek: string) {
 }
 
 export async function completedTasksInDay(day: string) {
+  // return data for the analytics page for a particular day
   const session = await auth();
   const startOfDay = new Date(day).setHours(0, 0, 0, 0);
   const endOfDay = new Date(day).setHours(23, 59, 59, 999);
@@ -245,13 +222,8 @@ export async function completedTasksInDay(day: string) {
     with: { tasks: true },
   });
 
-  console.log(userTaskGroupsForDay, "userTaskGroupsForDay");
-  console.log(new Date(day), "day");
-
   const completedUserTasks = userTaskGroupsForDay
-    .map((task) =>
-      task.tasks.filter((task) => task.isChecked && task.updatedAt),
-    )
+    .map((task) => task.tasks.filter((task) => task.isChecked))
     .flat();
 
   const totalTasksPlanned = userTaskGroupsForDay
@@ -308,25 +280,3 @@ export async function completedTasksInDay(day: string) {
     completedLongLineChart,
   };
 }
-
-function generateUniqueColors(numColors: number) {
-  const colors = [];
-  for (let i = 0; i < numColors; i++) {
-    // Distribute the colors evenly on the hue range (0 - 360)
-    const hue = Math.round((360 * i) / numColors);
-    // Convert hue to RGB
-    const color = `hsl(${hue}, 100%, 50%)`;
-    colors.push(color);
-  }
-  return colors;
-}
-
-function formatTime(date: string) {
-  return new Date(date).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-}
-
-//what is the progress for the current week?

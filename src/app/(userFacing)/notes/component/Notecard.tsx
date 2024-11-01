@@ -78,9 +78,9 @@ function NoteCard({ title, content, noteId }: NoteCardProps) {
         <div className="flex justify-end">
           <button
             onClick={() => {
-              //setEdit(false);
               startTransition(async () => {
                 await updateNote(editTitle, editValue, noteId);
+                setEdit(false);
               });
               // save the edit
             }}

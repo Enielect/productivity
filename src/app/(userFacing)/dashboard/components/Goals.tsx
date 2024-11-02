@@ -24,16 +24,7 @@ const Goals = ({ postGroups }: PostGroups) => {
   const [currentTaskGroup, setCurrentTaskGroup] = useState<GroupType>(
     postGroups[0]!,
   );
-  const groupPercentages = postGroups.map(
-    (currentGroup) =>
-      (currentGroup.tasks.filter((task) => task.isChecked).length /
-        currentGroup.tasks.length) *
-      100,
-  );
-  const combinedPercentages = groupPercentages.reduce(
-    (acc, current) => acc + current,
-    0,
-  );
+
   const numberOfCompletedTasks = postGroups
     .filter((group) => group.tasks.some((task) => task.isChecked))
     .flat(Infinity).length;
@@ -43,7 +34,7 @@ const Goals = ({ postGroups }: PostGroups) => {
     0,
   );
 
-  const progress = combinedPercentages / postGroups.length;
+  const progress = (numberOfCompletedTasks / totalNumberOfTasks) * 100;
   return (
     <div className="h-full">
       <div className="border-b px-3 pb-10">
@@ -54,7 +45,6 @@ const Goals = ({ postGroups }: PostGroups) => {
         />
         <h1>Add the tasks you want to cover this week</h1>
         <AddGoalInput />
-        {/* <div className="> */}
         <Carousel className="md:w-[calc(100dvw-470px)]">
           <CarouselContent className="-ml-2 md:-ml-4">
             {postGroups.map((group) => (
@@ -73,7 +63,6 @@ const Goals = ({ postGroups }: PostGroups) => {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
-        {/* </div> */}
       </div>
       <TaskGroupDetails taskGroup={currentTaskGroup} />
     </div>

@@ -93,7 +93,7 @@ const TaskDialogWrapper = ({ children, groupId }: DialogProp) => {
               </div>
               {format ? (
                 <div className="markdown mt-2 border border-blue-400 px-3 py-2">
-                  <Markdown>{markdown}</Markdown>
+                  <Markdown className="break">{markdown}</Markdown>
                 </div>
               ) : (
                 <textarea

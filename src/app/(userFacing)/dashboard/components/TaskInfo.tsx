@@ -14,7 +14,7 @@ const TaskInfo = ({
           Learning resources
         </header>
         <div className="markdown">
-          <Markdown>{currentSelectedTask!.resource}</Markdown>
+          <Markdown className="break">{currentSelectedTask!.resource}</Markdown>
         </div>
       </div>
       <div className="rounded-md border px-2 py-2">

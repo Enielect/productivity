@@ -21,6 +21,7 @@ function NoteCard({ title, content, noteId }: NoteCardProps) {
   const [editValue, setEditValue] = React.useState(content);
   const [pending, startTransition] = useTransition();
   const [edit, setEdit] = React.useState(false);
+
   return (
     <div className="space-y-3 rounded-lg bg-[#ADD8E6] px-3 py-2">
       <header className="flex items-center justify-between">
@@ -52,7 +53,9 @@ function NoteCard({ title, content, noteId }: NoteCardProps) {
         <div className={`text-black`}>
           {showMore ? (
             <div className="markdown flex flex-wrap">
-              <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+              <Markdown className="break" remarkPlugins={[remarkGfm]}>
+                {content}
+              </Markdown>
             </div>
           ) : (
             content.slice(0, 50) + "..."
@@ -65,7 +68,7 @@ function NoteCard({ title, content, noteId }: NoteCardProps) {
           onClick={() => setShowMore(!showMore)}
           className="flex items-center text-blue-600"
         >
-          see more{" "}
+          {showMore ? " see less" : "see more"}{" "}
           {showMore ? (
             <ChevronsUp className="h-5" />
           ) : (

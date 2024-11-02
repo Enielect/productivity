@@ -154,6 +154,10 @@ nav > a:hover::before {
   );
 }
 
+.break {
+  white-space: pre-wrap;
+}
+
 .spinner_ajPY {
   transform-origin: center;
   animation: spinner_AtaB 0.75s infinite linear;

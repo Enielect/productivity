@@ -86,7 +86,7 @@ const EditTaskDialogWrapper = ({ children, task }: DialogProp) => {
               {/* if check button is clicked display markdown of the text input in the resource field else display the textarea */}
               {format ? (
                 <div className="markdown mt-2 border border-blue-400 px-3 py-2">
-                  <Markdown>{markdown}</Markdown>
+                  <Markdown className="break">{markdown}</Markdown>
                 </div>
               ) : (
                 <textarea

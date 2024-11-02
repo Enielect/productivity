@@ -39,6 +39,10 @@ export default function PieChartGraph({
   chartData: ChartDataItem[];
 }) {
   // Dynamically create the chart config
+  const totalEfficiency = chartData.reduce(
+    (acc, curr) => acc + curr.efficiency,
+    0,
+  );
   const chartConfig: DynamicChartConfig = {
     efficiency: {
       label: "Efficiency",
@@ -55,8 +59,10 @@ export default function PieChartGraph({
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart with Legend</CardTitle>
-        <CardDescription>Task Efficiency Distribution</CardDescription>
+        <CardTitle>
+          Pie Chart for efficiency on each taskGroup for the day
+        </CardTitle>
+        <CardDescription>TaskGroups Efficiency Distribution</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -85,39 +91,21 @@ export default function PieChartGraph({
               cx="50%"
               cy="50%"
               outerRadius={80}
-            >
-              {/* {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.fill} />
-              ))} */}
-            </Pie>
-            {/* <ChartLegend
-              content={({ payload }) => (
-                <ul className="flex flex-wrap justify-center gap-4 text-sm">
-                  {payload?.map((entry, index) => (
-                    <li
-                      key={`item-${index}`}
-                      className="flex items-center gap-2"
-                    >
-                      <span
-                        className="h-3 w-3 rounded-full"
-                        style={{ backgroundColor: entry.color }}
-                      />
-                      <span>{entry.value}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            /> */}
+            ></Pie>
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing task efficiency distribution for the current period
-        </div>
+      <CardFooter className="flex-col gap-2 text-center text-sm">
+        {totalEfficiency > 0 ? (
+          <div className="leading-none text-muted-foreground">
+            Showing task efficiency distribution for the current period
+          </div>
+        ) : (
+          <div>
+            No task in any of the taskGroup was completed, you can do better
+            champ!!!
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

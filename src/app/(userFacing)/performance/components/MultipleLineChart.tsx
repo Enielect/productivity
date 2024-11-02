@@ -19,25 +19,6 @@ import {
 
 export const description = "A multiple line chart";
 
-// const chartData = [
-//   { month: "January", desktop: 186, mobile: 80 },
-//   { month: "February", desktop: 305, mobile: 200 },
-//   { month: "March", desktop: 237, mobile: 120 },
-//   { month: "April", desktop: 73, mobile: 190 },
-//   { month: "May", desktop: 209, mobile: 130 },
-//   { month: "June", desktop: 214, mobile: 140 },
-// ];
-
-// const chartData = [
-//   { day: 'Monday', currentWeek: 100, lastWeek: 0 },
-//   { day: 'Tuesday', currentWeek: 0, lastWeek: 0 },
-//   { day: 'Wednesday', currentWeek: 50, lastWeek: 0 },
-//   { day: 'Thursday', currentWeek: 0, lastWeek: 0 },
-//   { day: 'Friday', currentWeek: 0, lastWeek: 0 },
-//   { day: 'Saturday', currentWeek: 0, lastWeek: 0 },
-//   { day: 'Sunday', currentWeek: 0, lastWeek: 0 }
-// ]
-
 type ChartDataType =
   | { day: string; currentWeek: number; lastWeek: number }
   | { day: string; currentWeek: number; bestWeek: number };
@@ -108,14 +89,14 @@ export default function MultipleLineChart({
           </LineChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="text-center">
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
               Try to beat Last week&apos; achievements!!
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Showing week&apos; progress(task completed) in the past 7 days
+              Showing week&apos;s progress(task completed) in the past 7 days
               against last week
             </div>
           </div>

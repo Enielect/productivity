@@ -49,7 +49,7 @@ export default function RadialCompareWrapper({
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Total Completed Tasks(Last Week vs This Week)</CardTitle>
+        <CardTitle>Total Completed Tasks (Last Week vs This Week)</CardTitle>
         <CardDescription>the whole week combined</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 items-center pb-0">
@@ -110,7 +110,7 @@ export default function RadialCompareWrapper({
           </RadialBarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
+      <CardFooter className="flex-col gap-2 text-center text-sm">
         {howMuchMoreTaskCompletedThisWeek >= 0 ? (
           <div className="flex items-center gap-2 font-medium leading-none">
             You have completd {howMuchMoreTaskCompletedThisWeek} more Task this
@@ -118,12 +118,12 @@ export default function RadialCompareWrapper({
           </div>
         ) : (
           <div className="flex items-center gap-2 font-medium leading-none">
-            You have completd {howMuchMoreTaskCompletedThisWeek} less Task this
-            week <TrendingDown className="h-4 w-4" />
+            You have completd {howMuchMoreTaskCompletedThisWeek * -1} less Task
+            this week <TrendingDown className="h-4 w-4" />
           </div>
         )}
         <div className="leading-none text-muted-foreground">
-          showing how much more tasks we complete per week than previous week
+          showing how much more tasks you complete this week than previous week
         </div>
       </CardFooter>
     </Card>

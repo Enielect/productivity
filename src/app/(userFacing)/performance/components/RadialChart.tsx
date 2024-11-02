@@ -98,15 +98,15 @@ export default function RadialchartWrapper({
           </RadialBarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
+      <CardFooter className="flex-col gap-2 text-center text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
           {chartData[0]!.efficiency < 50
-            ? "You can do it!, Now let's go to half accomplished task"
+            ? "You can always do better there is room for improvement"
             : "Great you're well above the half mark, we can do 100%, LFG!!!"}
         </div>
         <div className="leading-none text-muted-foreground">
-          This radial chart shows how efficient in completing your taks this
-          week
+          This radial chart shows how efficient you were in completing your taks
+          this week
         </div>
       </CardFooter>
     </Card>

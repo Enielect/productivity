@@ -179,7 +179,9 @@ export async function completedTasksPerDay() {
     (acc: Record<string, number>, curr) => {
       console.log(curr, "currenet date");
       const dayFormat = `${new Date(curr.createdAt).toLocaleDateString().replace(/\//g, "-")}`;
-      acc[dayFormat] = curr.tasks.filter((task) => task.isChecked).length;
+      acc[dayFormat] =
+        (acc[dayFormat] ?? 0) +
+        curr.tasks.filter((task) => task.isChecked).length;
       return acc;
     },
     {},

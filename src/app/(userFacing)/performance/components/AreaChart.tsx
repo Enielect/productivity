@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
@@ -19,15 +18,6 @@ import {
 } from "@/components/ui/chart";
 
 export const description = "An area chart with axes";
-
-// const chartData = [
-//   { month: "January", desktop: 186, mobile: 80 },
-//   { month: "February", desktop: 305, mobile: 200 },
-//   { month: "March", desktop: 237, mobile: 120 },
-//   { month: "April", desktop: 73, mobile: 190 },
-//   { month: "May", desktop: 209, mobile: 130 },
-//   { month: "June", desktop: 214, mobile: 140 },
-// ]
 
 type ChartDataType =
   | { day: string; currentWeek: number; lastWeek: number }
@@ -106,15 +96,15 @@ export default function AreaChartWrapper({
           </AreaChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="text-center">
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
               Try to beat Best week&apos; achievements!!
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Showing week&apos; progress(task completed) in the past 7 days
-              against last week
+              Showing week&apos;s progress(task completed) in the past 7 days
+              against our best week
             </div>
           </div>
         </div>

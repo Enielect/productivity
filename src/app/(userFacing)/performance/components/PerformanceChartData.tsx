@@ -3,9 +3,7 @@ import React from "react";
 import AreaChartWrapper from "./AreaChart";
 import RadialchartWrapper from "./RadialChart";
 import LongLineChart from "./LongLineChart";
-import RadialCompareWrapper from "./RadialCompare";
 import MultipleRadialChart from "./MultipleRadialChart";
-
 import MultipleLineChart from "./MultipleLineChart";
 import RadialCompareChart from "./RadialCompareChart";
 import { ScrollArea } from "@/components/ui/scroll-area";

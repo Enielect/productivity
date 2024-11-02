@@ -2,24 +2,19 @@ import React from "react";
 
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import SelectScrollable from "../components/SelectWeek";
 import {
   formatAreaChartData,
   getPreviousWeek,
-  getWeekNumber,
   taskDataPerDay,
   tasksCompletedThisWeekVsBestWeek,
   tasksCompletedThisWeekVsLastWeek,
 } from "@/lib/helpers";
 import {
   completedTasksPerDay,
-  formatGroupsAccWeekNum,
   getBestPerformingWeek,
   getCompletedTasksInWeek,
-  getWeekGroupTasks,
   statForCurrWeek,
 } from "@/server/db/queries/select";
-import RadialCompareChart from "../components/RadialCompareChart";
 import PerformanceChartData from "../components/PerformanceChartData";
 
 const WeekPerformancePage = async ({

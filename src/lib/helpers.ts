@@ -1,11 +1,9 @@
 //Track the percentage of tasks completed per day
 
-import { completedTasksPerDay } from "@/server/db/queries/select";
-
 //is there a way we can track our best performances in a week and compare every other week against that and only update it when the recored id broken.
 
 //filter groups tasks by day created
-export function getWeekNumber(date: Date | string | number) {
+export function getWeekNumber(date: Date | string | number): number {
   // Ensure date is a Date object
   const dateObject = date instanceof Date ? date : new Date(date);
 
@@ -14,12 +12,21 @@ export function getWeekNumber(date: Date | string | number) {
     throw new Error("Invalid date provided");
   }
 
-  const oneJan = new Date(dateObject.getFullYear(), 0, 1);
-  const numberOfDays = Math.ceil(
-    (dateObject.getTime() - oneJan.getTime()) / 86400000,
-  );
+  // Create a copy of the date object for calculations
+  const tempDate = new Date(dateObject.getTime());
 
-  return Math.ceil(numberOfDays / 7);
+  // Adjust to the nearest Thursday (ISO week rule)
+  tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
+
+  // Calculate the start of the year
+  const startOfYear = new Date(tempDate.getFullYear(), 0, 1);
+
+  // Calculate the number of days between the start of the year and tempDate
+  const dayOfYear =
+    Math.floor((tempDate.getTime() - startOfYear.getTime()) / 86400000) + 1;
+
+  // Calculate the ISO week number
+  return Math.ceil(dayOfYear / 7);
 }
 
 export function formatAreaChartData(
@@ -63,6 +70,7 @@ export function taskDataPerDay(taskObject: Record<string, number>) {
     date: day,
     completedTasks: taskObject[day],
   }));
+  console.log(chartData, "ChartData");
 
   return chartData;
 }
@@ -100,7 +108,22 @@ export function getPreviousWeek(weekString: string): string {
   return `${previousWeekNumber}-${previousYear}`;
 }
 
-// async function getCompletedTasksPerDay(dayString: string) {
-//   const completedTasks = await completedTasksPerDay();
-//   const tasks = completedTasks[dayString];
-// }
+export function generateUniqueColors(numColors: number) {
+  const colors = [];
+  for (let i = 0; i < numColors; i++) {
+    // Distribute the colors evenly on the hue range (0 - 360)
+    const hue = Math.round((360 * i) / numColors);
+    // Convert hue to RGB
+    const color = `hsl(${hue}, 100%, 50%)`;
+    colors.push(color);
+  }
+  return colors;
+}
+
+export function formatTime(date: string) {
+  return new Date(date).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+}

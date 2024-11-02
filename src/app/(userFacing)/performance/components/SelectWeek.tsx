@@ -1,6 +1,6 @@
 "use client";
 
-import { GroupType } from "@/components/TasKGroupCard";
+import type { GroupType } from "@/components/TasKGroupCard";
 import {
   Select,
   SelectContent,
@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 // Helper function to get the start and end dates of a week
 function getWeekDateRange(weekNumber: number, year: number) {

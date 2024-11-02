@@ -73,7 +73,7 @@ const TaskGroupWrapper = ({
     (task) => task.name === currentTask,
   );
   return (
-    <div className="relative w-screen">
+    <div className="relative w-full max-md:w-screen">
       <Carousel className="mx-3 mt-3 w-full pr-5 md:w-[calc(100dvw-470px)]">
         <CarouselContent className="-ml-2 md:-ml-4">
           {dayTasks?.map((task) => (

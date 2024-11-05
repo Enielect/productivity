@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, type ReactNode } from "react";
 import Markdown from "react-markdown";
-import { useSWRConfig } from "swr";
 
 import {
   Dialog,
@@ -18,6 +17,7 @@ import { addTask } from "@/action/task";
 import Loader from "./Loader";
 import { ArrowLeft, Check } from "lucide-react";
 import { useFormState, useFormStatus } from "react-dom";
+import { useRouter } from "next/navigation";
 
 type DialogProp = {
   children: ReactNode;
@@ -31,18 +31,16 @@ const TaskDialogWrapper = ({ children, groupId }: DialogProp) => {
   const [format, setFormat] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const router = useRouter();
+
   const [state, action] = useFormState(addTask.bind(null, groupId!), undefined);
 
   useEffect(() => {
     if (state?.message === "Task added successfully") {
-      setTaskGroup("");
-      setMarkdown("");
-      setResourceReason("");
-      setFormat(false);
+      router.refresh();
+      setOpen(false);
     }
-  }, [state?.message]);
-
-  if (state?.message === "Task added successfully") setOpen(false);
+  }, [state?.message, router]);
 
   function handleMarkDown() {
     setFormat((c) => !c);

@@ -70,13 +70,15 @@ const NoteDisplayWrapper = ({ dayCreated, notesByDate }: WrapperProps) => {
           {/* Searched result */}
         </div>
       ) : (
-        dayCreated?.map((day) => (
-          <NotesByDateWrapper
-            key={day}
-            dayCreated={day}
-            notes={notesByDate[day]!}
-          />
-        ))
+        dayCreated
+          .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+          ?.map((day) => (
+            <NotesByDateWrapper
+              key={day}
+              dayCreated={day}
+              notes={notesByDate[day]!}
+            />
+          ))
       )}
     </div>
   );

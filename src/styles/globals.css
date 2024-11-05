@@ -140,6 +140,10 @@ nav > a:hover::before {
   transform: scaleX(1);
 }
 
+.taskInfo-md [data-radix-scroll-area-content] {
+  @apply md:flex md:gap-3;
+}
+
 .gradient-background {
   background: rgb(58, 179, 180);
   background: linear-gradient(

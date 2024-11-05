@@ -28,7 +28,7 @@ function AddNote() {
               <ChevronsDown className="stroke-white" />
             )}
           </button>
-          <div className="space-y-4 rounded-md border bg-white p-2">
+          <div className="space-y-4 rounded-md border bg-white p-2 dark:bg-black">
             <div>Input your message here</div>
             <Input name="title" placeholder="title" required />
             <div className="grid w-full gap-2 space-y-2">

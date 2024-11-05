@@ -73,7 +73,7 @@ const TaskGroupWrapper = ({
     (task) => task.name === currentTask,
   );
   return (
-    <div className="relative w-full max-md:w-screen">
+    <div className="relative h-full w-full max-md:w-screen">
       <Carousel className="mx-3 mt-3 w-full pr-5 md:w-[calc(100dvw-470px)]">
         <CarouselContent className="-ml-2 md:-ml-4">
           {dayTasks?.map((task) => (
@@ -97,7 +97,7 @@ const TaskGroupWrapper = ({
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-      <div className="mt-6 px-3">
+      <div className="h-(calc(100%-84px-0.75rem)) mt-6 px-3">
         <div className="flex items-center gap-4 py-5">
           <NotepadText className="h-7 w-7 stroke-blue-600" />
           <span className="text-2xl font-semibold">
@@ -120,26 +120,28 @@ const TaskGroupWrapper = ({
         </div>
         <div>
           {selectedTab === "tasks" && (
-            <div className="flex w-full gap-3">
-              <div
-                data-open={String(currentTask.length > 0)}
-                className="mt-5 min-h-[16rem] w-full space-y-3 overflow-auto pr-3 transition-all min-[1200px]:data-[open=true]:w-1/2"
-              >
-                {currentTaskGroup.tasks.map((task) => (
-                  <TaskList
-                    key={task.id}
-                    setCurrentTask={setCurrentTask}
-                    task={task}
-                    current={currentTask}
-                  />
-                ))}
-              </div>
-              {currentTask.length > 0 && (
-                <div className="hidden w-full min-[1200px]:block min-[1200px]:w-1/2">
-                  <TaskInfo currentSelectedTask={currentSelectedTask} />
+            <ScrollArea className="h-[calc(100dvh-250px)] pb-[0.9rem]">
+              <div className="flex w-full gap-3">
+                <div
+                  data-open={String(currentTask.length > 0)}
+                  className="mt-5 min-h-[16rem] w-full space-y-3 overflow-auto pr-3 transition-all min-[1200px]:data-[open=true]:w-1/2"
+                >
+                  {currentTaskGroup.tasks.map((task) => (
+                    <TaskList
+                      key={task.id}
+                      setCurrentTask={setCurrentTask}
+                      task={task}
+                      current={currentTask}
+                    />
+                  ))}
                 </div>
-              )}
-            </div>
+                {currentTask.length > 0 && (
+                  <div className="hidden w-full transition-all min-[1200px]:block min-[1200px]:w-1/2">
+                    <TaskInfo currentSelectedTask={currentSelectedTask} />
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
           )}
           {selectedTab === "analytics" && (
             <div className="mt-5">
@@ -192,7 +194,7 @@ function TaskList({ task, setCurrentTask, current }: TaskListProp) {
     <div
       className={`max-md:animate-grid max-md:grid ${current === task.name ? "max-md:grid-rows-[auto,1fr]" : "max-md:grid-rows-1"}`}
     >
-      <div className="flex items-center justify-between gap-4 rounded-md bg-gray-200 px-4 py-3">
+      <div className="flex items-center justify-between gap-4 rounded-md bg-gray-200 px-4 py-3 dark:bg-[#5576d0]">
         <div className="flex items-center gap-3">
           {task.isChecked ? (
             <Check className="h-6 w-6 text-green-500" />

@@ -24,7 +24,7 @@ function NoteCard({ title, content, noteId }: NoteCardProps) {
 
   return (
     <div className="space-y-3 rounded-lg bg-[#ADD8E6] px-3 py-2">
-      <header className="flex items-center justify-between">
+      <header className="flex items-center justify-between dark:text-black">
         {<strong>{edit ? "Edit" : title}</strong>}
         <div className="flex items-center gap-4">
           <DeleteDialog deleteType="note" noteId={noteId}>

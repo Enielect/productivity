@@ -19,7 +19,7 @@ export default function TaskGroupDetails({
     (task) => task.name === currentTask,
   );
   return (
-    <div className="h-full px-4">
+    <div className="h-[calc(100%-298px)] px-4">
       <div className="flex flex-col items-center gap-4 py-5 lg:flex-row">
         <NotepadText className="h-7 w-7 stroke-blue-600" />
         <span className="text-center text-2xl font-semibold sm:text-justify">
@@ -50,12 +50,12 @@ export default function TaskGroupDetails({
         </DeleteDialog>
       </div>
       {taskGroup.tasks && (
-        <div className={`flex w-full gap-3 md:h-[calc(100%-230px)]`}>
-          <ScrollArea
-            data-open={String(currentTask.length > 0)}
-            className="hidden h-[5rem] w-full pb-[1.3rem] md:block md:h-full min-[890px]:data-[open=true]:w-full min-[1000px]:data-[open=true]:w-1/2"
-          >
-            <div className="h-full w-full space-y-3 overflow-auto pr-3 pt-5 transition-all">
+        <div className={`w-full md:h-full`}>
+          <ScrollArea className="taskInfo-md hidden h-[5rem] w-full gap-3 pb-[1.3rem] transition-all md:flex md:h-full">
+            <div
+              data-open={String(currentTask.length > 0)}
+              className="h-full w-full space-y-3 pr-3 pt-5 transition-all min-[890px]:data-[open=true]:w-full min-[1000px]:data-[open=true]:w-1/2"
+            >
               {taskGroup.tasks.map((task) => (
                 <TaskCard
                   key={task.id}
@@ -66,6 +66,11 @@ export default function TaskGroupDetails({
                 />
               ))}
             </div>
+            {currentTask.length > 0 && (
+              <div className="transition-all md:w-1/2 min-[890px]:hidden min-[1000px]:block">
+                <TaskInfo currentSelectedTask={currentSelectedTask} />
+              </div>
+            )}
           </ScrollArea>
           <div className="w-full md:hidden">
             <div className="mt-5 w-full space-y-3 overflow-auto pr-3 transition-all">
@@ -80,11 +85,6 @@ export default function TaskGroupDetails({
               ))}
             </div>
           </div>
-          {currentTask.length > 0 && (
-            <div className="hidden md:block md:w-1/2 min-[890px]:hidden min-[1000px]:block">
-              <TaskInfo currentSelectedTask={currentSelectedTask} />
-            </div>
-          )}
         </div>
       )}
     </div>

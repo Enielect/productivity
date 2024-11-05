@@ -39,7 +39,7 @@ export default function TaskCard({
     <div
       className={`animate-grid grid ${current === task.name ? "grid-rows-[auto,1fr]" : "grid-rows-1"}`}
     >
-      <div className="flex flex-col justify-between gap-3 rounded-md bg-gray-200 px-4 py-3 md:flex-row md:items-center">
+      <div className="flex flex-col justify-between gap-3 rounded-md bg-gray-200 px-4 py-3 dark:bg-[#5576d0] md:flex-row md:items-center">
         <div className="flex items-center gap-3">
           <input
             id={task.name}

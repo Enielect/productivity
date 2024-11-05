@@ -23,7 +23,7 @@ const DayPage = async ({ params }: Params) => {
   } = await completedTasksInDay(formatParams);
 
   return (
-    <div>
+    <div className="h-full">
       <TaskGroupWrapper
         chartData={{
           totalTasksCreatedPerTaskGroup,

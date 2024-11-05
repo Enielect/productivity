@@ -52,7 +52,7 @@ export const TasKGroupCard = ({
   return (
     <div
       style={style}
-      className="flex h-[6rem] flex-col justify-between space-y-3 rounded-md bg-[var(--light-color)] p-4"
+      className="flex h-[6rem] flex-col justify-between space-y-3 rounded-md bg-[var(--light-color)] p-4 dark:text-black"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

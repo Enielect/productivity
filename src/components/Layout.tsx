@@ -1,13 +1,13 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import {
   ChartNoAxesCombined,
   LayoutDashboardIcon,
   NotebookPen,
   NotepadText,
-  SearchIcon,
-  X,
+  // SearchIcon,
+  // X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,7 +41,7 @@ export default function Layout({
     return () => document.removeEventListener("click", outsideClick);
   }, [open]);
   return (
-    <div className="grid h-full overflow-hidden">
+    <div className="grid h-full overflow-auto dark:bg-black md:overflow-hidden">
       <Header toggle={setOpen} name={username} img={image} />
 
       <main className="relative top-[49px] md:h-[calc(100dvh-50px)]">
@@ -69,7 +69,7 @@ export default function Layout({
         >
           <div
             ref={closeRef}
-            className={`absolute -z-10 h-full w-full bg-black/65 md:hidden`}
+            className={`absolute ${open ? "opacity-1" : "opacity-0"} -z-10 h-full w-full bg-black/45 transition-[opacity] duration-300 md:hidden`}
           ></div>
           <div className="z-20 flex h-full w-3/4 flex-col items-start justify-between bg-white">
             <div className="w-full">
@@ -97,7 +97,7 @@ function Header({
   const [displaySearch, setDisplaySearch] = useState(false);
 
   return (
-    <header className="fixed z-20 flex h-[50px] w-full border-b border-[#444444]/20 bg-white">
+    <header className="fixed z-20 flex h-[50px] w-full border-b border-[#444444]/20 bg-white dark:bg-black dark:text-white">
       <h1 className="hidden h-full basis-[200px] border-r border-[#444444]/20 md:block">
         <Link href="/" className="flex h-full items-center pl-4">
           <Image src={"/productivity.png"} alt="logo" width={40} height={40} />
@@ -113,17 +113,18 @@ function Header({
       <div
         className={`flex flex-grow items-center transition-all duration-500 ${displaySearch ? "justify-between" : "justify-end"} px-4 sm:px-7`}
       >
-        <Input
+        {/** we'll probably implement a search later in the future */}
+        {/* <Input
           placeholder="search"
           type="text"
           className={`${displaySearch ? "inline-block w-[15rem]" : "hidden w-0"} transition-all duration-500`}
-        />
+        /> */}
         <div className="flex items-center gap-3 md:gap-8">
-          {!displaySearch ? (
+          {/* {!displaySearch ? (
             <SearchIcon onClick={() => setDisplaySearch(true)} />
           ) : (
             <X onClick={() => setDisplaySearch(false)} />
-          )}
+          )} */}
           <User name={name} img={img} />
           <span
             className={`sm:hidden ${displaySearch && "hidden"} transition-all duration-500`}
@@ -178,7 +179,7 @@ function LeftNav({
   open?: boolean;
 }) {
   return (
-    <ul className="bg-white pt-5">
+    <ul className="bg-white pt-5 dark:bg-black dark:text-white">
       {navList.map(({ icon, text }) => (
         <ListItem
           setOpen={setOpen}

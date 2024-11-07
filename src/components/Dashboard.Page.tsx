@@ -11,7 +11,7 @@ export default function Dashboard({ postGroups }: DashboardProps) {
     <>
       {postGroups.length === 0 && (
         <>
-          <div className="flex h-[calc(100dvh-80px)] w-full min-w-[2rem] items-center justify-center px-4 text-center text-2xl text-[#444444]">
+          <div className="flex h-[calc(100dvh-80px)] w-full min-w-[2rem] items-center justify-center px-4 text-center text-2xl text-[#444444] dark:text-white">
             There are not any tasks available yet, creat one below with the icon
             :)
           </div>

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 const Toggle = () => {
   const [isClient, setIsClient] = useState(false);
-  const [theme, setTheme] = useState("system");
+  const [theme, setTheme] = useState<string>("");
   useEffect(() => {
     setIsClient(true);
     // On page load or when changing themes, best to add inline in `head` to avoid FOUC
@@ -16,6 +16,9 @@ const Toggle = () => {
               window.matchMedia("(prefers-color-scheme: dark)").matches)
         : window.matchMedia("(prefers-color-scheme: dark)").matches,
     );
+    if (theme.length === 0) {
+      setTheme((localStorage.theme as string) || "system");
+    }
   }, [theme]);
 
   useEffect(() => {

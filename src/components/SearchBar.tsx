@@ -52,7 +52,7 @@ const SearchBar = () => {
   return (
     <Input
       type="search"
-      className="ml-10 min-w-[300px]"
+      className="ml-10 w-[12rem] max-sm:max-w-[75vw] md:w-[calc(100%-480px)]"
       placeholder="Search..."
       value={inputValue}
       onChange={handleInputChange}

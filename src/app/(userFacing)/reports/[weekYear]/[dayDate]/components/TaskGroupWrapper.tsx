@@ -197,9 +197,9 @@ function TaskList({ task, setCurrentTask, current }: TaskListProp) {
       <div className="flex items-center justify-between gap-4 rounded-md bg-gray-200 px-4 py-3 dark:bg-[#5576d0]">
         <div className="flex items-center gap-3">
           {task.isChecked ? (
-            <Check className="h-6 w-6 text-green-500" />
+            <Check className="h-6 w-6 flex-shrink-0 text-green-500" />
           ) : (
-            <X className="h-6 w-6 text-red-500" />
+            <X className="h-6 w-6 flex-shrink-0 text-red-500" />
           )}
           <label htmlFor={task.name} className="font-semibold">
             {task.name}

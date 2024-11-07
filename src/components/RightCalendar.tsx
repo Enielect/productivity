@@ -28,7 +28,7 @@ export function RightCalendar() {
       mode="single"
       selected={date}
       onSelect={(date) => date !== undefined && setDate(date)}
-      className="rounded-md border"
+      className="w-full rounded-md border"
     />
   );
 }

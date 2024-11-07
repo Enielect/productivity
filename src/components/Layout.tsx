@@ -51,15 +51,16 @@ export default function Layout({
             <LeftNav />
             <div className="hidden pl-2 pr-2 pt-2 md:block min-[890px]:hidden">
               <h3 className="py-2 text-center">TaskGroup Calendar</h3>
-              <RightCalendar />
+              <RightCalendar />{" "}
             </div>
           </div>
-          <div className="border-l border-r border-[#444444]/20 dark:border-white/[50%]">
+          <div className="border-l border-r border-[#444444]/20 dark:border-[hsl(var(--border))]">
             {children}
           </div>
           <div className="pl-3 pr-3 pt-3 md:hidden min-[890px]:block">
             <div className="">
               <h3 className="py-2 text-center">TaskGroup Calendar</h3>
+
               <RightCalendar />
             </div>
           </div>
@@ -72,11 +73,11 @@ export default function Layout({
             ref={closeRef}
             className={`absolute ${open ? "opacity-1" : "opacity-0"} -z-10 h-full w-full bg-black/45 transition-[opacity] duration-300 md:hidden`}
           ></div>
-          <div className="z-20 flex h-full w-3/4 flex-col items-start justify-between bg-white">
+          <div className="z-20 flex h-full w-3/4 flex-col items-start justify-between bg-white dark:bg-black">
             <div className="w-full">
               <LeftNav setOpen={setOpen} open={open} />
             </div>
-            <div className="mb-[52px] pl-3 md:hidden min-[890px]:block">
+            <div className="mb-[52px] w-full pl-3 md:hidden min-[890px]:block">
               <RightCalendar />
             </div>
           </div>
@@ -98,8 +99,8 @@ function Header({
   const [displaySearch, setDisplaySearch] = useState(false);
 
   return (
-    <header className="fixed z-20 flex h-[50px] w-full border-b border-[#444444]/20 bg-white dark:border-white/[0.5] dark:bg-black dark:text-white">
-      <h1 className="hidden h-full basis-[200px] border-r border-[#444444]/20 dark:border-white/[0.5] md:block">
+    <header className="fixed z-20 flex h-[50px] w-full border-b border-[#444444]/20 bg-white dark:border-[hsl(var(--border))] dark:bg-black dark:text-white">
+      <h1 className="hidden h-full basis-[200px] border-r border-[#444444]/20 dark:border-[hsl(var(--border))] md:block">
         <Link href="/" className="flex h-full items-center pl-4">
           <Image src={"/productivity.png"} alt="logo" width={40} height={40} />
           Productivity

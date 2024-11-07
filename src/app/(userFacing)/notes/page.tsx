@@ -23,12 +23,12 @@ const NotesPage = async () => {
     <div className="w-full px-6 md:mt-0">
       {allUserNotes.length > 0 ? (
         <div className="grid">
-          <div className="flex h-[3rem] w-[calc(100%-480px)] items-center bg-white dark:bg-black">
+          <div className="flex h-[3rem] items-center bg-white dark:bg-black">
             <h1 className="text-xl font-semibold"> Notes</h1>{" "}
             {/* <Input placeholder="search" className="ml-10" /> */}
             <SearchBar />
           </div>
-          <ScrollArea className="h-[calc(100dvh-3rem-60px)] pb-[2rem] pr-3 md:pr-5">
+          <ScrollArea className="h-[calc(100dvh-3rem-60px)] pb-[2rem] md:pr-5">
             <NoteDisplayWrapper
               dayCreated={dayCreated}
               notesByDate={notesByDate}

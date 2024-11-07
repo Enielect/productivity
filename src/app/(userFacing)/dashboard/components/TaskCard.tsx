@@ -46,7 +46,7 @@ export default function TaskCard({
             checked={isChecked}
             disabled={!task.summary || isChecked}
             onChange={handleChecked}
-            className="h-5 w-5 accent-blue-600"
+            className="h-5 w-5 flex-shrink-0 accent-blue-600"
             type="checkbox"
           />
           <label htmlFor={task.name} className="font-semibold">

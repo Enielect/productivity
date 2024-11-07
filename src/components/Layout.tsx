@@ -15,6 +15,7 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState, type ReactNode } from "react";
 import { RightCalendar } from "./RightCalendar";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import Toggle from "./ui/toggle";
 
 export default function Layout({
   children,
@@ -53,7 +54,7 @@ export default function Layout({
               <RightCalendar />
             </div>
           </div>
-          <div className="border-l border-r border-[#444444]/20">
+          <div className="border-l border-r border-[#444444]/20 dark:border-white/[50%]">
             {children}
           </div>
           <div className="pl-3 pr-3 pt-3 md:hidden min-[890px]:block">
@@ -97,8 +98,8 @@ function Header({
   const [displaySearch, setDisplaySearch] = useState(false);
 
   return (
-    <header className="fixed z-20 flex h-[50px] w-full border-b border-[#444444]/20 bg-white dark:bg-black dark:text-white">
-      <h1 className="hidden h-full basis-[200px] border-r border-[#444444]/20 md:block">
+    <header className="fixed z-20 flex h-[50px] w-full border-b border-[#444444]/20 bg-white dark:border-white/[0.5] dark:bg-black dark:text-white">
+      <h1 className="hidden h-full basis-[200px] border-r border-[#444444]/20 dark:border-white/[0.5] md:block">
         <Link href="/" className="flex h-full items-center pl-4">
           <Image src={"/productivity.png"} alt="logo" width={40} height={40} />
           Productivity
@@ -125,6 +126,7 @@ function Header({
           ) : (
             <X onClick={() => setDisplaySearch(false)} />
           )} */}
+          <Toggle />
           <User name={name} img={img} />
           <span
             className={`sm:hidden ${displaySearch && "hidden"} transition-all duration-500`}

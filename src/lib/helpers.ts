@@ -119,11 +119,3 @@ export function generateUniqueColors(numColors: number) {
   }
   return colors;
 }
-
-export function formatTime(date: string) {
-  return new Date(date).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-}

@@ -40,11 +40,12 @@ function NoteCard({ title, content, noteId }: NoteCardProps) {
       {edit ? (
         <div className="space-y-3">
           <Input
+            className="text-black dark:text-black"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
           />
           <Textarea
-            className="h-16"
+            className="h-20 text-black dark:text-black"
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
           />

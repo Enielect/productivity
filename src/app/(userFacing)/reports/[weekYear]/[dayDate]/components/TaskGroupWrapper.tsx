@@ -97,9 +97,9 @@ const TaskGroupWrapper = ({
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-      <div className="h-(calc(100%-84px-0.75rem)) mt-6 px-3">
+      <div className="mt-6 h-[calc(100%-84px-0.75rem)] px-3">
         <div className="flex items-center gap-4 py-5">
-          <NotepadText className="h-7 w-7 stroke-blue-600" />
+          <NotepadText className="h-7 w-7 flex-shrink-0 stroke-blue-600" />
           <span className="text-2xl font-semibold">
             {currentTaskGroup.name}
           </span>
@@ -136,7 +136,7 @@ const TaskGroupWrapper = ({
                   ))}
                 </div>
                 {currentTask.length > 0 && (
-                  <div className="hidden w-full transition-all min-[1200px]:block min-[1200px]:w-1/2">
+                  <div className="mt-5 hidden w-full transition-all min-[1200px]:block min-[1200px]:w-1/2">
                     <TaskInfo currentSelectedTask={currentSelectedTask} />
                   </div>
                 )}

@@ -24,10 +24,10 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import React, {
-  ButtonHTMLAttributes,
-  ReactElement,
-  ReactNode,
+  type ButtonHTMLAttributes,
+  type ReactNode,
   useEffect,
+  useRef,
 } from "react";
 
 const Homepage = () => {
@@ -101,6 +101,7 @@ const Homepage = () => {
             className={`animate-image h-[8rem] w-[8rem] ${!isMounted ? "mount-image" : ""}`}
           >
             <Image
+              loading="eager"
               width={50}
               height={50}
               className="h-full w-full"
@@ -108,12 +109,21 @@ const Homepage = () => {
               src="/productivity.png"
             />
           </motion.div>
-          <p className="mount-text-animate">Pepductivity</p>
+          <p className="mount-text-animate text-black dark:text-black">
+            Pepductivity
+          </p>
         </div>
       </div>
       <div
-        className={`${!displayContent ? "hidden" : "block"} bg-[url('/bg-image.jpeg')]`}
+        className={`${!displayContent ? "hidden" : "block"} relative text-black dark:text-black`}
       >
+        {/**bg-[url('/bg-image.jpeg')] */}
+        <Image
+          src="/bg-image.jpeg"
+          alt="Productivity Cover"
+          layout="fill"
+          className="absolute inset-0 -z-10 object-cover"
+        />
         <Header show={displayContent} />
         <Hero show={displayContent} />
         <SecondSection />
@@ -237,13 +247,17 @@ function SecondSection() {
   const staggerCardItems = stagger(0.09, { startDelay: 0.15 });
   const [scope, animate] = useAnimate();
   const isInView = useInView(scope);
+  const count = useRef(0);
 
   useEffect(() => {
-    animate(
-      "div",
-      isInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0 },
-      { duration: 0.1, delay: isInView ? staggerCardItems : 0 },
-    );
+    if (count.current === 0) {
+      animate(
+        "div",
+        isInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0 },
+        { duration: 0.1, delay: isInView ? staggerCardItems : 0 },
+      );
+      count.current++;
+    } else return;
   }, [isInView, animate, staggerCardItems]);
   return (
     <section
@@ -284,12 +298,16 @@ function ThirdSection() {
 
   const [scope, animate] = useAnimate();
   const isInView = useInView(scope);
+  const count = useRef(0);
 
   useEffect(() => {
-    animate("div", isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -80 }, {
-      duration: 0.3,
-      delay: isInView ? staggerMenuItems : 0,
-    });
+    if (count.current === 0) {
+      animate("div", isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -80 }, {
+        duration: 0.3,
+        delay: isInView ? staggerMenuItems : 0,
+      });
+      count.current++;
+    } else return;
   }, [isInView, animate, staggerMenuItems]);
   return (
     <section className="grid gap-6 px-5 py-5 md:grid-cols-[520px_1fr]">
@@ -359,7 +377,7 @@ function ThirdSection() {
 
 function DeveloperProfileCard() {
   return (
-    <div className="py-5">
+    <div className="light py-5">
       <BioCard className="mx-auto w-full max-w-md bg-gradient-to-br from-primary/10 to-secondary/10 shadow-lg">
         <CardHeader className="flex flex-col items-center space-y-4 pb-2">
           <Avatar className="h-24 w-24 border-4 border-primary">

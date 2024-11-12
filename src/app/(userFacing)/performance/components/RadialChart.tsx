@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 
 export const description = "A radial chart with text";
 
@@ -80,7 +80,10 @@ export default function RadialchartWrapper({
                           y={viewBox.cy}
                           className="fill-foreground text-4xl font-bold"
                         >
-                          {(chartData[0]!.efficiency * 100).toLocaleString()}%
+                          {isNaN(chartData[0]!.efficiency)
+                            ? 0
+                            : (chartData[0]!.efficiency * 100).toLocaleString()}
+                          %
                         </tspan>
                         <tspan
                           x={viewBox.cx}

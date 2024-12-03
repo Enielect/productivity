@@ -33,5 +33,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, user, token }) {
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      console.log(url, baseUrl, "url, baseUrl");
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
+    }
   },
 });

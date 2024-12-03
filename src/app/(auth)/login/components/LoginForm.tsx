@@ -4,6 +4,7 @@ import React from "react";
 
 const LoginForm = async () => {
   const session = await auth();
+
   console.log(session, "session");
   return (
     <form

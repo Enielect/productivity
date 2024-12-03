@@ -23,7 +23,7 @@ export async function createTask(data: InsertTask) {
   const session = await auth();
   if (session?.user) await db.insert(tasks).values(data);
   revalidatePath("/dashboard");
-  redirect("/dashboard");
+  // redirect("/dashboard");
 }
 
 export async function createSummary(taskId: number, summary: string) {

@@ -33,6 +33,7 @@ export default function LandingPage() {
       >
         <div className="flex gap-[4rem]">
           <a
+            className="relative before:absolute before:bottom-0 before:h-[1px] before:w-0 before:bg-white before:content-[''] hover:before:w-full"
             style={
               {
                 "--i": 1,
@@ -56,7 +57,12 @@ export default function LandingPage() {
                 } as CSSProperties
               }
             >
-              <a href="/#features">features</a>
+              <a
+                className="relative before:absolute before:bottom-0 before:h-[1px] before:w-0 before:bg-white before:content-[''] hover:before:w-full"
+                href="/#features"
+              >
+                features
+              </a>
             </div>
             <div
               style={
@@ -68,7 +74,12 @@ export default function LandingPage() {
                 } as CSSProperties
               }
             >
-              <a href="/#services">services</a>
+              <a
+                className="relative before:absolute before:bottom-0 before:h-[1px] before:w-0 before:bg-white before:content-[''] hover:before:w-full"
+                href="/#services"
+              >
+                services
+              </a>
             </div>
             <div
               style={
@@ -80,7 +91,13 @@ export default function LandingPage() {
                 } as CSSProperties
               }
             >
-              <a href="/#contact"> contact</a>
+              <a
+                className="relative before:absolute before:bottom-0 before:h-[1px] before:w-0 before:bg-white before:content-[''] hover:before:w-full"
+                href="/#contact"
+              >
+                {" "}
+                contact
+              </a>
             </div>
           </nav>
         </div>
@@ -94,7 +111,10 @@ export default function LandingPage() {
             } as CSSProperties
           }
         >
-          <Link href="/login">
+          <Link
+            className="relative before:absolute before:bottom-0 before:h-[1px] before:w-0 before:bg-white before:content-[''] hover:before:w-full"
+            href="/login"
+          >
             <span>Login</span>
           </Link>
         </div>
@@ -184,17 +204,17 @@ export default function LandingPage() {
                 className="flex overflow-hidden whitespace-nowrap"
               >
                 <a
-                  href="#"
+                  href="/#features"
                   className="block bg-yellow-400 px-5 py-3 text-black"
                 >
                   See more
                 </a>
-                <a
-                  href="#"
-                  className="ml-4 block border px-5 py-3 transition-[transform] hover:origin-top-left hover:border-white"
+                <Link
+                  href="/dashboard"
+                  className="ml-4 block border px-5 py-3 capitalize transition-[transform] hover:origin-top-left hover:border-white"
                 >
-                  download resource
-                </a>
+                  get started now
+                </Link>
               </motion.div>
             </div>
           </div>

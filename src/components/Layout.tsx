@@ -45,7 +45,7 @@ export default function Layout({
     <div className="grid h-full overflow-auto dark:bg-black md:overflow-hidden">
       <Header toggle={setOpen} name={username} img={image} />
 
-      <main className="relative top-[49px] md:h-[calc(100dvh-50px)]">
+      <main className="relative top-[49px]  md:h-[calc(100dvh-50px)]">
         <div className="relative hidden h-full md:grid md:grid-cols-[260px_1fr] min-[890px]:grid-cols-[199px_1fr_260px]">
           <div className="flex flex-col justify-between">
             <LeftNav />

@@ -69,6 +69,7 @@
   scrollbar-width: thin;
 }
 html {
+  /* scrollbar-gutter: stable; */ /* takes into acount the space taken by scrollbar gutters and fix layout shift issues */
   scroll-behavior: smooth;
 }
 body {

@@ -13,11 +13,14 @@ function AddNote() {
   return (
     <form
       action={action}
-      className="fixed left-0 mx-auto h-[200px] w-[100vw] transition-all data-[open=false]:-bottom-[135px] data-[open=true]:bottom-[120px]"
+      className="fixed bottom-0 left-0 z-[100000] mx-auto w-[100vw] overflow-hidden transition-all data-[open=false]:h-[100px] data-[open=true]:h-[400px]"
       data-open={String(showAddNote)}
     >
       <div className="flex justify-center text-center">
-        <div className="bottom-0 mx-auto w-3/4 max-w-[37.5rem] space-y-4 rounded-md">
+        <div
+          data-open={String(showAddNote)}
+          className="absolute bottom-0 mx-auto w-3/4 max-w-[37.5rem] space-y-4 rounded-md data-[open=false]:-bottom-[265px] data-[open=true]:bottom-[0px]"
+        >
           <button
             className="rounded-full bg-blue-600 p-1"
             onClick={() => setShowAddNote((c) => !c)}

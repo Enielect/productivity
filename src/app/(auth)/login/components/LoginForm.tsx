@@ -11,7 +11,7 @@ const LoginForm = async () => {
       action={async () => {
         "use server";
         if (!!session) await signOut();
-        else await signIn("google", { callbackUrl: "/dashboard" });
+        else await signIn("google", { redirectTo: "/dashboard" });
       }}
       className="flex items-center justify-center"
     >

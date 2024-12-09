@@ -20,11 +20,11 @@ const NotesPage = async () => {
   const notesByDate = await formatNotesAccDay(allUserNotes);
   const dayCreated = Object.keys(notesByDate);
   return (
-    <div className="w-full px-6 md:mt-0">
+    <div className="h-[100dvh] w-full px-6 md:mt-0">
       {allUserNotes.length > 0 ? (
         <div className="grid">
           <div className="flex h-[3rem] items-center bg-white dark:bg-black">
-            <h1 className="text-xl font-semibold"> Notes</h1>{" "}
+            <h1 className="text-xl font-semibold"> Notes</h1>
             {/* <Input placeholder="search" className="ml-10" /> */}
             <SearchBar />
           </div>

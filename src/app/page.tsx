@@ -205,13 +205,13 @@ export default function LandingPage() {
               >
                 <a
                   href="/#features"
-                  className="block bg-yellow-400 px-5 py-3 text-black"
+                  className="block bg-yellow-400 px-5 py-2 text-black"
                 >
                   See more
                 </a>
                 <Link
                   href="/dashboard"
-                  className="ml-4 block border px-5 py-3 capitalize transition-[transform] hover:origin-top-left hover:border-white"
+                  className="ml-4 block border px-5 py-2 capitalize transition-[transform] hover:origin-top-left hover:border-white"
                 >
                   get started now
                 </Link>
@@ -459,7 +459,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="card absolute max-sm:w-full"
           >
-            <div className="side front-side flex w-1/4 flex-col justify-between space-y-10 border bg-[#09090b] px-10 py-6">
+            <div className="side front-side flex w-1/4 flex-col  space-y-10 border bg-[#09090b] px-10 py-6">
               <Image
                 src="/gear-productivity.svg"
                 width={150}

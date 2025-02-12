@@ -487,7 +487,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="card absolute max-sm:w-full"
           >
-            <div className="side front-side flex w-1/4 flex-col justify-between space-y-10 border bg-[#09090b] px-10 py-6">
+            <div className="side front-side flex w-1/4 flex-col  space-y-10 border bg-[#09090b] px-10 py-6">
               <Image
                 src="/gear-productivity.svg"
                 width={150}

@@ -469,7 +469,7 @@ export default function LandingPage() {
                 height={150}
                 alt=""
               />
-              <header className="text-[2em] leading-[2.5rem] max-sm:text-center">
+              <header className="text-[2em] leading-[2.5rem] ">
                 Streamline Operations
               </header>
               <p className="text-justify text-base">

@@ -80,6 +80,10 @@ body {
   content: "%";
 }
 
+.box-section header {
+  @apply text-[1.5rem] font-bold;
+}
+
 .get-started {
   transition:
     background-color 0.3s,

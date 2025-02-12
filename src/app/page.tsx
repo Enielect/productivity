@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, stagger, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { LinkedinIcon, MailIcon, TwitterIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,7 +29,7 @@ export default function LandingPage() {
         //   transformOrigin: 'top left',
         //   transition: "transform 0.3s linear",
         // }}
-        className="flex w-full justify-between px-14 text-2xl max-sm:px-5"
+        className="flex w-full justify-between px-14 text-xl max-sm:px-5"
       >
         <div className="flex gap-[4rem]">
           <a
@@ -112,7 +112,7 @@ export default function LandingPage() {
           }
         >
           <Link
-            className="relative before:absolute before:bottom-0 before:h-[1px] before:w-0 before:bg-white before:content-[''] hover:before:w-full"
+            className="relative underline before:absolute before:bottom-0 before:h-[1px] before:w-0 before:bg-white before:content-[''] hover:before:w-full"
             href="/login"
           >
             <span>Login</span>
@@ -120,10 +120,10 @@ export default function LandingPage() {
         </div>
       </header>
 
-      <section className="hero mx-14 my-36 items-center overflow-hidden max-sm:mx-5 md:grid md:grid-cols-[60vw_1fr]">
+      <section className="hero mx-14 my-20 items-center overflow-hidden max-sm:mx-5 md:my-36 md:grid md:grid-cols-[60vw_1fr]">
         <div className="w-full max-sm:flex max-sm:flex-col">
           <div>
-            <p className="uppercase">what is PEPDUCTIVITY?</p>
+            <p className="py-2 uppercase">what is PEPDUCTIVITY?</p>
             <motion.h1 className="w-full max-w-[30.5rem] text-[2.5em] capitalize leading-[2.8rem] max-md:leading-[3rem]">
               <motion.span
                 style={{ overflow: "hidden" }}
@@ -219,7 +219,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-        <div>
+        <div className="my-10">
           <Image
             alt="hero-image"
             width={1000}
@@ -228,13 +228,16 @@ export default function LandingPage() {
           />
         </div>
       </section>
-      <section id="features" className="mx-14 overflow-hidden pt-4 max-sm:mx-5">
-        <h3 className="pb-[3.5rem] text-center text-[3em] leading-10 max-md:leading-[5rem]">
-          Key benefits of using a productivity app:
+      <section
+        id="features"
+        className="box-section mx-14 overflow-hidden pt-4 max-sm:mx-5"
+      >
+        <h3 className="pb-[3.5rem] text-center text-[2rem] font-bold leading-10 md:text-[3rem]">
+          Key benefits of using a productivity app
         </h3>
         <div className="flex overflow-hidden max-[830px]:flex-wrap max-sm:flex-col">
           <div className="flex flex-col justify-between space-y-10 border px-10 py-6 hover:bg-green-300 hover:bg-opacity-5 md:w-1/3 lg:w-1/4">
-            <header className="text-center text-[2em] leading-10">
+            <header className="text-center leading-10 md:text-[2rem]">
               Enhanced Focus and Organization
             </header>
             <motion.p
@@ -302,7 +305,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex flex-col justify-between space-y-10 border px-10 py-6 hover:bg-orange-300 hover:bg-opacity-5 md:w-1/3 lg:w-1/4">
-            <header className="text-center text-[2em] leading-10">
+            <header className="text-center leading-10 md:text-[2em]">
               Improved Time Management
             </header>
             <motion.p
@@ -361,7 +364,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex flex-col justify-between space-y-10 border px-10 py-6 hover:bg-blue-300 hover:bg-opacity-5 md:w-1/3 lg:w-1/4">
-            <header className="text-center text-[2em] leading-10">
+            <header className="text-center leading-10 md:text-[2em]">
               Stress Reduction
             </header>
             <motion.p
@@ -432,10 +435,10 @@ export default function LandingPage() {
 
       <section
         id="services"
-        className="overflow-hidden bg-white px-14 max-sm:px-5"
+        className="overflow-hidden bg-white px-14 max-sm:px-2"
       >
-        <header className="flex h-[18rem] items-center">
-          <div className="flex items-center text-[3em] leading-[2.8rem] text-black max-sm:w-full max-sm:text-center md:w-3/4">
+        <header className="flex items-center font-bold max-md:py-10 md:h-[18rem]">
+          <div className="flex items-center text-[2rem] leading-[2.8rem] text-black max-sm:w-full max-sm:text-center md:w-3/4 md:text-[3rem]">
             How our solutions can help you
           </div>
           {/* <div className="justify-self-end">
@@ -459,14 +462,14 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="card absolute max-sm:w-full"
           >
-            <div className="side front-side flex w-1/4 flex-col  space-y-10 border bg-[#09090b] px-10 py-6">
+            <div className="side front-side flex w-1/4 flex-col space-y-10 border bg-[#09090b] px-10 py-6">
               <Image
                 src="/gear-productivity.svg"
                 width={150}
                 height={150}
                 alt=""
               />
-              <header className="text-[2em] leading-[2.5rem]">
+              <header className="text-[2em] leading-[2.5rem] max-sm:text-center">
                 Streamline Operations
               </header>
               <p className="text-justify text-base">
@@ -536,9 +539,9 @@ export default function LandingPage() {
       </section>
       <footer
         id="contact"
-        className="mx-14 flex items-center justify-between py-3 max-sm:mx-5"
+        className="mx-14 flex items-center justify-between py-3 max-sm:mx-5 max-sm:text-base"
       >
-        <span className="block">
+        <span className="block ">
           Copyright &copy; {new Date().getFullYear()}
         </span>
         <span className="flex gap-4">

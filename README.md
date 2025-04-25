@@ -1,5 +1,4 @@
 
----
 
 # Productivity App
 
@@ -94,7 +93,7 @@ We welcome contributions to improve this app! Here's how you can help:
 3. Commit your changes and push them to your branch.
 4. Open a pull request describing your changes.
 
-Please follow the [Code of Conduct](CODE_OF_CONDUCT.md) and ensure your code adheres to the project's coding standards.
+<!--Please follow the [Code of Conduct](CODE_OF_CONDUCT.md) and ensure your code adheres to the project's coding standards. -->
 
 ---
 
@@ -102,4 +101,3 @@ Please follow the [Code of Conduct](CODE_OF_CONDUCT.md) and ensure your code adh
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
----

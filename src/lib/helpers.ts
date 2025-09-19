@@ -1,11 +1,19 @@
 //Track the percentage of tasks completed per day
 
+import {
+  completedTasksPerDay,
+  getBestPerformingWeek,
+  getCompletedTasksInWeek,
+  statForCurrWeek,
+} from "@/server/db/queries/select";
+
 //is there a way we can track our best performances in a week and compare every other week against that and only update it when the recored id broken.
 
 //filter groups tasks by day created
 export function getWeekNumber(date: Date | string | number): number {
   // Ensure date is a Date object
   const dateObject = date instanceof Date ? date : new Date(date);
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
   // Check if the date is valid
   if (isNaN(dateObject.getTime())) {
@@ -23,7 +31,7 @@ export function getWeekNumber(date: Date | string | number): number {
 
   // Calculate the number of days between the start of the year and tempDate
   const dayOfYear =
-    Math.floor((tempDate.getTime() - startOfYear.getTime()) / 86400000) + 1;
+    Math.floor((tempDate.getTime() - startOfYear.getTime()) / MS_PER_DAY) + 1;
 
   // Calculate the ISO week number
   return Math.ceil(dayOfYear / 7);
@@ -44,23 +52,13 @@ export function formatAreaChartData(
     "Sunday",
   ];
 
-  if (Object.keys(bestWeek).length > 0) {
-    const chartData = days.map((day) => ({
-      day,
-      currentWeek: currentWeek[day] ?? 0,
-      bestWeek: bestWeek[day] ?? 0,
-    }));
-    return chartData;
-  }
-
-  if (Object.keys(lastWeek).length > 0) {
-    const chartData = days.map((day) => ({
-      day,
-      currentWeek: currentWeek[day] ?? 0,
-      lastWeek: lastWeek[day] ?? 0,
-    }));
-    return chartData;
-  }
+  const chartData = days.map((day) => ({
+    day,
+    currentWeek: currentWeek[day] ?? 0,
+    bestWeek: bestWeek[day] ?? 0,
+    lastWeek: lastWeek[day] ?? 0,
+  }));
+  return chartData;
 }
 
 export function taskDataPerDay(taskObject: Record<string, number>) {
@@ -70,7 +68,6 @@ export function taskDataPerDay(taskObject: Record<string, number>) {
     date: day,
     completedTasks: taskObject[day],
   }));
-  console.log(chartData, "ChartData");
 
   return chartData;
 }
@@ -118,4 +115,53 @@ export function generateUniqueColors(numColors: number) {
     colors.push(color);
   }
   return colors;
+}
+
+export async function getPerformanceData(
+  currentWeekString: string,
+  lastWeekString: string,
+) {
+  const [lastWeek, statForThisWeek, tasksToDay, statForLastWeek, currentWeek] =
+    await Promise.all([
+      getCompletedTasksInWeek(lastWeekString),
+      statForCurrWeek(currentWeekString),
+      completedTasksPerDay(),
+      statForCurrWeek(lastWeekString),
+      getCompletedTasksInWeek(currentWeekString),
+    ]);
+
+  const weekOfBestPerformance = await getBestPerformingWeek();
+
+  const [statForBestWeek, bestWeek] = await Promise.all([
+    statForCurrWeek(weekOfBestPerformance),
+    getCompletedTasksInWeek(weekOfBestPerformance),
+  ]);
+
+  const chartData = formatAreaChartData(currentWeek, undefined, lastWeek);
+
+  const currentWeekVsBestChart = formatAreaChartData(currentWeek, bestWeek);
+
+  const tasksPerDayChart = taskDataPerDay(tasksToDay);
+
+  const thisWeekVsLastWeekChart = tasksCompletedThisWeekVsLastWeek(
+    statForThisWeek.totalTasksCompleted ?? 0,
+    statForLastWeek.totalTasksCompleted ?? 0,
+  );
+
+  const thisWeekEfficiency =
+    statForThisWeek.totalTasksCompleted / statForThisWeek.totalTasksCreated;
+
+  const thisWeekVsBestWeekChart = tasksCompletedThisWeekVsBestWeek(
+    statForThisWeek.totalTasksCompleted ?? 0,
+    statForBestWeek.totalTasksCompleted ?? 0,
+  );
+
+  return {
+    chartData,
+    currentWeekVsBestChart,
+    tasksPerDayChart,
+    thisWeekVsLastWeekChart,
+    thisWeekVsBestWeekChart,
+    thisWeekEfficiency,
+  };
 }

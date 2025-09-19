@@ -44,7 +44,6 @@ export default function SelectScrollable({
 
   function onWeekSelect(weekKey: string) {
     router.push(`/performance/${weekKey}`);
-    console.log(weekKey, "weekKey");
   }
 
   return (

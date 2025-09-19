@@ -1,16 +1,16 @@
-import { auth, signIn, signOut } from "@/auth";
+import { signIn, signOut } from "@/auth";
+import { getAuthenticatedUserId } from "@/server/db/queries/insert";
 import Image from "next/image";
 import React from "react";
 
 const LoginForm = async () => {
-  const session = await auth();
+  const userId = await getAuthenticatedUserId()
 
-  console.log(session, "session");
   return (
     <form
       action={async () => {
         "use server";
-        if (!!session) await signOut();
+        if (!!userId) await signOut();
         else await signIn("google", { redirectTo: "/dashboard" });
       }}
       className="flex items-center justify-center"
@@ -20,17 +20,17 @@ const LoginForm = async () => {
           <Image src="/productivity.png" alt="logo" width={100} height={100} />
         </div>
         <h2 className="text-3xl">
-          {session
+          {userId
             ? "Are you sure you want to Log Out??"
             : "Ready to Get Started??"}
         </h2>
         <h3 className="">
-          {session
+          {userId
             ? "You can always come bak and login easily using your google account without any hassle"
             : "Signup today with your google account to get started"}
         </h3>
         <div>
-          {!session ? (
+          {!userId ? (
             <button
               className="flex items-center gap-3 rounded-md border bg-[#ea5489] px-3 py-1 text-white"
               type="submit"

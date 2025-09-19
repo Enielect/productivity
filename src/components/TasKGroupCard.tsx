@@ -40,7 +40,6 @@ export const TasKGroupCard = ({
 
   const progress = (completedTasks / totalTasks) * 100;
 
-  console.log(currentGroup, "current group");
 
   const randomColor = colorMix[Math.floor(Math.random() * colorMix.length)]!;
 

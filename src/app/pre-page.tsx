@@ -65,19 +65,15 @@ const Homepage = () => {
   //           const dy = firstRect.y - lastRect.y;
   //           const dw = firstRect.width / lastRect.width;
   //           const dh = firstRect.height / lastRect.height;
-  //           console.log(dx, "--dx");
   //           imageEl.style.setProperty("--dx", dx);
   //           imageEl.style.setProperty("--dy", dy);
   //           imageEl.style.setProperty("--dh", dh);
   //           imageEl.style.setProperty("--dw", dw);
 
-  //           console.log(dx);
   //           imageEl.dataset.flip = "invert";
 
   //           requestAnimationFrame(() => {
-  //             console.log(count.current);
   //             imageEl.dataset.flip = "play";
-  //             console.log(dx);
   //           });
   //         }
   //       });

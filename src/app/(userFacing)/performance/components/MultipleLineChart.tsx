@@ -19,9 +19,13 @@ import {
 
 export const description = "A multiple line chart";
 
-type ChartDataType =
-  | { day: string; currentWeek: number; lastWeek: number }
-  | { day: string; currentWeek: number; bestWeek: number };
+type ChartDataType = {
+  day: string;
+  currentWeek: number;
+  lastWeek: number;
+  bestWeek: number;
+};
+// | { day: string; currentWeek: number; bestWeek: number };
 // type ChartDataTye = Record<string, number>;
 
 const chartConfig = {
@@ -34,16 +38,21 @@ const chartConfig = {
     color: "hsl(var(--chart-2))",
   },
   bestWeek: {
-    label: "lastWeek",
+    label: "bestWeek",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
+type MultipleLineChartProps = {
+  chartData: ChartDataType[];
+};
+
 export default function MultipleLineChart({
   chartData,
-}: {
-  chartData: ChartDataType[];
-}) {
+}: MultipleLineChartProps) {
+  if (chartData.length === 0) {
+    return null;
+  }
   return (
     <Card>
       <CardHeader>
@@ -82,7 +91,7 @@ export default function MultipleLineChart({
             <Line
               dataKey="lastWeek"
               type="monotone"
-              stroke={`${Object.keys(chartData[0]!).includes("lastWeek") ? "var(--color-lastWeek)" : "var(--color-bestWeek)"}`}
+              stroke={`${Object.keys(chartData[0]).includes("lastWeek") ? "var(--color-lastWeek)" : "var(--color-bestWeek)"}`}
               strokeWidth={2}
               dot={false}
             />

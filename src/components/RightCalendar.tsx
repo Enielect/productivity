@@ -9,7 +9,6 @@ import { getWeekNumber } from "@/lib/helpers";
 export function RightCalendar() {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const router = useRouter();
-  console.log(date, "date");
   const currentWeekString = `${getWeekNumber(date!)}-${date!.getFullYear()}`;
   const reg = /\//g;
   const dayFormat = date?.toLocaleDateString().replace(reg, "-");

@@ -1,26 +1,12 @@
 import React from "react";
 
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import {
-  formatAreaChartData,
-  getWeekNumber,
-  taskDataPerDay,
-  tasksCompletedThisWeekVsBestWeek,
-  tasksCompletedThisWeekVsLastWeek,
-} from "@/lib/helpers";
-import {
-  completedTasksPerDay,
-  getBestPerformingWeek,
-  getCompletedTasksInWeek,
-  statForCurrWeek,
-} from "@/server/db/queries/select";
+import { getPerformanceData, getWeekNumber } from "@/lib/helpers";
+
 import PerformanceChartData from "./components/PerformanceChartData";
+import { getAuthenticatedUserId } from "@/server/db/queries/insert";
 
 const PerformancePage = async () => {
-  const session = await auth();
-
-  if (!session?.user) redirect("/login");
+  await getAuthenticatedUserId();
   const today = new Date();
   const currentWeekString = `${getWeekNumber(today)}-${today.getFullYear()}`;
   const lastWeekDate = new Date(
@@ -29,57 +15,15 @@ const PerformancePage = async () => {
     today.getDate() - 7,
   );
   const lastWeekString = `${getWeekNumber(lastWeekDate)}-${lastWeekDate.getFullYear()}`;
-  const lastWeek = await getCompletedTasksInWeek(lastWeekString);
-  const currentWeek = await getCompletedTasksInWeek(currentWeekString);
-  const weekOfBestPerformance = await getBestPerformingWeek();
-  const bestWeek = await getCompletedTasksInWeek(weekOfBestPerformance);
-  const tasksToDay = await completedTasksPerDay();
-  const statForLastWeek = await statForCurrWeek(lastWeekString);
-  const statForThisWeek = await statForCurrWeek(currentWeekString);
-  const statForBestWeek = await statForCurrWeek(weekOfBestPerformance);
 
-  const [
-    lastWeekData,
-    thisWeekData,
-    bestWeekData,
-    tasksToDayData,
-    statForLastWeekData,
-    statForThisWeekData,
-    statForBestWeekData,
-  ] = await Promise.all([
-    lastWeek,
-    currentWeek,
-    bestWeek,
-    tasksToDay,
-    statForLastWeek,
-    statForThisWeek,
-    statForBestWeek,
-  ]);
-  const chartData = formatAreaChartData(thisWeekData, undefined, lastWeekData);
-
-  const currentWeekVsBestChart = formatAreaChartData(
-    thisWeekData,
-    bestWeekData,
-  );
-  console.log(currentWeekVsBestChart, "currentWeekVsBestChart");
-
-  const tasksPerDayChart = taskDataPerDay(tasksToDayData);
-
-  const thisWeekVsLastWeekChart = tasksCompletedThisWeekVsLastWeek(
-    statForThisWeekData.totalTasksCompleted ?? 0,
-    statForLastWeekData.totalTasksCompleted ?? 0,
-  );
-
-  const thisWeekEfficiency =
-    statForThisWeekData.totalTasksCompleted /
-    statForThisWeekData.totalTasksCreated;
-
-  const thisWeekVsBestWeekChart = tasksCompletedThisWeekVsBestWeek(
-    statForThisWeekData.totalTasksCompleted ?? 0,
-    statForBestWeekData.totalTasksCompleted ?? 0,
-  );
-
-  console.log(chartData, "chartData");
+  const {
+    chartData,
+    currentWeekVsBestChart,
+    tasksPerDayChart,
+    thisWeekVsLastWeekChart,
+    thisWeekEfficiency,
+    thisWeekVsBestWeekChart,
+  } = await getPerformanceData(currentWeekString, lastWeekString);
   return (
     <PerformanceChartData
       chartData={chartData}

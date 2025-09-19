@@ -32,7 +32,6 @@ export default function TaskCard({
     startTransition(async () => {
       setIsChecked(e.target.checked);
       await setChecked(e.target.checked, task.id);
-      console.log("checked");
     });
   }
   return (

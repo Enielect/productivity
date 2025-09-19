@@ -97,7 +97,7 @@ We welcome contributions to improve this app! Here's how you can help:
 
 ---
 
-## License
+<!-- ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details. -->
 

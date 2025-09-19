@@ -10,7 +10,6 @@ type Params = {
 const WeekPage = async ({ params }: Params) => {
   const weeksTasks = await getWeekGroupTasks(params.weekYear);
   const daysDicts = await formatGroupsAccDay(weeksTasks!);
-  // console.log(daysDicts, "dayDicts");
   const days = Object.keys(daysDicts);
   return (
     <div className="mt-2 space-y-4 px-3">

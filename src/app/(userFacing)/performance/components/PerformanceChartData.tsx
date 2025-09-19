@@ -8,39 +8,18 @@ import MultipleLineChart from "./MultipleLineChart";
 import RadialCompareChart from "./RadialCompareChart";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const PerformanceChartData = ({
-  chartData,
-  currentWeekVsBestChart,
-  tasksPerDayChart,
-  thisWeekVsLastWeekChart,
-  thisWeekEfficiency,
-  thisWeekVsBestWeekChart,
-}: {
-  chartData:
-    | {
-        day: string;
-        currentWeek: number;
-        bestWeek: number;
-      }[]
-    | {
-        day: string;
-        currentWeek: number;
-        lastWeek: number;
-      }[]
-    | undefined;
-
-  currentWeekVsBestChart:
-    | {
-        day: string;
-        currentWeek: number;
-        bestWeek: number;
-      }[]
-    | {
-        day: string;
-        currentWeek: number;
-        lastWeek: number;
-      }[]
-    | undefined;
+type PerformanceChartDataProps = {
+  chartData: {
+    day: string;
+    currentWeek: number;
+    bestWeek: number;
+    lastWeek: number;
+  }[];
+  currentWeekVsBestChart: {
+    day: string;
+    currentWeek: number;
+    bestWeek: number;
+  }[];
   tasksPerDayChart: {
     date: string;
     completedTasks: number | undefined;
@@ -55,7 +34,16 @@ const PerformanceChartData = ({
     fill: string;
   }[];
   thisWeekEfficiency: number;
-}) => {
+};
+
+const PerformanceChartData = ({
+  chartData,
+  currentWeekVsBestChart,
+  tasksPerDayChart,
+  thisWeekVsLastWeekChart,
+  thisWeekEfficiency,
+  thisWeekVsBestWeekChart,
+}: PerformanceChartDataProps) => {
   return (
     <ScrollArea className="h-[calc(100dvh-5rem)] w-screen pb-[60px] pr-6 pt-2 md:w-full md:pb-9">
       <div className="space-y-3 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 xl:grid-cols-[30%_30%_auto]">
@@ -63,11 +51,11 @@ const PerformanceChartData = ({
         <div className="grid gap-4 md:col-span-full md:grid-cols-1 min-[1100px]:grid-cols-2">
           {/* percentage of tasks completed per day */}
           <div>
-            <MultipleLineChart chartData={chartData!} />
+            <MultipleLineChart chartData={chartData} />
           </div>
           {/* comparting this week's completed task with our best week(in terms of completed tasks) */}
           <div>
-            <AreaChartWrapper chartData={currentWeekVsBestChart!} />
+            <AreaChartWrapper chartData={currentWeekVsBestChart} />
           </div>
         </div>
         {/* comparing the number of tasks planned each day for the past 3 months */}

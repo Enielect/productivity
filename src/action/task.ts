@@ -1,7 +1,5 @@
 "use server";
 
-import { auth } from "@/auth";
-import { db } from "@/server/db";
 import {
   createSummary,
   createTask,
@@ -9,11 +7,9 @@ import {
   editCheckedTask,
   updateTask,
 } from "@/server/db/queries/insert";
-import { and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-// const session = await auth();
 
 export async function addTaskGroup(data: { name: string }) {
   await createTaskGroup(data);

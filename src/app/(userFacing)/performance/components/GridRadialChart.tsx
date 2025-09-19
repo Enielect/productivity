@@ -51,9 +51,7 @@ export function GridRadialChart({ chartData }: { chartData: ChartData[] }) {
   //     };
   //   });
 
-  console.log(chartConfig, "chartConfig");
 
-  console.log(chartData, "this is chartData");
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">

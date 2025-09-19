@@ -207,7 +207,6 @@ function ListItem({ icon, text, setOpen, open }: NavListProps) {
   function handleClick() {
     setTimeout(() => {
       if (open && open) {
-        console.log("open");
         if (setOpen) setOpen(false);
       }
     }, 500);

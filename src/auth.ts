@@ -1,3 +1,4 @@
+// import 'server-only'
 import Google from "next-auth/providers/google";
 import NextAuth, { type DefaultSession } from "next-auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
@@ -34,7 +35,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     //   async redirect({ url, baseUrl }) {
-    //     console.log(url, baseUrl, "url, baseUrl");
     //     // Allows relative callback URLs
     //     if (url.startsWith("/")) return `${baseUrl}${url}`
     //     // Allows callback URLs on the same origin

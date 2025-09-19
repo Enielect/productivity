@@ -13,7 +13,6 @@ export default function TaskGroupDetails({
   taskGroup: GroupType;
 }) {
   const [currentTask, setCurrentTask] = useState("");
-  console.log(taskGroup.id);
 
   const currentSelectedTask = taskGroup.tasks?.find(
     (task) => task.name === currentTask,

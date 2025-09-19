@@ -76,9 +76,7 @@ function AddGoalInput() {
     startTransition(async () => {
       await addTaskGroup({ name: taskGroup });
       setTaskGroup("");
-      console.log("upload complete");
     });
-    console.log("adding task group");
   }
 
   return (

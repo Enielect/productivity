@@ -1,22 +1,20 @@
-import { auth } from "@/auth";
 
 import { formatNotesAccDay, getNotes } from "@/server/db/queries/select";
 import type { SelectNotes } from "@/server/db/schema";
-import { redirect } from "next/navigation";
 import React from "react";
 import AddNote from "./component/AddNote";
 import Notecard from "./component/Notecard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NoteDisplayWrapper from "./component/NoteDisplayWrapper";
 import SearchBar from "@/components/SearchBar";
+import { getAuthenticatedUserId } from "@/server/db/queries/insert";
 
 //organize notes by date created
 
 const NotesPage = async () => {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
+  const userId = await getAuthenticatedUserId();
 
-  const allUserNotes = await getNotes(session.user.id);
+  const allUserNotes = await getNotes(userId);
   const notesByDate = await formatNotesAccDay(allUserNotes);
   const dayCreated = Object.keys(notesByDate);
   return (
@@ -25,7 +23,6 @@ const NotesPage = async () => {
         <div className="grid">
           <div className="flex h-[3rem] items-center bg-white dark:bg-black">
             <h1 className="text-xl font-semibold"> Notes</h1>
-            {/* <Input placeholder="search" className="ml-10" /> */}
             <SearchBar />
           </div>
           <ScrollArea className="h-[calc(100dvh-3rem-60px)] pb-[2rem] md:pr-5">

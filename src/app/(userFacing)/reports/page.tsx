@@ -8,8 +8,7 @@ const generateRandownLightColors = () => {
 
 const ReportsPage = async () => {
   const weeksDict = await formatGroupsAccWeekNum();
-  console.log(weeksDict, "weeksDict");
-  console.log(weeksDict, "weeksDict");
+
   if (weeksDict) {
     const dictKeys = Object.keys(weeksDict);
 

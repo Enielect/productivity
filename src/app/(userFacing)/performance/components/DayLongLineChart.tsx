@@ -68,7 +68,6 @@ export default function DayLongLineChart({
       numberOfCompleted: 1, // assuming each task in completedUserTasks represents one completed task
     };
   });
-  console.log(dayChartData, "dayChartData");
 
   // const [activeChart, setActiveChart] =
   //   React.useState<keyof typeof chartConfig>("desktop")
@@ -129,7 +128,7 @@ export default function DayLongLineChart({
                     _,
                     payload: Payload<ValueType, NameType>[],
                   ) => {
-                    return payload[0]!.payload.completedTask as string;
+                    return payload[0]!.payload.completedTask as string; // come back to this
                   }}
                 />
               }

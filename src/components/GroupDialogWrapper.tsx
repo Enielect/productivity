@@ -27,9 +27,7 @@ const GroupDialogWrapper = ({ children }: DialogProp) => {
   function handleAddTaskGroup() {
     startTransition(async () => {
       await addTaskGroup({ name: taskGroup });
-      console.log("upload complete");
     });
-    console.log("adding task group");
   }
 
   return (

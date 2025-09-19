@@ -38,7 +38,6 @@ const NoteDisplayWrapper = ({ dayCreated, notesByDate }: WrapperProps) => {
       setLoading(true);
       const results = await searchUserNotes(query);
       setSearchResult(results);
-      console.log(results);
     } catch (err) {
       console.error(err);
     } finally {

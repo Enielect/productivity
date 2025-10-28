@@ -1,5 +1,6 @@
 import {
   formatGroupsAccDay,
+  formatGroupsAccWeekNum,
   getWeekGroupTasks,
 } from "@/server/db/queries/select";
 import Link from "next/link";
@@ -7,6 +8,14 @@ import React from "react";
 type Params = {
   params: { weekYear: string };
 };
+
+export async function generateStaticParams() {
+  const weeksTasks = await formatGroupsAccWeekNum();
+  return Object.keys(weeksTasks).map((week) => ({
+    weekYear: week,
+  }));
+}
+
 const WeekPage = async ({ params }: Params) => {
   const weeksTasks = await getWeekGroupTasks(params.weekYear);
   const daysDicts = await formatGroupsAccDay(weeksTasks!);
